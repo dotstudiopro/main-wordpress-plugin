@@ -1,0 +1,149 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Oct 2, 2018, 5:21:07 PM
+    Author     : kistha
+*/
+/*--------------------------------------------------------------------------------------------
+*
+*	dsp-box
+*
+*--------------------------------------------------------------------------------------------*/
+.dsp-box {
+    background: #FFFFFF;
+    border: 1px solid #E5E5E5;
+    position: relative;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+    /* title */
+    /* footer */
+}
+.dsp-box .title {
+    border-bottom: 1px solid #EEEEEE;
+    margin: 0;
+    padding: 15px;
+}
+.dsp-box .title h3 {
+    font-size: 14px;
+    line-height: 1em;
+    margin: 0;
+    padding: 0;
+}
+.dsp-box .inner {
+    padding: 15px;
+}
+.dsp-box h2 {
+    color: #333333;
+    font-size: 26px;
+    line-height: 1.25em;
+    margin: 0.25em 0 0.75em;
+    padding: 0;
+}
+.dsp-box h3 {
+    margin: 1.5em 0 0;
+}
+.dsp-box p {
+    margin-top: 0.5em;
+}
+.dsp-box a {
+    text-decoration: none;
+}
+.dsp-box i.dashicons-external {
+    margin-top: -1px;
+}
+.dsp-box .footer {
+    border-top: 1px solid #eee;
+    padding: 12px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+.dsp-box .footer p {
+    margin: 0;
+}
+.dsp-box {
+    margin: 20px 0;
+}
+/*--------------------------------------------------------------------------------------------
+*
+*	Settings
+*
+*--------------------------------------------------------------------------------------------*/
+.dsp-settings-wrap .dsp-box {
+    margin: 20px 0;
+}
+.dsp-settings-wrap table {
+    margin: 0;
+}
+.dsp-settings-wrap table .button {
+    vertical-align: middle;
+}
+/* Visibility */
+.dsp-hidden {
+    display: none !important;
+}
+.dsp-field{
+    width: 75%;
+}
+
+/***/
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.switch input {display:none;}
+
+.switch-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.switch-slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked + .switch-slider {
+    background-color: #2196F3;
+}
+
+input:focus + .switch-slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .switch-slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.switch-slider.round {
+    border-radius: 34px;
+}
+
+.switch-slider.round:before {
+    border-radius: 50%;
+}
+
+.valid-api-key {
+    background: white url(../images/true.png) right no-repeat;
+}
