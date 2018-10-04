@@ -150,6 +150,7 @@ class Dotstudiopro_Api {
     private function define_admin_hooks() {
 
         $plugin_admin = new Dotstudiopro_Api_Admin($this->get_Dotstudiopro_Api(), $this->get_version());
+        $plugin_api = new Dsp_External_Api_Request();
 
         $this->loader->add_action('admin_menu', $plugin_admin, 'add_admin_menu');
         $this->loader->add_action('admin_notices', $plugin_admin, 'show_admin_notice');
@@ -158,6 +159,7 @@ class Dotstudiopro_Api {
         $this->loader->add_action('admin_post_validate_dotstudiopro_api', $plugin_admin, 'validate_dotstudiopro_api');
         $this->loader->add_action('admin_post_nopriv_validate_dotstudiopro_api', $plugin_admin, 'validate_dotstudiopro_api');
         $this->loader->add_action('init', $plugin_admin, 'create_dotstudiopro_post_types');
+        $this->loader->add_action('wp_ajax_reset_token', $plugin_admin, 'reset_token');
     }
 
     /**

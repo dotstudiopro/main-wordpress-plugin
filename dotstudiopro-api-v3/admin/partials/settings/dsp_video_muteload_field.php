@@ -12,6 +12,6 @@
 ?>
 <?php $dsp_video_muteload_field = get_option('dsp_video_muteload_field'); ?>
 <label class="switch">
-  <input type="checkbox" name="dsp_video_muteload_field" <?php if(isset($dsp_video_muteload_field) && !empty($dsp_video_muteload_field)){ echo 'checked'; } ?>>
+  <input type="checkbox" name="dsp_video_muteload_field" <?php echo !empty($dsp_video_muteload_field) ? 'checked' : ""; ?>>
   <span class="switch-slider round"></span>
 </label>

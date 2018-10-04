@@ -147,3 +147,6 @@ input:checked + .switch-slider:before {
 .valid-api-key {
     background: white url(../images/true.png) right no-repeat;
 }
+.buttons p{
+    display: inline;
+}

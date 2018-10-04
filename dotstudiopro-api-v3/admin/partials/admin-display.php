@@ -12,7 +12,7 @@
 $dotstudiopro_api_key = get_option('dotstudiopro_api_key');
 $active = $dotstudiopro_api_key ? true : false;
 $nonce = $active ? 'deactivate_dotstudiopro_api_key' : 'activate_dotstudiopro_api_key';
-$button = $active ? __('Deactivate Api Key', 'dotstudiopro-api') : __('Activate Api Key', 'dotstudiopro-api');
+$button = $active ? __('Update Api Key', 'dotstudiopro-api') : __('Activate Api Key', 'dotstudiopro-api');
 ?>
 <div class="wrap dsp-settings-wrap">
     <?php settings_errors(); ?>
@@ -30,7 +30,10 @@ $button = $active ? __('Deactivate Api Key', 'dotstudiopro-api') : __('Activate 
                     <?php dsp_nonce_input($nonce); ?>
                 </div>
                 <?php do_settings_sections('dsp-api-key-section'); ?>
-                <?php submit_button($button, 'primary', 'submit-api-data'); ?>
+                <div class="buttons">
+                    <?php submit_button($button, 'primary', 'submit-api-data'); ?>
+                    <?php submit_button(__('Deactivate Api Key', 'dotstudiopro-api'), 'primary', 'deactivate-api-data'); ?>
+                </div>
             </form>
         </div>
     </div>
@@ -44,7 +47,9 @@ $button = $active ? __('Deactivate Api Key', 'dotstudiopro-api') : __('Activate 
             <div class="inner">
                 <p><?php _e('Please note: Any options set here wil override normal settings. Please make sure to turn these settings off when you done testing.', 'dotstudiopro-api') ?></p>
                 <form method="post" action="options.php">
-                    <?php settings_fields('dsp-dev-mode-section'); ?>
+                    <input type="hidden" name="option_page" value="dsp-dev-mode-section">
+                    <input type="hidden" name="action" value="update">
+                    <input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('dsp-dev-mode-section-options'); ?>">
                     <?php do_settings_sections('dsp-dev-mode-section'); ?>
                     <?php submit_button('Save Changes', 'primary', 'submit-dev-mode-data'); ?>
                 </form>
@@ -57,7 +62,9 @@ $button = $active ? __('Deactivate Api Key', 'dotstudiopro-api') : __('Activate 
             </div>
             <div class="inner">
                 <form method="post" action="options.php">
-                    <?php settings_fields('dsp-setting-section'); ?>
+                    <input type="hidden" name="option_page" value="dsp-setting-section">
+                    <input type="hidden" name="action" value="update">
+                    <input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('dsp-setting-section-options'); ?>">
                     <?php do_settings_sections('dsp-setting-section'); ?>
                     <?php submit_button('Save Changes', 'primary', 'submit-general-data'); ?>
                 </form>

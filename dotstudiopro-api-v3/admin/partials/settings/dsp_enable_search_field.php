@@ -12,6 +12,6 @@
 ?>
 <?php $dsp_enable_search_field = get_option('dsp_enable_search_field'); ?>
 <label class="switch">
-  <input type="checkbox" name="dsp_enable_search_field" <?php if(isset($dsp_enable_search_field) && !empty($dsp_enable_search_field)){ echo 'checked'; } ?>>
+  <input type="checkbox" name="dsp_enable_search_field" <?php echo !empty($dsp_enable_search_field) ? 'checked' : ""; ?>>
   <span class="switch-slider round"></span>
 </label>

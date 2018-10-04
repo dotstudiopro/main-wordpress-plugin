@@ -11,4 +11,4 @@
  */
 ?>
 <?php $dsp_country_code_field = get_option('dsp_country_code_field'); ?>
-<input type="text" name="dsp_country_code_field" value="<?php if(isset($dsp_country_code_field) && !empty($dsp_country_code_field)){ echo $dsp_country_code_field; } ?>">
+<input type="text" name="dsp_country_code_field" value="<?php echo !empty($dsp_country_code_field) ? $dsp_country_code_field : ""; ?>">

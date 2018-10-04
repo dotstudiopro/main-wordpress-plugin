@@ -14,15 +14,8 @@ $active = $dotstudiopro_api_key ? true : false;
 
 if ($active) {
     ?>
-    <input type="password" id="dotstudiopro_api_key" readonly name="dotstudiopro_api_key" class="dsp-field valid-api-key" value="<?php
-    if (isset($dotstudiopro_api_key) && !empty($dotstudiopro_api_key)) {
-        echo $dotstudiopro_api_key;
-    }
-    ?>">
+    <input type="password" id="dotstudiopro_api_key" name="dotstudiopro_api_key" class="dsp-field valid-api-key form-control" value="<?php echo !empty($dotstudiopro_api_key) ? $dotstudiopro_api_key : ""; ?>">
+    <span toggle="#dotstudiopro_api_key" class="fa fa-fw fa-eye field-icon toggle-password-field"></span>
        <?php } else { ?>
-    <input type="text" id="dotstudiopro_api_key" required name="dotstudiopro_api_key" class="dsp-field" value="<?php
-           if (isset($dotstudiopro_api_key) && !empty($dotstudiopro_api_key)) {
-               echo $dotstudiopro_api_key;
-           }
-           ?>">
+    <input type="text" id="dotstudiopro_api_key" required name="dotstudiopro_api_key" class="dsp-field" value="<?php echo !empty($dotstudiopro_api_key) ? $dotstudiopro_api_key : ""; ?>">
 <?php } ?>

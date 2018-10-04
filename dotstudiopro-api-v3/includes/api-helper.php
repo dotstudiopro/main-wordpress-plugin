@@ -40,7 +40,7 @@ function dsp_nonce_input($nonce = '') {
 function dsp_verify_nonce( $value) {
     
     // vars
-    $nonce = dsp_maybe_get_POST('_dsp_nonce');
+    $nonce = dsp_get_post_field('_dsp_nonce');
     
     
     // bail early nonce does not match (post|user|comment|term)
@@ -56,7 +56,7 @@ function dsp_verify_nonce( $value) {
         
 }
 /**
-  *  dsp_maybe_get
+  *  dsp_get_post_field
   *
   *  This function will return a var if it exists in an array
   *
@@ -68,7 +68,7 @@ function dsp_verify_nonce( $value) {
   *  @param   $default (mixed) the value returned if not found
   *  @return  $post_id (int)
   */
-function dsp_maybe_get_POST( $key = '', $default = null ) {
+function dsp_get_post_field( $key = '', $default = null ) {
     
     return isset( $_POST[$key] ) ? $_POST[$key] : $default;
     

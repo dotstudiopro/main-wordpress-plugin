@@ -210,55 +210,54 @@ class Dotstudiopro_Api_Admin {
      * 
      * @since 1.0.0 
      */
-    
-    public function create_dotstudiopro_post_types(){
+    public function create_dotstudiopro_post_types() {
         $labels = array(
-            'name'                  => _x( 'Channels', 'Post Type General Name', 'dotstudiopro-api' ),
-            'singular_name'         => _x( 'Channel', 'Post Type Singular Name', 'dotstudiopro-api' ),
-            'menu_name'             => __( 'Channels', 'dotstudiopro-api' ),
-            'name_admin_bar'        => __( 'Channels', 'dotstudiopro-api' ),
+            'name' => _x('Channels', 'Post Type General Name', 'dotstudiopro-api'),
+            'singular_name' => _x('Channel', 'Post Type Singular Name', 'dotstudiopro-api'),
+            'menu_name' => __('Channels', 'dotstudiopro-api'),
+            'name_admin_bar' => __('Channels', 'dotstudiopro-api'),
         );
         $args = array(
-            'hierarchical'          => true,     
-            'labels'                => $labels,
-            'public'                => true,
-            'publicly_queryable'    => true,
-            'show_ui'               => true, 
-            'show_in_menu'          => true, 
-            'query_var'             => true,
-            'rewrite'               => true,
-            'capability_type'       => 'page',
-            'has_archive'           => false, 
-            'menu_position'         => 25,
-            'menu_icon'             => 'dashicons-format-video',
-            'supports'              => array( 'title', 'editor', 'author', 'thumbnail', 'revisions', 'page-attributes', 'custom-fields' ),
-        ); 
+            'hierarchical' => true,
+            'labels' => $labels,
+            'public' => true,
+            'publicly_queryable' => true,
+            'show_ui' => true,
+            'show_in_menu' => true,
+            'query_var' => true,
+            'rewrite' => true,
+            'capability_type' => 'page',
+            'has_archive' => false,
+            'menu_position' => 25,
+            'menu_icon' => 'dashicons-format-video',
+            'supports' => array('title', 'editor', 'author', 'thumbnail', 'revisions', 'page-attributes', 'custom-fields'),
+        );
         register_post_type('channel', $args);
-        
+
         $labels = array(
-            'name'                  => _x( 'Categories', 'Post Type General Name', 'dotstudiopro-api' ),
-            'singular_name'         => _x( 'Category', 'Post Type Singular Name', 'dotstudiopro-api' ),
-            'menu_name'             => __( 'Categories', 'dotstudiopro-api' ),
-            'name_admin_bar'        => __( 'Categories', 'dotstudiopro-api' ),
+            'name' => _x('Categories', 'Post Type General Name', 'dotstudiopro-api'),
+            'singular_name' => _x('Category', 'Post Type Singular Name', 'dotstudiopro-api'),
+            'menu_name' => __('Categories', 'dotstudiopro-api'),
+            'name_admin_bar' => __('Categories', 'dotstudiopro-api'),
         );
         $args = array(
-            'hierarchical'          => true,     
-            'labels'                => $labels,
-            'public'                => true,
-            'publicly_queryable'    => true,
-            'show_ui'               => true, 
-            'show_in_menu'          => true, 
-            'query_var'             => true,
-            'rewrite'               => true,
-            'capability_type'       => 'page',
-            'has_archive'           => false, 
-            'menu_position'         => 26,
-            'menu_icon'             => 'dashicons-playlist-video',
-            'supports'              => array( 'title', 'editor', 'author', 'thumbnail', 'revisions', 'page-attributes', 'custom-fields' )
-        ); 
+            'hierarchical' => true,
+            'labels' => $labels,
+            'public' => true,
+            'publicly_queryable' => true,
+            'show_ui' => true,
+            'show_in_menu' => true,
+            'query_var' => true,
+            'rewrite' => true,
+            'capability_type' => 'page',
+            'has_archive' => false,
+            'menu_position' => 26,
+            'menu_icon' => 'dashicons-playlist-video',
+            'supports' => array('title', 'editor', 'author', 'thumbnail', 'revisions', 'page-attributes', 'custom-fields')
+        );
         register_post_type('category', $args);
     }
-    
+
     /**
      * Register the stylesheets for the admin area.
      *
@@ -271,8 +270,41 @@ class Dotstudiopro_Api_Admin {
             $page = $_GET['page'];
         if ($pagenow == 'admin.php' && $page == 'dsp-api-settings') {
             wp_enqueue_style($this->name, plugin_dir_url(__FILE__) . 'css/dsp-global.css', array(), $this->version, 'all');
+            wp_enqueue_style('vex', plugin_dir_url(__FILE__) . 'css/vex.css', array(), $this->version, 'all');
+            wp_enqueue_style('fontawesome', 'http:////netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css', '', '4.0.3', 'all');
+            wp_enqueue_style('vex-theme-plain', plugin_dir_url(__FILE__) . 'css/vex-theme-plain.css', array(), $this->version, 'all');
             wp_enqueue_style('wp-color-picker');
+
+            wp_enqueue_script('vex-combined', plugin_dir_url(__FILE__) . 'js/vex.combined.min.js', array('wp-color-picker'), false, true);
             wp_enqueue_script('custom-script-handle', plugin_dir_url(__FILE__) . 'js/custom-script.js', array('wp-color-picker'), false, true);
+        }
+    }
+
+    /**
+     * reset token
+     *
+     * @since    1.0.0
+     */
+    public function reset_token() {
+        if (wp_verify_nonce($_POST['nonce'], 'dsp_reset_token')) {
+            $post = array(
+                'key' => $_POST['api_secret'],
+            );
+            $response = $this->dspExternalApiClass->check_api_key($post);
+            // error
+            if (is_wp_error($response)) {
+                print 'Something Went wrong.';
+            } elseif (isset($response['success']) && $response['success'] == 1) {
+                update_option('dotstudiopro_api_token', $response['token']);
+                update_option('dotstudiopro_api_token_time', time());
+                print 'Token has been updated.';
+            } else {
+                print 'Something Went wrong.';
+            }
+            exit;
+        } else {
+            print 'Something Went wrong.';
+            exit;
         }
     }
 
@@ -286,7 +318,7 @@ class Dotstudiopro_Api_Admin {
         if (dsp_verify_nonce('activate_dotstudiopro_api_key')) {
             $this->activate_key();
         } elseif (dsp_verify_nonce('deactivate_dotstudiopro_api_key')) {
-            $this->deactivate_key();
+            isset($_POST['submit-api-data']) ? $this->activate_key() : $this->deactivate_key();
         }
     }
 
@@ -301,7 +333,7 @@ class Dotstudiopro_Api_Admin {
             'key' => $_POST['dotstudiopro_api_key'],
         );
 
-        $response = $this->dspExternalApiClass->get_token('token', $post);
+        $response = $this->dspExternalApiClass->check_api_key($post);
 
         // ensure response is expected JSON array (not string)
         if (is_string($response)) {
@@ -318,6 +350,7 @@ class Dotstudiopro_Api_Admin {
             $this->add_admin_notice($response['message']);
             update_option('dotstudiopro_api_key', $_POST['dotstudiopro_api_key']);
             update_option('dotstudiopro_api_token', $response['token']);
+            update_option('dotstudiopro_api_token_time', time());
             wp_safe_redirect(wp_get_referer());
         } else {
             $response['message'] = 'Something Went wrong.';
@@ -349,7 +382,6 @@ class Dotstudiopro_Api_Admin {
      *  
      *  @since    1.0.0
      */
-
     function show_error($error = '') {
 
         // error object

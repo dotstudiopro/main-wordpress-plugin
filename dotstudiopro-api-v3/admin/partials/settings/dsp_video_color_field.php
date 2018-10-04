@@ -11,4 +11,4 @@
  */
 ?>
 <?php $dsp_video_color_field = get_option('dsp_video_color_field'); ?>
-<input type="text" name="dsp_video_color_field" value="<?php if(isset($dsp_video_color_field) && !empty($dsp_video_color_field)){ echo $dsp_video_color_field; } ?>" class="color-field">
+<input type="text" name="dsp_video_color_field" value="<?php echo !empty($dsp_video_color_field) ? $dsp_video_color_field : ""; ?>" class="color-field">
