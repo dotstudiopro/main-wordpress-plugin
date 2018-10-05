@@ -10,13 +10,14 @@
  * @subpackage        Dotstudiopro_Api/includes
  */
 class Dsp_External_Api_Request {
-
     
+    public $country;
     public $api_key;
+    public $token;
     public $common_url;
-
+    
     function __construct() {
-
+        
         $this->api_key = get_option('dotstudiopro_api_key');
         $this->common_url = "https://api.myspotlight.tv/";
     }
@@ -32,18 +33,152 @@ class Dsp_External_Api_Request {
     }
 
     /**
+     * Get an access token from the API
+     *
+     * @return String|Boolean The API access token, or false if it couldn't get one
+     */
+    private function get_token() {
+        // If we don't have an api key, we can't get a token
+        if (empty($this->api_key))
+            return false;
+        $body = array(
+            'key' => $_POST['dotstudiopro_api_key'],
+        );
+        return $this->api_request_post('token', $body);
+    }
+
+    /**
+     * Set the token variable if we have the value outside of the class
+     *
+     * @param string $token The token to set
+     *
+     * @return String|Boolean Returns the 2 letter country code, or false if there was an issue
+     */
+    private function set_token($token) {
+        $this->token = $token;
+    }
+
+    /**
+     * Get a new token from the API key we have
+     *
+     * @return void
+     */
+    function api_new_token() {
+        // Acquire an API token and save it for later use.
+        $token = $this->get_token();
+        update_option('dotstudiopro_api_token', $token);
+        update_option('dotstudiopro_api_token_time', time());
+        return $token;
+    }
+
+    /**
+     * Check if we have a token and if it is expired, and get a new one if expired or missing
+     *
+     * @return String|Bool The access token or false if something went wrong
+     */
+    function api_token_check() {
+        $token = get_option('dotstudiopro_api_token');
+        $token_time = !$token ? 0 : get_option('dotstudiopro_api_token_time');
+        $difference = floor((time() - $token_time) / 84600);
+        if (!$token || $difference >= 25) {
+            $token = $this->api_new_token();
+            if (empty($token))
+                return false;
+        }
+        return $token;
+    }
+    
+    /**
+     * Get the country code of the user
+     * 
+     * @return boolean
+     */
+
+    function get_country() {
+
+        $token = $this->api_token_check();
+
+        /** DEV MODE * */
+        $dev_check = get_option("dsp_is_dev_mode_field");
+        $dev_country = get_option("dsp_country_code_field");
+        if ($dev_check) {
+            $this->country = $dev_country;
+            return $this->country;
+        }
+        /** END DEV MODE * */
+        // If we don't have a token, we can't get a country
+        if (empty($token))
+            return false;
+
+        $body = array(
+            //'ip' => $this->get_ip(),
+            'ip' => '43.243.38.117',
+        );
+        
+
+        $headers = array(
+            'x-access-token' => $token
+        );
+
+        $country = $this->api_request_post('country', $body, $headers);
+        if(!is_wp_error($country))
+            $this->country = $country['data']['countryCode'];
+        
+        return $country;
+    }
+
+    /**
+     * Get an array with all of the categories in a company
+     *
+     * @return Array Returns an array of with the categories, or an empty array if something is wrong or there are no categories
+     */
+    function get_categories() {
+
+        $token = $this->api_token_check();
+        // If we have no token, or we have no country, the API call will fail, so we return an empty array
+        if (!$token || !$this->country)
+            return array();
+        
+        $path = 'categories/' . $this->country;
+        
+        $headers = array(
+            'x-access-token' => $token
+        );
+        
+        return $this->api_request_get($path, $headers);
+    }
+
+    /**
+     * Get the IP of the user
+     *
+     * @return String The IP address of the user
+     */
+    private function get_ip() {
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+            //check ip from share internet
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            //to check ip is pass from proxy
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+            $ip = $_SERVER['REMOTE_ADDR'];
+        }
+        return $ip;
+    }
+
+    /**
      * This is common function to use POST request of External DSP API.
      * 
-     * @param type $query
+     * @param type $path
      * @param type $body
      * @param type $headers
      * @return \WP_Error or Json Responce
      */
-    private function api_request_post($query = null, $body = null, $headers = null) {
+    private function api_request_post($path = null, $body = null, $headers = null) {
 
         // vars
-        $url = $this->common_url . $query;
-
+        $url = $this->common_url . $path;
+        
         $raw_response = wp_remote_post($url, array(
             'body' => $body,
             'headers' => $headers
@@ -52,7 +187,43 @@ class Dsp_External_Api_Request {
         // wp error
         if (is_wp_error($raw_response)) {
             return $raw_response;
+        } 
+        // http error
+        elseif (wp_remote_retrieve_response_code($raw_response) != 200) {
+            return new WP_Error('server_error', wp_remote_retrieve_response_message($raw_response));
         }
+
+        // decode response
+        $json = json_decode(wp_remote_retrieve_body($raw_response), true);
+
+        // allow non json value
+        if ($json === null) {
+            return wp_remote_retrieve_body($raw_response);
+        }
+        // return
+        return $json;
+    }
+
+    /**
+     * This is common function to use GET request of External DSP API.
+     * 
+     * @param type $path
+     * @param type $headers
+     * @return \WP_Error or  Json Responce 
+     */
+    private function api_request_get($path = null, $headers = null) {
+
+        // vars
+        $url = $this->common_url . $path;
+
+        $raw_response = wp_remote_get($url, array(
+            'headers' => $headers
+        ));
+
+        // wp error
+        if (is_wp_error($raw_response)) {
+            return $raw_response;
+}
         // http error
         elseif (wp_remote_retrieve_response_code($raw_response) != 200) {
             return new WP_Error('server_error', wp_remote_retrieve_response_message($raw_response));

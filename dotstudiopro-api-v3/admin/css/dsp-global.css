@@ -7,6 +7,7 @@ and open the template in the editor.
     Created on : Oct 2, 2018, 5:21:07 PM
     Author     : kistha
 */
+
 /*--------------------------------------------------------------------------------------------
 *
 *	dsp-box
@@ -149,4 +150,9 @@ input:checked + .switch-slider:before {
 }
 .buttons p{
     display: inline;
+}
+
+/* Category posttype Admin */
+.column-category_id{
+    width:20%;
 }

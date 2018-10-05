@@ -18,6 +18,7 @@ $button = $active ? __('Update Api Key', 'dotstudiopro-api') : __('Activate Api 
     <?php settings_errors(); ?>
     <h1><?php _e('Dotstudiopro API Settings', 'dotstudiopro-api'); ?></h1>
     <?php $dotstudiopro_api_key = get_option('dotstudiopro_api_key'); ?>
+    
     <div class="dsp-box" id="dsp-license-information">
         <div class="title">
             <h3><?php _e('API key information', 'dotstudiopro-api'); ?></h3>
@@ -39,7 +40,7 @@ $button = $active ? __('Update Api Key', 'dotstudiopro-api') : __('Activate Api 
     </div>
 
     <?php if ($active): ?>
-        <!-- -->
+    
         <div class="dsp-box" id="dsp-license-information">
             <div class="title">
                 <h3><?php _e('Development Mode Options', 'dotstudiopro-api'); ?></h3>
@@ -70,5 +71,6 @@ $button = $active ? __('Update Api Key', 'dotstudiopro-api') : __('Activate Api 
                 </form>
             </div>
         </div>
+    
     <?php endif; ?>
 </div>

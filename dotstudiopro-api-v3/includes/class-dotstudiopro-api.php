@@ -120,6 +120,11 @@ class Dotstudiopro_Api {
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-dotstudiopro-api-admin.php';
 
+        /**
+         * The class responsible for defining all actions that occur in the Dashboard.
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/includes/class-dotstudiopro-api-posttypes.php';
+
         $this->loader = new Dotstudiopro_Api_Loader();
     }
 
@@ -150,16 +155,21 @@ class Dotstudiopro_Api {
     private function define_admin_hooks() {
 
         $plugin_admin = new Dotstudiopro_Api_Admin($this->get_Dotstudiopro_Api(), $this->get_version());
-        $plugin_api = new Dsp_External_Api_Request();
-
+        $posttype = new Dsp_Custom_Posttypes();
         $this->loader->add_action('admin_menu', $plugin_admin, 'add_admin_menu');
         $this->loader->add_action('admin_notices', $plugin_admin, 'show_admin_notice');
         $this->loader->add_action('admin_init', $plugin_admin, 'settings_api_init');
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
         $this->loader->add_action('admin_post_validate_dotstudiopro_api', $plugin_admin, 'validate_dotstudiopro_api');
         $this->loader->add_action('admin_post_nopriv_validate_dotstudiopro_api', $plugin_admin, 'validate_dotstudiopro_api');
-        $this->loader->add_action('init', $plugin_admin, 'create_dotstudiopro_post_types');
         $this->loader->add_action('wp_ajax_reset_token', $plugin_admin, 'reset_token');
+        $this->loader->add_action('init', $posttype, 'create_dotstudiopro_post_types');
+        $this->loader->add_action( 'add_meta_boxes',$posttype, 'create_category_metabox' );
+        $this->loader->add_action( 'save_post', $posttype, 'category_metabox_save' );
+        $this->loader->add_action('admin_head-edit.php', $posttype, 'add_button_to_custom_posttypes');
+        $this->loader->add_filter('manage_category_posts_columns', $posttype, 'dsp_category_table_head');
+        $this->loader->add_action('manage_category_posts_custom_column', $posttype, 'dsp_category_table_content', 10, 2 );
+        $this->loader->add_action('wp_ajax_import_category_post_data', $posttype, 'import_category_post_data');
     }
 
     /**

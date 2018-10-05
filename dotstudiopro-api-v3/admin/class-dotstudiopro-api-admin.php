@@ -165,6 +165,11 @@ class Dotstudiopro_Api_Admin {
                 'dsp_enable_search_field', __('Enable search for videos and/or channels', 'dotstudiopro-api'), array($this, 'dsp_enable_search_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
         );
         register_setting('dsp-setting-section', 'dsp_enable_search_field');
+        
+        add_settings_field(
+                'dsp_sync_data_field', __('Sync Data', 'dotstudiopro-api'), array($this, 'dsp_sync_data_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
+        );
+        register_setting('dsp-setting-section', 'dsp_sync_data_field');
     }
 
     /**
@@ -205,57 +210,8 @@ class Dotstudiopro_Api_Admin {
         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/settings/dsp_enable_search_field.php';
     }
 
-    /**
-     * Creating custom posttypes
-     * 
-     * @since 1.0.0 
-     */
-    public function create_dotstudiopro_post_types() {
-        $labels = array(
-            'name' => _x('Channels', 'Post Type General Name', 'dotstudiopro-api'),
-            'singular_name' => _x('Channel', 'Post Type Singular Name', 'dotstudiopro-api'),
-            'menu_name' => __('Channels', 'dotstudiopro-api'),
-            'name_admin_bar' => __('Channels', 'dotstudiopro-api'),
-        );
-        $args = array(
-            'hierarchical' => true,
-            'labels' => $labels,
-            'public' => true,
-            'publicly_queryable' => true,
-            'show_ui' => true,
-            'show_in_menu' => true,
-            'query_var' => true,
-            'rewrite' => true,
-            'capability_type' => 'page',
-            'has_archive' => false,
-            'menu_position' => 25,
-            'menu_icon' => 'dashicons-format-video',
-            'supports' => array('title', 'editor', 'author', 'thumbnail', 'revisions', 'page-attributes', 'custom-fields'),
-        );
-        register_post_type('channel', $args);
-
-        $labels = array(
-            'name' => _x('Categories', 'Post Type General Name', 'dotstudiopro-api'),
-            'singular_name' => _x('Category', 'Post Type Singular Name', 'dotstudiopro-api'),
-            'menu_name' => __('Categories', 'dotstudiopro-api'),
-            'name_admin_bar' => __('Categories', 'dotstudiopro-api'),
-        );
-        $args = array(
-            'hierarchical' => true,
-            'labels' => $labels,
-            'public' => true,
-            'publicly_queryable' => true,
-            'show_ui' => true,
-            'show_in_menu' => true,
-            'query_var' => true,
-            'rewrite' => true,
-            'capability_type' => 'page',
-            'has_archive' => false,
-            'menu_position' => 26,
-            'menu_icon' => 'dashicons-playlist-video',
-            'supports' => array('title', 'editor', 'author', 'thumbnail', 'revisions', 'page-attributes', 'custom-fields')
-        );
-        register_post_type('category', $args);
+    function dsp_sync_data_field_callback_function() {
+        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/settings/dsp_sync_data_field.php';
     }
 
     /**
@@ -264,20 +220,13 @@ class Dotstudiopro_Api_Admin {
      * @since    1.0.0
      */
     public function enqueue_styles() {
-        global $pagenow;
-        $page = '';
-        if (isset($_GET['page']))
-            $page = $_GET['page'];
-        if ($pagenow == 'admin.php' && $page == 'dsp-api-settings') {
-            wp_enqueue_style($this->name, plugin_dir_url(__FILE__) . 'css/dsp-global.css', array(), $this->version, 'all');
-            wp_enqueue_style('vex', plugin_dir_url(__FILE__) . 'css/vex.css', array(), $this->version, 'all');
-            wp_enqueue_style('fontawesome', 'http:////netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css', '', '4.0.3', 'all');
-            wp_enqueue_style('vex-theme-plain', plugin_dir_url(__FILE__) . 'css/vex-theme-plain.css', array(), $this->version, 'all');
-            wp_enqueue_style('wp-color-picker');
-
-            wp_enqueue_script('vex-combined', plugin_dir_url(__FILE__) . 'js/vex.combined.min.js', array('wp-color-picker'), false, true);
-            wp_enqueue_script('custom-script-handle', plugin_dir_url(__FILE__) . 'js/custom-script.js', array('wp-color-picker'), false, true);
-        }
+        wp_enqueue_style('vex', plugin_dir_url(__FILE__) . 'css/vex.css', array(), $this->version, 'all');
+        wp_enqueue_style('vex-theme-plain', plugin_dir_url(__FILE__) . 'css/vex-theme-plain.css', array(), $this->version, 'all');
+        wp_enqueue_style('wp-color-picker');
+        wp_enqueue_script('vex-combined', plugin_dir_url(__FILE__) . 'js/vex.combined.min.js', array('wp-color-picker'), false, true);
+        wp_enqueue_script('custom-script-handle', plugin_dir_url(__FILE__) . 'js/custom-script.js', array('wp-color-picker'), false, true);
+        wp_enqueue_style($this->name, plugin_dir_url(__FILE__) . 'css/dsp-global.css', array(), $this->version, 'all');
+        wp_enqueue_style('fontawesome', 'http:////netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css', '', '4.0.3', 'all');
     }
 
     /**
@@ -291,7 +240,6 @@ class Dotstudiopro_Api_Admin {
                 'key' => $_POST['api_secret'],
             );
             $response = $this->dspExternalApiClass->check_api_key($post);
-            // error
             if (is_wp_error($response)) {
                 print 'Something Went wrong.';
             } elseif (isset($response['success']) && $response['success'] == 1) {
@@ -309,7 +257,7 @@ class Dotstudiopro_Api_Admin {
     }
 
     /**
-     * Register the stylesheets for the admin area.
+     * Activate and Deactivate DoststudioPro Api key
      *
      * @since    1.0.0
      */
@@ -351,6 +299,7 @@ class Dotstudiopro_Api_Admin {
             update_option('dotstudiopro_api_key', $_POST['dotstudiopro_api_key']);
             update_option('dotstudiopro_api_token', $response['token']);
             update_option('dotstudiopro_api_token_time', time());
+            $response = $this->dspExternalApiClass->check_api_key($post);
             wp_safe_redirect(wp_get_referer());
         } else {
             $response['message'] = 'Something Went wrong.';

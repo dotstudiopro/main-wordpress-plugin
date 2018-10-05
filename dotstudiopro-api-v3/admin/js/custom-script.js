@@ -5,7 +5,15 @@
  */
 
 vex.defaultOptions.className = 'vex-theme-plain';
+
 (function ($) {
+
+    /**
+     * Ajax event to reset token form DotstudioPro Api Dashboard
+     * 
+     * @since 1.0.0
+     */
+
     $('.reset-dsp-token').on('click', function (e) {
         e.preventDefault();
         loading.show('Please wait...');
@@ -16,8 +24,8 @@ vex.defaultOptions.className = 'vex-theme-plain';
                 url,
                 {
                     'action': action,
-                    'nonce': nonce,
-                    'api_secret': $('#dotstudiopro_api_key').val()
+                    'api_secret': $('#dotstudiopro_api_key').val(),
+                    'nonce': nonce
                 },
                 function (response) {
                     vex.closeAll();
@@ -45,15 +53,65 @@ vex.defaultOptions.className = 'vex-theme-plain';
                 }
         );
     });
+
+    /**
+     * Ajax event to Import Categories.
+     * 
+     * @since 1.0.0
+     */
+
+    $(document).on('click', '.import_categories', function (e) {
+        e.preventDefault();
+        loading.show('Import in-progress... Please wait...');
+        var url = $(this).data('target');
+        var action = $(this).data('action');
+        var nonce = $(this).data('nonce');
+        $.post(
+                url,
+                {
+                    'action': action,
+                    'nonce': nonce
+                },
+                function (response) {
+                    vex.closeAll();
+                    vex.dialog.open({
+                        unsafeMessage: [
+                            '<h3>Import Categories</h3>',
+                            '<dl>',
+                            response,
+                            '<dl>'
+                        ].join(''),
+                        buttons: [
+                            $.extend({}, vex.dialog.buttons.YES, {
+                                text: 'OK'
+                            })
+                        ],
+                        focusFirstInput: false,
+                        showCloseButton: true,
+                        afterOpen: function () {
+                            $('body').css('overflow', 'hidden');
+                        },
+                        afterClose: function () {
+                            window.location.reload();
+                        }
+                    });
+                }
+        );
+    });
+
+    /**
+     * jQuery function to display loader during ajax event.
+     * 
+     * @type |window.loading|Window.loading
+     * @since 1.0.0
+     * 
+     */
     var loading = window.loading = function () {
-
         var show = function (message) {
-
             var msg = (message != null) ? message : 'Loading';
-
             $dialog = vex.dialog.open({
                 unsafeMessage: [
-                    '<div style="margin: 0 auto; background:url(http://192.168.0.20/ds-pro/wp-content/plugins/dotstudiopro-api-v3/admin/images/hourglass.gif) no-repeat center center;width:150px;height:150px;"></div>',
+                    '<div style="margin: 0 auto; background:url(/wp-content/plugins/dotstudiopro-api-v3/admin/images/hourglass.gif) no-repeat center center;width:150px;height:150px;"></div>',
                     '<h3 style="text-align:center;">',
                     msg,
                     '</h3>'
@@ -71,22 +129,27 @@ vex.defaultOptions.className = 'vex-theme-plain';
                 }
             });
         };
-
         return {
             show: show
         };
     }();
 
-
-
-    // Add Color Picker to all inputs that have 'color-field' class
+    /**
+     * Add Color Picker to all inputs that have 'color-field' class
+     * 
+     * @since 1.0.0
+     */
     $(function () {
         $('.color-field').wpColorPicker();
     });
 
-    // Toggle eye open-close
-    $(".toggle-password-field").click(function () {
+    /**
+     * Toggle eye open-close for API Key Field.
+     * 
+     * @since 1.0.0
+     */
 
+    $(".toggle-password-field").click(function () {
         $(this).toggleClass("fa-eye fa-eye-slash");
         var input = $($(this).attr("toggle"));
         if (input.attr("type") == "password") {
