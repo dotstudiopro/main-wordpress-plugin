@@ -11,7 +11,6 @@
  * @package           Dotstudiopro_Api
  * @subpackage        Dotstudiopro_Api/admin/includes
  */
-
 class Dsp_Custom_Posttypes {
 
     /**
@@ -112,7 +111,7 @@ class Dsp_Custom_Posttypes {
             <tbody>
                 <tr>
                     <th scope="row">Category ID</th>
-                    <td><input type="text" class="dsp-field" name="cat_id" id="cat_id" value="<?php echo $cat_id; ?>" /></td>
+                    <td><input type="text" class="dsp-field" readonly  name="cat_id" id="cat_id" value="<?php echo $cat_id; ?>" /></td>
                 </tr>
                 <tr>
                     <th scope="row">Poster</th>
@@ -200,7 +199,7 @@ class Dsp_Custom_Posttypes {
             <script type="text/javascript">
                 jQuery(document).ready(function ($)
                 {
-                    jQuery(jQuery(".wrap .page-title-action")).after("<button id='import_channels import_categories' class='add-new-h2' data-target='<?php echo admin_url('admin-ajax.php'); ?>' data-nonce='<?php echo wp_create_nonce('dsp_reset_token'); ?>' data-action='import_category_post_data'><i class='fa fa-cloud-download' aria-hidden='true'></i> Import Channels</button>");
+                    jQuery(jQuery(".wrap .page-title-action")).after("<button id='import_channels' class='add-new-h2' data-target='<?php echo admin_url('admin-ajax.php'); ?>' data-nonce='<?php echo wp_create_nonce('dsp_reset_token'); ?>' data-action='import_category_post_data'><i class='fa fa-cloud-download' aria-hidden='true'></i> Import Channels</button>");
                 });
             </script>
             <?php
@@ -264,7 +263,8 @@ class Dsp_Custom_Posttypes {
                 $categories = $this->dspExternalApiClass->get_categories();
 
                 if (!is_wp_error($categories)) {
-                    $count = 0;
+                    $add_count = 0;
+                    $update_count = 0;
                     foreach ($categories['categories'] as $category) {
                         if (isset($category['platforms'][0]['website'])) {
                             $args = array(
@@ -278,27 +278,32 @@ class Dsp_Custom_Posttypes {
                                 )
                             );
                             $my_query = new WP_Query($args);
+                            $posts = $my_query->posts;
+                            $new_post = array(
+                                'post_title' => $category['name'],
+                                'post_content' => $category['description'],
+                                'post_status' => 'publish',
+                                'post_date' => date('Y-m-d H:i:s'),
+                                'post_author' => $user_ID,
+                                'post_type' => 'category',
+                                'post_name' => $category['slug'],
+                            );
                             if (empty($my_query->have_posts())) {
-                                $new_post = array(
-                                    'post_title' => $category['name'],
-                                    'post_content' => $category['description'],
-                                    'post_status' => 'publish',
-                                    'post_date' => date('Y-m-d H:i:s'),
-                                    'post_author' => $user_ID,
-                                    'post_type' => 'category',
-                                    'post_name' => $category['slug'],
-                                );
                                 $post_id = wp_insert_post($new_post);
-                                update_post_meta($post_id, 'cat_id', $category['_id']);
-                                update_post_meta($post_id, 'cat_wallpaper', $category['wallpaper']);
-                                update_post_meta($post_id, 'cat_poster', $category['poster']);
-                                update_post_meta($post_id, 'is_in_cat_menu', $category['menu']);
-                                update_post_meta($post_id, 'is_on_cat_homepage', $category['homepage']);
-                                $count++;
+                                $add_count++;
+                            } else {
+                                $new_post['ID'] = $posts[0];
+                                $post_id = wp_update_post($new_post);
+                                $update_count++;
                             }
+                            update_post_meta($post_id, 'cat_id', $category['_id']);
+                            update_post_meta($post_id, 'cat_wallpaper', $category['wallpaper']);
+                            update_post_meta($post_id, 'cat_poster', $category['poster']);
+                            update_post_meta($post_id, 'is_in_cat_menu', $category['menu']);
+                            update_post_meta($post_id, 'is_on_cat_homepage', $category['homepage']);
                         }
                     }
-                    echo $count . ' Categories added.';
+                    echo $add_count . ' Categories added.<br/>' . $update_count . ' Categories Updated';
                     exit;
                 } else {
                     echo 'Something Went wrong.';
