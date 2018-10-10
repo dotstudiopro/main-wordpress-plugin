@@ -10,14 +10,14 @@
  * @subpackage        Dotstudiopro_Api/includes
  */
 class Dsp_External_Api_Request {
-    
+
     public $country;
     public $api_key;
     public $token;
     public $common_url;
-    
+
     function __construct() {
-        
+
         $this->api_key = get_option('dotstudiopro_api_key');
         $this->common_url = "https://api.myspotlight.tv/";
     }
@@ -29,7 +29,7 @@ class Dsp_External_Api_Request {
      * @since 1.0.0
      */
     function check_api_key($body = null) {
-        return $this->api_request_post('token', $body);
+        return $this->api_request_post('token', null, null, $body);
     }
 
     /**
@@ -44,7 +44,7 @@ class Dsp_External_Api_Request {
         $body = array(
             'key' => $_POST['dotstudiopro_api_key'],
         );
-        return $this->api_request_post('token', $body);
+        return $this->api_request_post('token', null, null, $body);
     }
 
     /**
@@ -87,13 +87,12 @@ class Dsp_External_Api_Request {
         }
         return $token;
     }
-    
+
     /**
      * Get the country code of the user
      * 
      * @return boolean
      */
-
     function get_country() {
 
         $token = $this->api_token_check();
@@ -114,16 +113,16 @@ class Dsp_External_Api_Request {
             //'ip' => $this->get_ip(),
             'ip' => '43.243.38.117',
         );
-        
+
 
         $headers = array(
             'x-access-token' => $token
         );
 
-        $country = $this->api_request_post('country', $body, $headers);
-        if(!is_wp_error($country))
+        $country = $this->api_request_post('country', null, $headers, $body);
+        if (!is_wp_error($country))
             $this->country = $country['data']['countryCode'];
-        
+
         return $country;
     }
 
@@ -138,14 +137,41 @@ class Dsp_External_Api_Request {
         // If we have no token, or we have no country, the API call will fail, so we return an empty array
         if (!$token || !$this->country)
             return array();
-        
+
         $path = 'categories/' . $this->country;
+
+        $headers = array(
+            'x-access-token' => $token
+        );
+        
+        return $this->api_request_get($path, null, $headers);
+    }
+    
+    /**
+     * Get an array with all of the published channels in a company
+     *
+     * @param string $detail The level of detail we want from the channel call
+     *
+     * @return Array Returns an array of channels, or an empty array if something is wrong or there are no channels
+     */
+    function get_channels($detail = 'partial') {
+        
+        $token = $this->api_token_check();
+        
+        // If we have no token, or we have no country, the API call will fail, so we return an empty array
+        if (!$token || !$this->country)
+            return array();
+        
+        $path = 'channels/' . $this->country;
         
         $headers = array(
             'x-access-token' => $token
         );
         
-        return $this->api_request_get($path, $headers);
+        $query = array('detail' => $detail);
+
+        return $this->api_request_get($path, null, $headers);
+        
     }
 
     /**
@@ -174,11 +200,15 @@ class Dsp_External_Api_Request {
      * @param type $headers
      * @return \WP_Error or Json Responce
      */
-    private function api_request_post($path = null, $body = null, $headers = null) {
+    private function api_request_post($path = null, $query = null, $headers = null, $body = null) {
 
         // vars
         $url = $this->common_url . $path;
         
+        if($query){
+            $url = add_query_arg($query,  $url );
+        }
+
         $raw_response = wp_remote_post($url, array(
             'body' => $body,
             'headers' => $headers
@@ -187,7 +217,7 @@ class Dsp_External_Api_Request {
         // wp error
         if (is_wp_error($raw_response)) {
             return $raw_response;
-        } 
+        }
         // http error
         elseif (wp_remote_retrieve_response_code($raw_response) != 200) {
             return new WP_Error('server_error', wp_remote_retrieve_response_message($raw_response));
@@ -211,11 +241,15 @@ class Dsp_External_Api_Request {
      * @param type $headers
      * @return \WP_Error or  Json Responce 
      */
-    private function api_request_get($path = null, $headers = null) {
+    private function api_request_get($path = null, $query = null, $headers = null) {
 
         // vars
         $url = $this->common_url . $path;
-
+        
+        if($query){
+            $url = add_query_arg($query,  $url );
+        }
+        
         $raw_response = wp_remote_get($url, array(
             'headers' => $headers
         ));
@@ -223,7 +257,7 @@ class Dsp_External_Api_Request {
         // wp error
         if (is_wp_error($raw_response)) {
             return $raw_response;
-}
+        }
         // http error
         elseif (wp_remote_retrieve_response_code($raw_response) != 200) {
             return new WP_Error('server_error', wp_remote_retrieve_response_message($raw_response));

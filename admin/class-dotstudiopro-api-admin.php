@@ -165,7 +165,7 @@ class Dotstudiopro_Api_Admin {
                 'dsp_enable_search_field', __('Enable search for videos and/or channels', 'dotstudiopro-api'), array($this, 'dsp_enable_search_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
         );
         register_setting('dsp-setting-section', 'dsp_enable_search_field');
-        
+
         add_settings_field(
                 'dsp_sync_data_field', __('Sync Data', 'dotstudiopro-api'), array($this, 'dsp_sync_data_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
         );
@@ -227,6 +227,8 @@ class Dotstudiopro_Api_Admin {
         wp_enqueue_script('custom-script-handle', plugin_dir_url(__FILE__) . 'js/custom-script.js', array('wp-color-picker'), false, true);
         wp_enqueue_style($this->name, plugin_dir_url(__FILE__) . 'css/dsp-global.css', array(), $this->version, 'all');
         wp_enqueue_style('fontawesome', 'http:////netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css', '', '4.0.3', 'all');
+        wp_enqueue_style('tasg-inputes-css', plugin_dir_url(__FILE__) . 'css/bootstrap-tagsinput.css', array(), $this->version, 'all');
+        wp_enqueue_script('tags-inpute-js', plugin_dir_url(__FILE__) . 'js/bootstrap-tagsinput.js', array(), false, true);
     }
 
     /**
@@ -241,18 +243,20 @@ class Dotstudiopro_Api_Admin {
             );
             $response = $this->dspExternalApiClass->check_api_key($post);
             if (is_wp_error($response)) {
-                print 'Something Went wrong.';
+                $send_response = array('success' => false, 'message' => 'Could not connect to update server.' . $response->get_error_message());
+                wp_send_json_error($send_response, 403);
             } elseif (isset($response['success']) && $response['success'] == 1) {
                 update_option('dotstudiopro_api_token', $response['token']);
                 update_option('dotstudiopro_api_token_time', time());
-                print 'Token has been updated.';
+                $send_response = array('success' => false, 'message' => 'Token has been updated.');
+                wp_send_json_success($send_response, 200);
             } else {
-                print 'Something Went wrong.';
+                $send_response = array('success' => false, 'message' => 'Internal Server Error');
+                wp_send_json_error($send_response, 500);
             }
-            exit;
         } else {
-            print 'Something Went wrong.';
-            exit;
+            $send_response = array('success' => false, 'message' => 'Internal Server Error');
+            wp_send_json_error($send_response, 500);
         }
     }
 
@@ -262,11 +266,18 @@ class Dotstudiopro_Api_Admin {
      * @since    1.0.0
      */
     public function validate_dotstudiopro_api() {
-
         if (dsp_verify_nonce('activate_dotstudiopro_api_key')) {
             $this->activate_key();
         } elseif (dsp_verify_nonce('deactivate_dotstudiopro_api_key')) {
-            isset($_POST['submit-api-data']) ? $this->activate_key() : $this->deactivate_key();
+
+            if ($_POST['btn_value'] == 'submit-api-data')
+                $this->activate_key();
+            else
+                $this->deactivate_key();
+        }
+        else {
+            $send_response = array('success' => false, 'message' => 'Internal Server Error.');
+            wp_send_json_error($send_response, 500);
         }
     }
 
@@ -285,12 +296,13 @@ class Dotstudiopro_Api_Admin {
 
         // ensure response is expected JSON array (not string)
         if (is_string($response)) {
-            $response = new WP_Error('server_error', esc_html($response));
+            $send_response = array('success' => false, 'message' => 'server_error' . $response);
+            wp_send_json_error($send_response, 400);
         }
         // error
         if (is_wp_error($response)) {
-            $this->show_error($response);
-            wp_safe_redirect(wp_get_referer());
+            $send_response = array('success' => false, 'message' => 'Could not connect to update server.' . $response->get_error_message());
+            wp_send_json_error($send_response, 403);
         }
         // success
         if ($response['success'] == 1) {
@@ -299,12 +311,11 @@ class Dotstudiopro_Api_Admin {
             update_option('dotstudiopro_api_key', $_POST['dotstudiopro_api_key']);
             update_option('dotstudiopro_api_token', $response['token']);
             update_option('dotstudiopro_api_token_time', time());
-            $response = $this->dspExternalApiClass->check_api_key($post);
-            wp_safe_redirect(wp_get_referer());
+            $send_response = array('success' => true, 'message' => 'Api Key Activated Sucessfully.');
+            wp_send_json_success($send_response, 200);
         } else {
-            $response['message'] = 'Something Went wrong.';
-            $this->show_error($response['message']);
-            wp_safe_redirect(wp_get_referer());
+            $send_response = array('success' => false, 'message' => 'Internal Server Error.');
+            wp_send_json_error($send_response, 500);
         }
     }
 
@@ -316,29 +327,12 @@ class Dotstudiopro_Api_Admin {
     public function deactivate_key() {
         $dotstudiopro_api_key = get_option('dotstudiopro_api_key');
         if (!$dotstudiopro_api_key)
-            return false;
+            wp_send_json_error(array('success' => false, 'message' => 'Api Key Not Found..'), 404);
         delete_option('dotstudiopro_api_key');
         delete_option('dotstudiopro_api_token');
-        $message = 'The API key Deactivate successfully.';
-        $this->add_admin_notice($message);
-        wp_safe_redirect(wp_get_referer());
-    }
-
-    /**
-     *  show_error
-     *
-     *  This function will show an error notice (only once)
-     *  
-     *  @since    1.0.0
-     */
-    function show_error($error = '') {
-
-        // error object
-        if (is_wp_error($error)) {
-            $error = __('<b>Error</b>. Could not connect to update server', 'dotstudiopro-api') . ' <span class="description">(' . esc_html($error->get_error_message()) . ')</span>';
-        }
-
-        $this->add_admin_notice($error, 'error');
+        delete_option('dotstudiopro_api_token_time');
+        $send_response = array('success' => true, 'message' => 'The API key Deactivate successfully.');
+        wp_send_json_success($send_response, 200);
     }
 
 }

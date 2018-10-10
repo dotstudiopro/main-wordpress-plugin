@@ -163,13 +163,18 @@ class Dotstudiopro_Api {
         $this->loader->add_action('admin_post_validate_dotstudiopro_api', $plugin_admin, 'validate_dotstudiopro_api');
         $this->loader->add_action('admin_post_nopriv_validate_dotstudiopro_api', $plugin_admin, 'validate_dotstudiopro_api');
         $this->loader->add_action('wp_ajax_reset_token', $plugin_admin, 'reset_token');
+        $this->loader->add_action('wp_ajax_validate_dotstudiopro_api', $plugin_admin, 'validate_dotstudiopro_api');
         $this->loader->add_action('init', $posttype, 'create_dotstudiopro_post_types');
-        $this->loader->add_action( 'add_meta_boxes',$posttype, 'create_category_metabox' );
-        $this->loader->add_action( 'save_post', $posttype, 'category_metabox_save' );
+        $this->loader->add_action('add_meta_boxes', $posttype, 'create_custom_metabox');
+        //$this->loader->add_action('save_post', $posttype, 'category_metabox_save'); // Right now this action is not in use. 
         $this->loader->add_action('admin_head-edit.php', $posttype, 'add_button_to_custom_posttypes');
         $this->loader->add_filter('manage_category_posts_columns', $posttype, 'dsp_category_table_head');
-        $this->loader->add_action('manage_category_posts_custom_column', $posttype, 'dsp_category_table_content', 10, 2 );
+        $this->loader->add_action('manage_category_posts_custom_column', $posttype, 'dsp_category_table_content', 10, 2);
         $this->loader->add_action('wp_ajax_import_category_post_data', $posttype, 'import_category_post_data');
+        $this->loader->add_action('wp_ajax_import_channel_post_data', $posttype, 'import_channel_post_data');
+        $this->loader->add_action('admin_menu', $posttype, 'remove_submenus');
+        $this->loader->add_filter('manage_channel_posts_columns', $posttype, 'dsp_channel_table_head');
+        $this->loader->add_action('manage_channel_posts_custom_column', $posttype, 'dsp_channel_table_content', 10, 2);
     }
 
     /**

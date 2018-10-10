@@ -156,3 +156,12 @@ input:checked + .switch-slider:before {
 .column-category_id{
     width:20%;
 }
+.column-type{
+    width: 10%;
+}
+.ajax-resp div img{
+    float: left;
+    display: inline-block;
+    margin-right: 9px;
+    margin-top: 2px;
+}
