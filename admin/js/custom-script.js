@@ -6,12 +6,9 @@
 
 vex.defaultOptions.className = 'vex-theme-plain';
 
-var comman_path = 'http://192.168.0.20/ds-pro';
-
-var success_img = comman_path + '/wp-content/plugins/dotstudiopro-api-v3/admin/images/true.png';
-var loader_gif = comman_path + '/wp-content/plugins/dotstudiopro-api-v3/admin/images/Rolling.gif';
-var error_img = comman_path + '/wp-content/plugins/dotstudiopro-api-v3/admin/images/false.png';
-
+var success_img = customVars.basedir + '/admin/images/true.png';
+var loader_gif = customVars.basedir + '/admin/images/Rolling.gif';
+var error_img = customVars.basedir + '/admin/images/false.png';
 (function ($) {
 
     /**
@@ -63,13 +60,13 @@ var error_img = comman_path + '/wp-content/plugins/dotstudiopro-api-v3/admin/ima
         var nonce = dataObj['_dsp_nonce'];
 
         if (btn_value != 'deactivate-api-data') {
-            loading.show('Step 1: Activate API key in-progress ...');
+            loading.show('Step 1: Activate API key in-progress.');
             $('.dsp-box-hidden').show();
-            $('.ajax-resp').append('<div><img class="activation-img" src="http://192.168.0.20/ds-pro/wp-content/plugins/dotstudiopro-api-v3/admin/images/Rolling.gif"><p> Activate API key in-progress ...</p></div>');
+            $('.ajax-resp').append('<div><img class="activation-img" src="'+loader_gif+'"><p> Activate API key in-progress.</p></div>');
         } else {
             $('.dsp-box-hidden').show();
-            $('.ajax-resp').append('<div><img class="activation-img" src="http://192.168.0.20/ds-pro/wp-content/plugins/dotstudiopro-api-v3/admin/images/Rolling.gif"><p> Deactivating API key ...</p></div>');
-            loading.show('Deactivating API key ...');
+            $('.ajax-resp').append('<div><img class="activation-img" src="'+loader_gif+'"><p> Deactivating API key.</p></div>');
+            loading.show('Deactivating API key.');
         }
         
         var step1 = $.post(
@@ -86,16 +83,16 @@ var error_img = comman_path + '/wp-content/plugins/dotstudiopro-api-v3/admin/ima
             if (response.success) {
                 if (btn_value == 'submit-api-data') {
                     $('.activation-img').attr('src', success_img);
-                    $('.ajax-resp').append('<div><img class="import-cat-img" src=' + loader_gif + '><p> Import categories in-progress ...</p></div>');
+                    $('.ajax-resp').append('<div><img class="import-cat-img" src=' + loader_gif + '><p> Import categories in-progress.</p></div>');
                     vex.closeTop();
-                    loading.show('Step 2: Import categories in-progress ...');
+                    loading.show('Step 2: Import categories in-progress.');
                     var step2 = importData(url, 'import_category_post_data', dataObj['_category_nonce'])
                     step2.done(function (response) {
                         if (response.success) {
                             $('.import-cat-img').attr('src', success_img);
-                            $('.ajax-resp').append('<div><img class="import-chnl-img" src=' + loader_gif + '><p> Import channels in-progress ...</p></div>');
+                            $('.ajax-resp').append('<div><img class="import-chnl-img" src=' + loader_gif + '><p> Import channels in-progress.</p></div>');
                             vex.closeTop();
-                            loading.show('Step 3: Import channels in-progress ...');
+                            loading.show('Step 3: Import channels in-progress.');
                             var step3 = importData(url, 'import_channel_post_data', dataObj['_channel_nonce'])
                             step3.done(function (response) {
                                 if (response.success)
@@ -218,7 +215,7 @@ var error_img = comman_path + '/wp-content/plugins/dotstudiopro-api-v3/admin/ima
             var msg = (message != null) ? message : 'Loading';
             $dialog = vex.dialog.open({
                 unsafeMessage: [
-                    '<div style="margin: 0 auto; background:url(' + comman_path + '/wp-content/plugins/dotstudiopro-api-v3/admin/images/hourglass.gif) no-repeat center center;width:150px;height:150px;"></div>',
+                    '<div style="margin: 0 auto; background:url(' + customVars.basedir +'/admin/images/hourglass.gif) no-repeat center center;width:150px;height:150px;"></div>',
                     '<h4 style="text-align:center;">',
                     msg,
                     '</h4>'

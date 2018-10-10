@@ -224,11 +224,13 @@ class Dotstudiopro_Api_Admin {
         wp_enqueue_style('vex-theme-plain', plugin_dir_url(__FILE__) . 'css/vex-theme-plain.css', array(), $this->version, 'all');
         wp_enqueue_style('wp-color-picker');
         wp_enqueue_script('vex-combined', plugin_dir_url(__FILE__) . 'js/vex.combined.min.js', array('wp-color-picker'), false, true);
-        wp_enqueue_script('custom-script-handle', plugin_dir_url(__FILE__) . 'js/custom-script.js', array('wp-color-picker'), false, true);
+        wp_enqueue_script('custom-script-handle', plugin_dir_url(__FILE__) . 'js/custom-script.js', array(), false, true);
+        wp_localize_script('custom-script-handle', 'customVars', array('basedir' => plugin_dir_url(__DIR__)));
         wp_enqueue_style($this->name, plugin_dir_url(__FILE__) . 'css/dsp-global.css', array(), $this->version, 'all');
         wp_enqueue_style('fontawesome', 'http:////netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css', '', '4.0.3', 'all');
         wp_enqueue_style('tasg-inputes-css', plugin_dir_url(__FILE__) . 'css/bootstrap-tagsinput.css', array(), $this->version, 'all');
         wp_enqueue_script('tags-inpute-js', plugin_dir_url(__FILE__) . 'js/bootstrap-tagsinput.js', array(), false, true);
+        
     }
 
     /**
