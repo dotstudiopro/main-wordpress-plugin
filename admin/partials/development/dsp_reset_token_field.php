@@ -11,4 +11,4 @@
  */
 ?>
 
-<button class="button button-primary reset-dsp-token" data-target="<?php echo admin_url('admin-ajax.php'); ?>" data-nonce="<?php echo wp_create_nonce('dsp_reset_token'); ?>" data-action="reset_token">Reset Token</button>
+<button class="button button-primary reset-dsp-token" data-nonce="<?php echo wp_create_nonce('dsp_reset_token'); ?>" data-action="reset_token">Reset Token</button>

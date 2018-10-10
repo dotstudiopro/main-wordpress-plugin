@@ -178,7 +178,7 @@ class Dsp_Custom_Posttypes {
             <script type="text/javascript">
                 jQuery(document).ready(function ($)
                 {
-                    jQuery(jQuery(".wrap .wp-heading-inline")).after("<button id='import_categories' class='add-new-h2 import_categories' data-target='<?php echo admin_url('admin-ajax.php'); ?>' data-nonce='<?php echo wp_create_nonce('import_catagory'); ?>' data-action='import_category_post_data'><i class='fa fa-cloud-download' aria-hidden='true'></i> Import Categories</button>");
+                    jQuery(jQuery(".wrap .wp-heading-inline")).after("<button id='import_categories' class='add-new-h2 import_categories' data-nonce='<?php echo wp_create_nonce('import_catagory'); ?>' data-action='import_category_post_data'><i class='fa fa-cloud-download' aria-hidden='true'></i> Import Categories</button>");
                 });
             </script>
             <?php
@@ -187,7 +187,7 @@ class Dsp_Custom_Posttypes {
             <script type="text/javascript">
                 jQuery(document).ready(function ($)
                 {
-                    jQuery(jQuery(".wrap .wp-heading-inline")).after("<button id='import_channels' class='add-new-h2 import_channels' data-target='<?php echo admin_url('admin-ajax.php'); ?>' data-nonce='<?php echo wp_create_nonce('import_channel'); ?>' data-action='import_channel_post_data'><i class='fa fa-cloud-download' aria-hidden='true'></i> Import Channels</button>");
+                    jQuery(jQuery(".wrap .wp-heading-inline")).after("<button id='import_channels' class='add-new-h2 import_channels' data-nonce='<?php echo wp_create_nonce('import_channel'); ?>' data-action='import_channel_post_data'><i class='fa fa-cloud-download' aria-hidden='true'></i> Import Channels</button>");
                 });
             </script>
             <?php

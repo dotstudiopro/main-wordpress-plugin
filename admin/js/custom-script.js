@@ -9,6 +9,7 @@ vex.defaultOptions.className = 'vex-theme-plain';
 var success_img = customVars.basedir + '/admin/images/true.png';
 var loader_gif = customVars.basedir + '/admin/images/Rolling.gif';
 var error_img = customVars.basedir + '/admin/images/false.png';
+var url = customVars.ajaxurl;
 (function ($) {
 
     /**
@@ -20,21 +21,28 @@ var error_img = customVars.basedir + '/admin/images/false.png';
     $('.reset-dsp-token').on('click', function (e) {
         e.preventDefault();
         loading.show('Please wait...');
-        var url = $(this).data('target');
         var action = $(this).data('action');
         var nonce = $(this).data('nonce');
-        $.post(
+        var reset_token = $.post(
                 url,
                 {
                     'action': action,
                     'api_secret': $('#dotstudiopro_api_key').val(),
                     'nonce': nonce
-                },
-                function (response) {
-                    dialogresponse('Regenerate Token', response.message)
                 }
         );
+
+        reset_token.done(function (response) {
+            dialogresponse('Regenerate Token', response.data.message)
+        });
+
+        reset_token.fail(function (response) {
+            dialogresponse('Regenerate Token', response.responseJSON.data.message)
+        })
+
     });
+
+
 
     /**
      * Ajax event to validate DotstudioPro Api key 
@@ -55,20 +63,19 @@ var error_img = customVars.basedir + '/admin/images/false.png';
             dataObj[field.name] = field.value;
         });
 
-        var url = dataObj['ajax-url'];
         var action = dataObj['action'];
         var nonce = dataObj['_dsp_nonce'];
 
         if (btn_value != 'deactivate-api-data') {
             loading.show('Step 1: Activate API key in-progress.');
             $('.dsp-box-hidden').show();
-            $('.ajax-resp').append('<div><img class="activation-img" src="'+loader_gif+'"><p> Activate API key in-progress.</p></div>');
+            $('.ajax-resp').append('<div><img class="activation-img" src="' + loader_gif + '"><p> Activate API key in-progress.</p></div>');
         } else {
             $('.dsp-box-hidden').show();
-            $('.ajax-resp').append('<div><img class="activation-img" src="'+loader_gif+'"><p> Deactivating API key.</p></div>');
+            $('.ajax-resp').append('<div><img class="activation-img" src="' + loader_gif + '"><p> Deactivating API key.</p></div>');
             loading.show('Deactivating API key.');
         }
-        
+
         var step1 = $.post(
                 url,
                 {
@@ -113,7 +120,7 @@ var error_img = customVars.basedir + '/admin/images/false.png';
             dialogresponse('Api key activation', response.responseJSON.data.message)
             console.log("error in step 1");
         });
-        
+
     });
 
     /**
@@ -133,7 +140,6 @@ var error_img = customVars.basedir + '/admin/images/false.png';
     $(document).on('click', '.import_categories,.import_channels', function (e) {
         e.preventDefault();
         loading.show('Import process in-progress... Please wait...');
-        var url = $(this).data('target');
         var action = $(this).data('action');
         var nonce = $(this).data('nonce');
         var data = importData(url, action, nonce)
@@ -215,7 +221,7 @@ var error_img = customVars.basedir + '/admin/images/false.png';
             var msg = (message != null) ? message : 'Loading';
             $dialog = vex.dialog.open({
                 unsafeMessage: [
-                    '<div style="margin: 0 auto; background:url(' + customVars.basedir +'/admin/images/hourglass.gif) no-repeat center center;width:150px;height:150px;"></div>',
+                    '<div style="margin: 0 auto; background:url(' + customVars.basedir + '/admin/images/hourglass.gif) no-repeat center center;width:150px;height:150px;"></div>',
                     '<h4 style="text-align:center;">',
                     msg,
                     '</h4>'

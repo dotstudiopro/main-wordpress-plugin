@@ -34,7 +34,6 @@ $button = $active ? __('Update Api Key', 'dotstudiopro-api') : __('Activate Api 
             <p><?php printf(__('Please add you Dotstudio Pro API key here. If you don\'t have API key <a href="%s" target="_blank">click here</a>.', 'dotstudiopro-api'), esc_url('https://www.dotstudiopro.com/user/register')); ?></p>
             <form action="#" class="dsp_api" id="dsp_api_form">
                 <div class="dsp-hidden">
-                    <input type="hidden" name="ajax-url" value="<?php echo admin_url('admin-ajax.php'); ?>">
                     <input type='hidden' name='action' value='validate_dotstudiopro_api' />
                     <input type="hidden" name="_category_nonce" value="<?php echo wp_create_nonce('import_catagory'); ?>">
                     <input type="hidden" name="_channel_nonce" value="<?php echo wp_create_nonce('import_channel'); ?>">

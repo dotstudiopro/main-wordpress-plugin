@@ -225,7 +225,7 @@ class Dotstudiopro_Api_Admin {
         wp_enqueue_style('wp-color-picker');
         wp_enqueue_script('vex-combined', plugin_dir_url(__FILE__) . 'js/vex.combined.min.js', array('wp-color-picker'), false, true);
         wp_enqueue_script('custom-script-handle', plugin_dir_url(__FILE__) . 'js/custom-script.js', array(), false, true);
-        wp_localize_script('custom-script-handle', 'customVars', array('basedir' => plugin_dir_url(__DIR__)));
+        wp_localize_script('custom-script-handle', 'customVars', array('basedir' => plugin_dir_url(__DIR__), 'ajaxurl' => admin_url('admin-ajax.php')));
         wp_enqueue_style($this->name, plugin_dir_url(__FILE__) . 'css/dsp-global.css', array(), $this->version, 'all');
         wp_enqueue_style('fontawesome', 'http:////netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css', '', '4.0.3', 'all');
         wp_enqueue_style('tasg-inputes-css', plugin_dir_url(__FILE__) . 'css/bootstrap-tagsinput.css', array(), $this->version, 'all');
@@ -250,7 +250,7 @@ class Dotstudiopro_Api_Admin {
             } elseif (isset($response['success']) && $response['success'] == 1) {
                 update_option('dotstudiopro_api_token', $response['token']);
                 update_option('dotstudiopro_api_token_time', time());
-                $send_response = array('success' => false, 'message' => 'Token has been updated.');
+                $send_response = array('success' => true, 'message' => 'Token has been updated.');
                 wp_send_json_success($send_response, 200);
             } else {
                 $send_response = array('success' => false, 'message' => 'Internal Server Error');
