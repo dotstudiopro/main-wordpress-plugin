@@ -7,7 +7,7 @@
  * @since             1.0.0
  * 
  * @package           Dotstudiopro_Api
- * @subpackage        Dotstudiopro_Api/includes
+ * @subpackage        Dotstudiopro_Api/admin
  */
 class Dotstudiopro_Api_Admin {
 
@@ -165,11 +165,13 @@ class Dotstudiopro_Api_Admin {
                 'dsp_enable_search_field', __('Enable search for videos and/or channels', 'dotstudiopro-api'), array($this, 'dsp_enable_search_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
         );
         register_setting('dsp-setting-section', 'dsp_enable_search_field');
-
-        add_settings_field(
+        
+        /* Right now this field not in use */
+        
+        /*add_settings_field(
                 'dsp_sync_data_field', __('Sync Data', 'dotstudiopro-api'), array($this, 'dsp_sync_data_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
         );
-        register_setting('dsp-setting-section', 'dsp_sync_data_field');
+        register_setting('dsp-setting-section', 'dsp_sync_data_field');*/
     }
 
     /**
@@ -245,19 +247,19 @@ class Dotstudiopro_Api_Admin {
             );
             $response = $this->dspExternalApiClass->check_api_key($post);
             if (is_wp_error($response)) {
-                $send_response = array('success' => false, 'message' => 'Could not connect to update server.' . $response->get_error_message());
+                $send_response = array('message' => 'Could not connect to update server.' . $response->get_error_message());
                 wp_send_json_error($send_response, 403);
             } elseif (isset($response['success']) && $response['success'] == 1) {
                 update_option('dotstudiopro_api_token', $response['token']);
                 update_option('dotstudiopro_api_token_time', time());
-                $send_response = array('success' => true, 'message' => 'Token has been updated.');
+                $send_response = array('message' => 'Token has been updated.');
                 wp_send_json_success($send_response, 200);
             } else {
-                $send_response = array('success' => false, 'message' => 'Internal Server Error');
+                $send_response = array('message' => 'Internal Server Error');
                 wp_send_json_error($send_response, 500);
             }
         } else {
-            $send_response = array('success' => false, 'message' => 'Internal Server Error');
+            $send_response = array('message' => 'Internal Server Error');
             wp_send_json_error($send_response, 500);
         }
     }
@@ -278,7 +280,7 @@ class Dotstudiopro_Api_Admin {
                 $this->deactivate_key();
         }
         else {
-            $send_response = array('success' => false, 'message' => 'Internal Server Error.');
+            $send_response = array('message' => 'Internal Server Error.');
             wp_send_json_error($send_response, 500);
         }
     }
@@ -298,25 +300,25 @@ class Dotstudiopro_Api_Admin {
 
         // ensure response is expected JSON array (not string)
         if (is_string($response)) {
-            $send_response = array('success' => false, 'message' => 'server_error' . $response);
+            $send_response = array('message' => 'server_error' . $response);
             wp_send_json_error($send_response, 400);
         }
         // error
         if (is_wp_error($response)) {
-            $send_response = array('success' => false, 'message' => 'Could not connect to update server.' . $response->get_error_message());
+            $send_response = array('message' => 'Could not connect to update server.' . $response->get_error_message());
             wp_send_json_error($send_response, 403);
         }
         // success
-        if ($response['success'] == 1) {
+        if (isset($response['success']) && $response['success'] == 1) {
             $response['message'] = 'The API key Activate successfully.';
             $this->add_admin_notice($response['message']);
             update_option('dotstudiopro_api_key', $_POST['dotstudiopro_api_key']);
             update_option('dotstudiopro_api_token', $response['token']);
             update_option('dotstudiopro_api_token_time', time());
-            $send_response = array('success' => true, 'message' => 'Api Key Activated Sucessfully.');
+            $send_response = array('message' => 'Api Key Activated Sucessfully.');
             wp_send_json_success($send_response, 200);
         } else {
-            $send_response = array('success' => false, 'message' => 'Internal Server Error.');
+            $send_response = array('message' => 'Internal Server Error.');
             wp_send_json_error($send_response, 500);
         }
     }
@@ -329,11 +331,11 @@ class Dotstudiopro_Api_Admin {
     public function deactivate_key() {
         $dotstudiopro_api_key = get_option('dotstudiopro_api_key');
         if (!$dotstudiopro_api_key)
-            wp_send_json_error(array('success' => false, 'message' => 'Api Key Not Found..'), 404);
+            wp_send_json_error(array('message' => 'Api Key Not Found..'), 404);
         delete_option('dotstudiopro_api_key');
         delete_option('dotstudiopro_api_token');
         delete_option('dotstudiopro_api_token_time');
-        $send_response = array('success' => true, 'message' => 'The API key Deactivate successfully.');
+        $send_response = array('message' => 'The API key Deactivate successfully.');
         wp_send_json_success($send_response, 200);
     }
 

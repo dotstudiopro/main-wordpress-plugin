@@ -9,6 +9,7 @@
  * @package           Dotstudiopro_Api
  * @subpackage        Dotstudiopro_Api/admin/partials
  */
+
 $dotstudiopro_api_key = get_option('dotstudiopro_api_key');
 $active = $dotstudiopro_api_key ? true : false;
 $nonce = $active ? 'deactivate_dotstudiopro_api_key' : 'activate_dotstudiopro_api_key';

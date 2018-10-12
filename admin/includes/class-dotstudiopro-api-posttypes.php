@@ -329,18 +329,18 @@ class Dsp_Custom_Posttypes {
                             update_post_meta($post_id, 'is_on_cat_homepage', $category['homepage']);
                         }
                     }
-                    $send_response = array('success' => true, 'message' => $add_count . ' Categories added.<br/>' . $update_count . ' Categories Updated');
+                    $send_response = array('message' => $add_count . ' Categories added.<br/>' . $update_count . ' Categories Updated');
                     wp_send_json_success($send_response, 200);
                 } else {
-                    $send_response = array('success' => false, 'message' => 'Could not connect to update server.' . $categories->get_error_message());
+                    $send_response = array('message' => 'Could not connect to update server.' . $categories->get_error_message());
                     wp_send_json_error($send_response, 403);
                 }
             } else {
-                $send_response = array('success' => false, 'message' => 'Could not connect to update server.' . $country->get_error_message());
+                $send_response = array('message' => 'Could not connect to update server.' . $country->get_error_message());
                 wp_send_json_error($send_response, 403);
             }
         } else {
-            $send_response = array('success' => false, 'message' => 'Internal Server Error.');
+            $send_response = array('message' => 'Internal Server Error.');
             wp_send_json_error($send_response, 500);
         }
     }
@@ -403,6 +403,8 @@ class Dsp_Custom_Posttypes {
                         $directors = implode(',', $channel['directors']);
                         $actors = implode(',', $channel['actors']);
                         $poster = $channel['poster'];
+                        $spotlight_poster = $channel['spotlight_poster'];
+                        $channel_logo = $channel['channel_logo'];
                         $childchannels = $channel['childchannels'];
                         $categories = $channel['categories'];
 
@@ -412,6 +414,8 @@ class Dsp_Custom_Posttypes {
                         update_post_meta($post_id, 'chnl_directors', $directors);
                         update_post_meta($post_id, 'chnl_actors', $actors);
                         update_post_meta($post_id, 'chnl_poster', $poster);
+                        update_post_meta($post_id, 'chnl_logo', $channel_logo);
+                        update_post_meta($post_id, 'chnl_spotlisgt_poster', $spotlight_poster);
                         update_post_meta($post_id, 'chnl_comp_id', $company_id);
 
                         if (isset($categories)) {
@@ -429,18 +433,18 @@ class Dsp_Custom_Posttypes {
                             update_post_meta($post_id, 'chnl_child_channels', implode(',', $childchannel));
                         }
                     }
-                    $send_response = array('success' => true, 'message' => $add_count . ' Channels added.<br/>' . $update_count . ' Channels Updated.');
+                    $send_response = array('message' => $add_count . ' Channels added.<br/>' . $update_count . ' Channels Updated.');
                     wp_send_json_success($send_response, 200);
                 } else {
-                    $send_response = array('success' => false, 'message' => 'Could not connect to update server.' . $channels->get_error_message());
+                    $send_response = array('message' => 'Could not connect to update server.' . $channels->get_error_message());
                     wp_send_json_error($send_response, 403);
                 }
             } else {
-                $send_response = array('success' => false, 'message' => 'Could not connect to update server.' . $country->get_error_message());
+                $send_response = array('message' => 'Could not connect to update server.' . $country->get_error_message());
                 wp_send_json_error($send_response, 403);
             }
         } else {
-            $send_response = array('success' => false, 'message' => 'Internal Server Error.');
+            $send_response = array('message' => 'Internal Server Error.');
             wp_send_json_error($send_response, 500);
         }
     }
@@ -458,8 +462,10 @@ class Dsp_Custom_Posttypes {
 
         $values = get_post_custom($post->ID);
         $chnl_id = isset($values['chnl_id'][0]) ? esc_attr($values['chnl_id'][0]) : '';
+        $chnl_logo = isset($values['chnl_logo'][0]) ? esc_attr($values['chnl_logo'][0]) : '';
         $chnl_comp_id = isset($values['chnl_comp_id'][0]) ? esc_attr($values['chnl_comp_id'][0]) : '';
         $chnl_poster = isset($values['chnl_poster'][0]) ? $values['chnl_poster'][0] : '';
+        $chnl_spotlisgt_poster = isset($values['chnl_spotlisgt_poster'][0]) ? $values['chnl_spotlisgt_poster'][0] : '';
         $chnl_writers = isset($values['chnl_writers'][0]) ? $values['chnl_writers'][0] : '';
         $chnl_geners = isset($values['chnl_geners'][0]) ? $values['chnl_geners'][0] : '';
         $chnl_directors = isset($values['chnl_directors'][0]) ? $values['chnl_directors'][0] : '';
@@ -475,6 +481,10 @@ class Dsp_Custom_Posttypes {
                 <tr>
                     <th scope="row">Channel ID</th>
                     <td><input type="text" class="dsp-field"  name="chnl_id" id="chnl_id" value="<?php echo $chnl_id; ?>" readonly/></td>
+                </tr>
+                <tr>
+                    <th scope="row">Channel Logo</th>
+                    <td><input type="text" name="chnl_logo" class="dsp-field" id="chnl_logo" value="<?php echo $chnl_logo; ?>" readonly/></td>
                 </tr>
                 <tr>
                     <th scope="row">Company ID</th>
@@ -503,6 +513,10 @@ class Dsp_Custom_Posttypes {
                 <tr>
                     <th scope="row">Poster</th>
                     <td><input type="text" name="chnl_poster" class="dsp-field" id="chnl_poster" value="<?php echo $chnl_poster; ?>" readonly/></td>
+                </tr>
+                <tr>
+                    <th scope="row">Spotlight Poster</th>
+                    <td><input type="text" name="chnl_spotlisgt_poster" class="dsp-field" id="chnl_spotlisgt_poster" value="<?php echo $chnl_spotlisgt_poster; ?>" readonly/></td>
                 </tr>
                 <tr>
                     <th scope="row">Child Chanels</th>

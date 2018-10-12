@@ -33,6 +33,7 @@ class Dotstudiopro_Api_Activator {
 
         $dsp = new Dotstudiopro_Api();
         $dsp_admin = new Dotstudiopro_Api_Admin($dsp->get_Dotstudiopro_Api(), $dsp->get_version());
+        //$dsp_rest = new Dsp_REST_Api_Handler($dsp->get_Dotstudiopro_Api(), $dsp->get_version());
 
         $message = sprintf(wp_kses(__('You need to enter your API Key in order to use its features <a href="%s">Do so here.</a>', 'dotstudiopro-api'), array('a' => array('href' => array()))), esc_url(admin_url() . 'admin.php?page=dsp-api-settings'));
 

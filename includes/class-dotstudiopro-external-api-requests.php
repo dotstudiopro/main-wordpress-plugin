@@ -110,10 +110,8 @@ class Dsp_External_Api_Request {
             return false;
 
         $body = array(
-            //'ip' => $this->get_ip(),
-            'ip' => '43.243.38.117',
+            'ip' => $this->get_ip(),
         );
-
 
         $headers = array(
             'x-access-token' => $token

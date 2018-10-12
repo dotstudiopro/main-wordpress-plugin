@@ -1,7 +1,11 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * The file that defines the global Javscript for the plugin 
+ *
+ * @link              https://www.dotstudiopro.com
+ * @since             1.0.0
+ * 
+ * @package           Dotstudiopro_Api
+ * @subpackage        Dotstudiopro_Api/admin
  */
 
 vex.defaultOptions.className = 'vex-theme-plain';
@@ -125,6 +129,8 @@ var url = customVars.ajaxurl;
 
     /**
      * Function to check which button is clicked
+     * 
+     * @since 1.0.0
      */
     $("form input[type=submit]").click(function () {
         $("input[type=submit]", $(this).parents("form")).removeAttr("clicked");

@@ -106,12 +106,12 @@ class Dotstudiopro_Api {
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-dotstudiopro-api-i18n.php';
 
         /**
-         * DSP API Helper functions
+         * The class responsible for DSP API Helper functions
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/api-helper.php';
 
         /**
-         *  External API Request
+         * The class responsible for external API Request
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-dotstudiopro-external-api-requests.php';
 
@@ -121,9 +121,16 @@ class Dotstudiopro_Api {
         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-dotstudiopro-api-admin.php';
 
         /**
-         * The class responsible for defining all actions that occur in the Dashboard.
+         * The class responsible for custom post type category and channel in the Dashboard.
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/includes/class-dotstudiopro-api-posttypes.php';
+        
+        /**
+         * The class responsible for REST API
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'REST/class-rest-api-handler.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'REST/class-manage-categories.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'REST/class-manage-channels.php';
 
         $this->loader = new Dotstudiopro_Api_Loader();
     }
@@ -155,7 +162,9 @@ class Dotstudiopro_Api {
     private function define_admin_hooks() {
 
         $plugin_admin = new Dotstudiopro_Api_Admin($this->get_Dotstudiopro_Api(), $this->get_version());
+        $rest_api = new Dsp_REST_Api_Handler($this->get_Dotstudiopro_Api(), $this->get_version());
         $posttype = new Dsp_Custom_Posttypes();
+        
         $this->loader->add_action('admin_menu', $plugin_admin, 'add_admin_menu');
         $this->loader->add_action('admin_notices', $plugin_admin, 'show_admin_notice');
         $this->loader->add_action('admin_init', $plugin_admin, 'settings_api_init');
@@ -175,6 +184,7 @@ class Dotstudiopro_Api {
         $this->loader->add_action('admin_menu', $posttype, 'remove_submenus');
         $this->loader->add_filter('manage_channel_posts_columns', $posttype, 'dsp_channel_table_head');
         $this->loader->add_action('manage_channel_posts_custom_column', $posttype, 'dsp_channel_table_content', 10, 2);
+        $this->loader->add_action( 'rest_api_init', $rest_api, 'dsp_webhook_routes');
     }
 
     /**
