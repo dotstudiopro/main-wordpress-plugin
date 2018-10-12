@@ -118,6 +118,8 @@ class Dsp_External_Api_Request {
         );
 
         $country = $this->api_request_post('country', null, $headers, $body);
+        
+        echo '<pre>'; print_r($country); exit;
         if (!is_wp_error($country))
             $this->country = $country['data']['countryCode'];
 
@@ -187,7 +189,6 @@ class Dsp_External_Api_Request {
         } else {
             $ip = $_SERVER['REMOTE_ADDR'];
         }
-        echo '<pre>'; print_r($ip); exit;
         return $ip;
     }
 
