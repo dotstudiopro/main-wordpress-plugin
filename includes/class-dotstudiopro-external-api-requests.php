@@ -178,6 +178,7 @@ class Dsp_External_Api_Request {
      * @return String The IP address of the user
      */
     private function get_ip() {
+        echo '<pre>'; print_r($_SERVER); exit;
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
             //check ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];
