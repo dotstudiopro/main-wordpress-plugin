@@ -121,7 +121,7 @@ var url = customVars.ajaxurl;
 
         step1.fail(function (response) {
             $('.ajax-resp').html('<div><img class="import-cat-img" src="' + error_img + '"><p> Error: API key is not activated.</p></div>');
-            dialogresponse('Api key activation', response.responseJSON.data.message)
+            dialogresponse('Api key activation', (response.responseJSON) ? response.responseJSON.data.message : response.statusText)
             console.log("error in step 1");
         });
 
@@ -177,7 +177,7 @@ var url = customVars.ajaxurl;
                 });
         step2.fail(function (response) {
             $('.ajax-resp').append('<div><img class="import-cat-img" src="' + error_img + '"><p> Error in Import process.</p></div>');
-            dialogresponse('Error in Import process', response.responseJSON.data.message)
+            dialogresponse('Error in Import process', (response.responseJSON) ? response.responseJSON.data.message : response.statusText)
         })
         return step2;
     }
