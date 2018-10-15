@@ -209,7 +209,8 @@ class Dsp_External_Api_Request {
 
         $raw_response = wp_remote_post($url, array(
             'body' => $body,
-            'headers' => $headers
+            'headers' => $headers,
+            'timeout' => 50
         ));
 
         // wp error
@@ -218,6 +219,10 @@ class Dsp_External_Api_Request {
         }
         // http error
         elseif (wp_remote_retrieve_response_code($raw_response) != 200) {
+            $this->write_log('URL', $url);
+            $this->write_log('Header Parameters', $headers);
+            $this->write_log('Body Parameters', $body);
+            $this->write_log('API Responce', wp_remote_retrieve_body($raw_response));
             return new WP_Error('server_error', wp_remote_retrieve_response_message($raw_response));
         }
 
@@ -249,7 +254,8 @@ class Dsp_External_Api_Request {
         }
         
         $raw_response = wp_remote_get($url, array(
-            'headers' => $headers
+            'headers' => $headers,
+            'timeout' => 50,
         ));
 
         // wp error
@@ -258,6 +264,9 @@ class Dsp_External_Api_Request {
         }
         // http error
         elseif (wp_remote_retrieve_response_code($raw_response) != 200) {
+            $this->write_log('URL', $url);
+            $this->write_log('Header Parameters', $headers);
+            $this->write_log('API Responce', wp_remote_retrieve_body($raw_response));
             return new WP_Error('server_error', wp_remote_retrieve_response_message($raw_response));
         }
 
@@ -270,6 +279,22 @@ class Dsp_External_Api_Request {
         }
         // return
         return $json;
+    }
+    
+    /**
+     * Function to write the error log in file.
+     * 
+     * @param type $log
+     */
+    
+    private function write_log($message, $log) {
+        if (true === WP_DEBUG) {
+            if (is_array($log) || is_object($log)) {
+                error_log($message."-----" .print_r($log, true));
+            } else {
+                error_log($message."-----".$log);
+            }
+        }
     }
 
 }

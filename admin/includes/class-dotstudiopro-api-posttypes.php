@@ -307,7 +307,7 @@ class Dsp_Custom_Posttypes {
                             $posts = $my_query->posts;
                             $new_post = array(
                                 'post_title' => $category['name'],
-                                'post_content' => $category['description'],
+                                'post_content' => isset($category['description']) ? $category['description'] : '',
                                 'post_status' => 'publish',
                                 'post_date' => date('Y-m-d H:i:s'),
                                 'post_author' => $user_ID,
@@ -332,11 +332,11 @@ class Dsp_Custom_Posttypes {
                     $send_response = array('message' => $add_count . ' Categories added.<br/>' . $update_count . ' Categories Updated');
                     wp_send_json_success($send_response, 200);
                 } else {
-                    $send_response = array('message' => 'Could not connect to update server.' . $categories->get_error_message());
+                    $send_response = array('message' => 'Server Error : ' . $categories->get_error_message());
                     wp_send_json_error($send_response, 403);
                 }
             } else {
-                $send_response = array('message' => 'Could not connect to update server.' . $country->get_error_message());
+                $send_response = array('message' => 'Server Error : ' . $country->get_error_message());
                 wp_send_json_error($send_response, 403);
             }
         } else {
@@ -381,7 +381,7 @@ class Dsp_Custom_Posttypes {
                         $posts = $my_query->posts;
                         $new_post = array(
                             'post_title' => $channel['title'],
-                            'post_content' => ($channel['description']) ? $channel['description'] : '',
+                            'post_content' => isset($channel['description']) ? $channel['description'] : '',
                             'post_status' => 'publish',
                             'post_date' => date('Y-m-d H:i:s'),
                             'post_author' => $user_ID,
@@ -396,17 +396,17 @@ class Dsp_Custom_Posttypes {
                             $post_id = wp_update_post($new_post);
                             $update_count++;
                         }
-                        $channel_id = $channel['_id'];
-                        $company_id = $channel['company_id'];
-                        $writers = implode(',', $channel['writers']);
-                        $genres = implode(',', $channel['genres']);
-                        $directors = implode(',', $channel['directors']);
-                        $actors = implode(',', $channel['actors']);
-                        $poster = $channel['poster'];
-                        $spotlight_poster = $channel['spotlight_poster'];
-                        $channel_logo = $channel['channel_logo'];
-                        $childchannels = $channel['childchannels'];
-                        $categories = $channel['categories'];
+                        $channel_id = isset($channel['_id']) ? $channel['_id'] : '';
+                        $company_id = isset($channel['company_id']) ? $channel['company_id'] : '';
+                        $writers = isset($channel['writers']) ? implode(',', $channel['writers']) : '';
+                        $genres = isset($channel['genres']) ? implode(',', $channel['genres']) : '';
+                        $directors = isset($channel['directors']) ? implode(',', $channel['directors']) : '';
+                        $actors = isset($channel['actors']) ? implode(',', $channel['actors']) : '';
+                        $poster = isset($channel['poster']) ? $channel['poster'] : '';
+                        $spotlight_poster = isset($channel['spotlight_poster']) ? $channel['spotlight_poster'] : '';
+                        $channel_logo = isset($channel['channel_logo']) ? $channel['channel_logo'] : '';
+                        $childchannels = isset($channel['childchannels']) ? $channel['childchannels'] : '';
+                        $categories = isset($channel['categories']) ? $channel['categories'] : '';
 
                         update_post_meta($post_id, 'chnl_id', $channel_id);
                         update_post_meta($post_id, 'chnl_writers', $writers);
@@ -436,11 +436,11 @@ class Dsp_Custom_Posttypes {
                     $send_response = array('message' => $add_count . ' Channels added.<br/>' . $update_count . ' Channels Updated.');
                     wp_send_json_success($send_response, 200);
                 } else {
-                    $send_response = array('message' => 'Could not connect to update server.' . $channels->get_error_message());
+                    $send_response = array('message' => 'Server Error : ' . $channels->get_error_message());
                     wp_send_json_error($send_response, 403);
                 }
             } else {
-                $send_response = array('message' => 'Could not connect to update server.' . $country->get_error_message());
+                $send_response = array('message' => 'Server Error : ' . $country->get_error_message());
                 wp_send_json_error($send_response, 403);
             }
         } else {

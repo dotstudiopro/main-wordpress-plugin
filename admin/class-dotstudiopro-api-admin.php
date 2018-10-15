@@ -165,13 +165,13 @@ class Dotstudiopro_Api_Admin {
                 'dsp_enable_search_field', __('Enable search for videos and/or channels', 'dotstudiopro-api'), array($this, 'dsp_enable_search_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
         );
         register_setting('dsp-setting-section', 'dsp_enable_search_field');
-        
+
         /* Right now this field not in use */
-        
-        /*add_settings_field(
-                'dsp_sync_data_field', __('Sync Data', 'dotstudiopro-api'), array($this, 'dsp_sync_data_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
-        );
-        register_setting('dsp-setting-section', 'dsp_sync_data_field');*/
+
+        /* add_settings_field(
+          'dsp_sync_data_field', __('Sync Data', 'dotstudiopro-api'), array($this, 'dsp_sync_data_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
+          );
+          register_setting('dsp-setting-section', 'dsp_sync_data_field'); */
     }
 
     /**
@@ -232,7 +232,6 @@ class Dotstudiopro_Api_Admin {
         wp_enqueue_style('fontawesome', 'http:////netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css', '', '4.0.3', 'all');
         wp_enqueue_style('tasg-inputes-css', plugin_dir_url(__FILE__) . 'css/bootstrap-tagsinput.css', array(), $this->version, 'all');
         wp_enqueue_script('tags-inpute-js', plugin_dir_url(__FILE__) . 'js/bootstrap-tagsinput.js', array(), false, true);
-        
     }
 
     /**
@@ -247,7 +246,7 @@ class Dotstudiopro_Api_Admin {
             );
             $response = $this->dspExternalApiClass->check_api_key($post);
             if (is_wp_error($response)) {
-                $send_response = array('message' => 'Could not connect to update server.' . $response->get_error_message());
+                $send_response = array('message' => 'Server Error : ' . $response->get_error_message());
                 wp_send_json_error($send_response, 403);
             } elseif (isset($response['success']) && $response['success'] == 1) {
                 update_option('dotstudiopro_api_token', $response['token']);
@@ -300,12 +299,12 @@ class Dotstudiopro_Api_Admin {
 
         // ensure response is expected JSON array (not string)
         if (is_string($response)) {
-            $send_response = array('message' => 'server_error' . $response);
+            $send_response = array('message' => 'Server Error : ' . $response);
             wp_send_json_error($send_response, 400);
         }
         // error
         if (is_wp_error($response)) {
-            $send_response = array('message' => 'Could not connect to update server.' . $response->get_error_message());
+            $send_response = array('message' => 'Server Error : ' . $response->get_error_message());
             wp_send_json_error($send_response, 403);
         }
         // success
