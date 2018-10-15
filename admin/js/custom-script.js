@@ -55,36 +55,89 @@ var url = customVars.ajaxurl;
      * @since 1.0.0
      */
 
-    $('#dsp_api_form').on('submit', function (e) {
-
+    $('#submit-api-data').on('click', function (e) {
         e.preventDefault();
-
-        var data = jQuery(this).serializeArray();
-        var btn_value = $("input[type=submit][clicked=true]").attr('id');
-
+        var data = $('#dsp_api_form').serializeArray();
         dataObj = {};
         $(data).each(function (i, field) {
             dataObj[field.name] = field.value;
         });
-
         var action = dataObj['action'];
         var nonce = dataObj['_dsp_nonce'];
+        var btn_value = $(this).attr('id');
 
-        if (btn_value != 'deactivate-api-data') {
-            loading.show('Step 1: Activate API key in-progress.');
-            $('.dsp-box-hidden').show();
-            $('.ajax-resp').append('<div><img class="activation-img" src="' + loader_gif + '"><p> Activate API key in-progress.</p></div>');
-        } else {
-            $('.dsp-box-hidden').show();
-            $('.ajax-resp').append('<div><img class="activation-img" src="' + loader_gif + '"><p> Deactivating API key.</p></div>');
-            loading.show('Deactivating API key.');
-        }
+        loading.show('Step 1: Activate API key in-progress.');
+        $('.dsp-box-hidden').show();
+        $('.ajax-resp').append('<div><img class="activation-img" src="' + loader_gif + '"><p> Activate API key in-progress.</p></div>');
+        AjaxcallForAPIkey(action, dataObj['dotstudiopro_api_key'], nonce, btn_value);
+
+    });
+
+    /**
+     * Ajax event to Deactivate DotstudioPro Api key 
+     * After Conformation delete the Category and Channels for DSP Dashboard and Deactivate the API key.
+     * 
+     * @since 1.0.0
+     */
+
+    $('#deactivate-api-data').on('click', function (e) {
+        e.preventDefault();
+        var data = $('#dsp_api_form').serializeArray();
+        dataObj = {};
+        $(data).each(function (i, field) {
+            dataObj[field.name] = field.value;
+        });
+        var action = dataObj['action'];
+        var nonce = dataObj['_dsp_nonce'];
+        var btn_value = $(this).attr('id');
+
+        vex.closeAll();
+        vex.dialog.open({
+            unsafeMessage: [
+                '<d1>All Categories and Channels data will be wiped out by deactivating the API key.<d1>',
+                '<dl>Are you still want to deactivate the API key?<dl>'
+            ].join(''),
+            buttons: [
+                $.extend({}, vex.dialog.buttons.YES, {
+                    text: 'YES',
+                    click: function () {
+                        $('.dsp-box-hidden').show();
+                        $('.ajax-resp').append('<div><img class="activation-img" src="' + loader_gif + '"><p> Deactivating API key.</p></div>');
+                        loading.show('Deactivating API key.');
+                        AjaxcallForAPIkey(action, dataObj['dotstudiopro_api_key'], nonce, btn_value);
+                    }
+                }),
+                $.extend({}, vex.dialog.buttons.NO, {
+                    text: 'NO',
+                    click: function () {
+                        vex.closeAll()
+                    }
+                })
+            ],
+            afterOpen: function () {
+                $('body').css('overflow', 'hidden');
+            },
+        })
+    });
+
+    /**
+     * Common Ajax Function to activating and deactivating the Key
+     * 
+     * @since 1.0.0
+     * 
+     * @param {type} action
+     * @param {type} dotstudiopro_api_key
+     * @param {type} nonce
+     * @param {type} btn_value
+     */
+
+    function AjaxcallForAPIkey(action, dotstudiopro_api_key, nonce, btn_value) {
 
         var step1 = $.post(
                 url,
                 {
                     'action': action,
-                    'dotstudiopro_api_key': dataObj['dotstudiopro_api_key'],
+                    'dotstudiopro_api_key': dotstudiopro_api_key,
                     '_dsp_nonce': nonce,
                     'btn_value': btn_value,
                 }
@@ -125,7 +178,7 @@ var url = customVars.ajaxurl;
             console.log("error in step 1");
         });
 
-    });
+    }
 
     /**
      * Function to check which button is clicked
@@ -178,6 +231,7 @@ var url = customVars.ajaxurl;
         step2.fail(function (response) {
             $('.ajax-resp').append('<div><img class="import-cat-img" src="' + error_img + '"><p> Error in Import process.</p></div>');
             dialogresponse('Error in Import process', (response.responseJSON) ? response.responseJSON.data.message : response.statusText)
+            console.log("error in import data");
         })
         return step2;
     }

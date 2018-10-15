@@ -331,6 +331,17 @@ class Dotstudiopro_Api_Admin {
         $dotstudiopro_api_key = get_option('dotstudiopro_api_key');
         if (!$dotstudiopro_api_key)
             wp_send_json_error(array('message' => 'Api Key Not Found..'), 404);
+        
+        $channels = get_pages( array( 'post_type' => 'channel') );
+        foreach ( $channels as $channel ) {
+            wp_delete_post($channel->ID, true);
+        }
+        
+        $categories = get_pages( array( 'post_type' => 'category') );
+        foreach ( $categories as $category ) {
+            wp_delete_post($category->ID, true);
+        }
+        
         delete_option('dotstudiopro_api_key');
         delete_option('dotstudiopro_api_token');
         delete_option('dotstudiopro_api_token_time');
