@@ -223,7 +223,8 @@ class Dsp_External_Api_Request {
             $this->write_log('Header Parameters', $headers);
             $this->write_log('Body Parameters', $body);
             $this->write_log('API Responce', wp_remote_retrieve_body($raw_response));
-            return new WP_Error('server_error', wp_remote_retrieve_response_message($raw_response));
+            $error_message = $this->error_message($raw_response);
+            return new WP_Error('server_error', $error_message);
         }
 
         // decode response
@@ -267,7 +268,8 @@ class Dsp_External_Api_Request {
             $this->write_log('URL', $url);
             $this->write_log('Header Parameters', $headers);
             $this->write_log('API Responce', wp_remote_retrieve_body($raw_response));
-            return new WP_Error('server_error', wp_remote_retrieve_response_message($raw_response));
+            $error_message = $this->error_message($raw_response);
+            return new WP_Error('server_error', $error_message);
         }
 
         // decode response
@@ -295,6 +297,38 @@ class Dsp_External_Api_Request {
                 error_log($message."-----".$log);
             }
         }
+    }
+    
+    /**
+     * Function to handel error responce which comes form DSP API
+     * 
+     * @since 1.0.0
+     * @param type $raw_response
+     * @return string
+     */
+    
+    public function error_message($raw_response) {
+
+        $responce_body = wp_remote_retrieve_body($raw_response);
+        $send_res = json_decode($responce_body);
+            if ($send_res->reason){
+                return $send_res->reason;
+            }
+            elseif ($send_res->error){
+                if(is_object($send_res->error)){
+                    return $send_res->error->name.':'.$send_res->error->message;
+                }
+                else{
+                    return $send_res->error;
+                }
+            }
+            elseif ($send_res->message){
+                return $send_res->message;
+            }
+            else{
+                return 'Internal Server error.';
+            }
+        
     }
 
 }
