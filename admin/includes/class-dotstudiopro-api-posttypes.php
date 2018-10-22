@@ -35,6 +35,8 @@ class Dsp_Custom_Posttypes {
             'singular_name' => _x('Channel', 'Post Type Singular Name', 'dotstudiopro-api'),
             'menu_name' => __('Channels', 'dotstudiopro-api'),
             'name_admin_bar' => __('Channels', 'dotstudiopro-api'),
+            'edit_item' => __( 'Edit Channel', 'dotstudiopro-api' ),
+	    'update_item'=> __( 'Update Channel', 'dotstudiopro-api' )
         );
         $args = array(
             'hierarchical' => true,
@@ -58,6 +60,8 @@ class Dsp_Custom_Posttypes {
             'singular_name' => _x('Category', 'Post Type Singular Name', 'dotstudiopro-api'),
             'menu_name' => __('Categories', 'dotstudiopro-api'),
             'name_admin_bar' => __('Categories', 'dotstudiopro-api'),
+            'edit_item' => __( 'Edit Category', 'dotstudiopro-api' ),
+	    'update_item'=> __( 'Update Category', 'dotstudiopro-api' )
         );
         $args = array(
             'hierarchical' => true,
@@ -85,6 +89,7 @@ class Dsp_Custom_Posttypes {
     public function create_custom_metabox() {
         add_meta_box('category_metabox', 'Category: Additional details', array($this, 'create_category_metabox_callback'), 'category', 'normal', 'high');
         add_meta_box('channel_metabox', 'Channel: Additional details', array($this, 'create_channel_metabox_callback'), 'channel', 'normal', 'high');
+        add_meta_box('channel_video_metabox', 'Channel: Video\'s details', array($this, 'create_video_metabox_callback'), 'channel', 'normal', 'high');
     }
 
     /**
@@ -282,61 +287,53 @@ class Dsp_Custom_Posttypes {
 
         if (wp_verify_nonce($_POST['nonce'], 'import_catagory')) {
 
-            $country = $this->dspExternalApiClass->get_country();
+            $categories = $this->dspExternalApiClass->get_categories();
 
-            if (!is_wp_error($country)) {
-
-                $categories = $this->dspExternalApiClass->get_categories();
-
-                if (!is_wp_error($categories)) {
-                    $add_count = 0;
-                    $update_count = 0;
-                    foreach ($categories['categories'] as $category) {
-                        if (isset($category['platforms'][0]['website'])) {
-                            $args = array(
-                                'fields' => 'ids',
-                                'post_type' => 'category',
-                                'meta_query' => array(
-                                    array(
-                                        'key' => 'cat_id',
-                                        'value' => $category['_id']
-                                    )
+            if (!is_wp_error($categories)) {
+                $add_count = 0;
+                $update_count = 0;
+                foreach ($categories['categories'] as $category) {
+                    if (isset($category['platforms'][0]['website'])) {
+                        $args = array(
+                            'fields' => 'ids',
+                            'post_type' => 'category',
+                            'meta_query' => array(
+                                array(
+                                    'key' => 'cat_id',
+                                    'value' => $category['_id']
                                 )
-                            );
-                            $my_query = new WP_Query($args);
-                            $posts = $my_query->posts;
-                            $new_post = array(
-                                'post_title' => $category['name'],
-                                'post_content' => isset($category['description']) ? $category['description'] : '',
-                                'post_status' => 'publish',
-                                'post_date' => date('Y-m-d H:i:s'),
-                                'post_author' => $user_ID,
-                                'post_type' => 'category',
-                                'post_name' => $category['slug'],
-                            );
-                            if (empty($my_query->have_posts())) {
-                                $post_id = wp_insert_post($new_post);
-                                $add_count++;
-                            } else {
-                                $new_post['ID'] = $posts[0];
-                                $post_id = wp_update_post($new_post);
-                                $update_count++;
-                            }
-                            update_post_meta($post_id, 'cat_id', $category['_id']);
-                            update_post_meta($post_id, 'cat_wallpaper', $category['wallpaper']);
-                            update_post_meta($post_id, 'cat_poster', $category['poster']);
-                            update_post_meta($post_id, 'is_in_cat_menu', $category['menu']);
-                            update_post_meta($post_id, 'is_on_cat_homepage', $category['homepage']);
+                            )
+                        );
+                        $my_query = new WP_Query($args);
+                        $posts = $my_query->posts;
+                        $new_post = array(
+                            'post_title' => $category['name'],
+                            'post_content' => isset($category['description']) ? $category['description'] : '',
+                            'post_status' => 'publish',
+                            'post_date' => date('Y-m-d H:i:s'),
+                            'post_author' => $user_ID,
+                            'post_type' => 'category',
+                            'post_name' => $category['slug'],
+                        );
+                        if (empty($my_query->have_posts())) {
+                            $post_id = wp_insert_post($new_post);
+                            $add_count++;
+                        } else {
+                            $new_post['ID'] = $posts[0];
+                            $post_id = wp_update_post($new_post);
+                            $update_count++;
                         }
+                        update_post_meta($post_id, 'cat_id', $category['_id']);
+                        update_post_meta($post_id, 'cat_wallpaper', $category['wallpaper']);
+                        update_post_meta($post_id, 'cat_poster', $category['poster']);
+                        update_post_meta($post_id, 'is_in_cat_menu', $category['menu']);
+                        update_post_meta($post_id, 'is_on_cat_homepage', $category['homepage']);
                     }
-                    $send_response = array('message' => $add_count . ' Categories added.<br/>' . $update_count . ' Categories Updated');
-                    wp_send_json_success($send_response, 200);
-                } else {
-                    $send_response = array('message' => 'Server Error : ' . $categories->get_error_message());
-                    wp_send_json_error($send_response, 403);
                 }
+                $send_response = array('message' => $add_count . ' Categories added.<br/>' . $update_count . ' Categories Updated');
+                wp_send_json_success($send_response, 200);
             } else {
-                $send_response = array('message' => 'Server Error : ' . $country->get_error_message());
+                $send_response = array('message' => 'Server Error : ' . $categories->get_error_message());
                 wp_send_json_error($send_response, 403);
             }
         } else {
@@ -357,90 +354,108 @@ class Dsp_Custom_Posttypes {
 
         if (wp_verify_nonce($_POST['nonce'], 'import_channel')) {
 
-            $country = $this->dspExternalApiClass->get_country();
+            $channels = $this->dspExternalApiClass->get_channels();
 
-            if (!is_wp_error($country)) {
-
-                $channels = $this->dspExternalApiClass->get_channels();
-
-                if (!is_wp_error($channels)) {
-                    $add_count = 0;
-                    $update_count = 0;
-                    foreach ($channels['channels'] as $channel) {
-                        $args = array(
-                            'fields' => 'ids',
-                            'post_type' => 'channel',
-                            'meta_query' => array(
-                                array(
-                                    'key' => 'chnl_id',
-                                    'value' => $channel['_id']
-                                )
+            if (!is_wp_error($channels)) {
+                $add_count = 0;
+                $update_count = 0;
+                foreach ($channels['channels'] as $channel) {
+                    $args = array(
+                        'fields' => 'ids',
+                        'post_type' => 'channel',
+                        'meta_query' => array(
+                            array(
+                                'key' => 'chnl_id',
+                                'value' => $channel['_id']
                             )
-                        );
-                        $my_query = new WP_Query($args);
-                        $posts = $my_query->posts;
-                        $new_post = array(
-                            'post_title' => $channel['title'],
-                            'post_content' => isset($channel['description']) ? $channel['description'] : '',
-                            'post_status' => 'publish',
-                            'post_date' => date('Y-m-d H:i:s'),
-                            'post_author' => $user_ID,
-                            'post_type' => 'channel',
-                            'post_name' => $channel['slug'],
-                        );
-                        if (empty($my_query->have_posts())) {
-                            $post_id = wp_insert_post($new_post);
-                            $add_count++;
-                        } else {
-                            $new_post['ID'] = $posts[0];
-                            $post_id = wp_update_post($new_post);
-                            $update_count++;
-                        }
-                        $channel_id = isset($channel['_id']) ? $channel['_id'] : '';
-                        $company_id = isset($channel['company_id']) ? $channel['company_id'] : '';
-                        $writers = isset($channel['writers']) ? implode(',', $channel['writers']) : '';
-                        $genres = isset($channel['genres']) ? implode(',', $channel['genres']) : '';
-                        $directors = isset($channel['directors']) ? implode(',', $channel['directors']) : '';
-                        $actors = isset($channel['actors']) ? implode(',', $channel['actors']) : '';
-                        $poster = isset($channel['poster']) ? $channel['poster'] : '';
-                        $spotlight_poster = isset($channel['spotlight_poster']) ? $channel['spotlight_poster'] : '';
-                        $channel_logo = isset($channel['channel_logo']) ? $channel['channel_logo'] : '';
-                        $childchannels = isset($channel['childchannels']) ? $channel['childchannels'] : '';
-                        $categories = isset($channel['categories']) ? $channel['categories'] : '';
-
-                        update_post_meta($post_id, 'chnl_id', $channel_id);
-                        update_post_meta($post_id, 'chnl_writers', $writers);
-                        update_post_meta($post_id, 'chnl_geners', $genres);
-                        update_post_meta($post_id, 'chnl_directors', $directors);
-                        update_post_meta($post_id, 'chnl_actors', $actors);
-                        update_post_meta($post_id, 'chnl_poster', $poster);
-                        update_post_meta($post_id, 'chnl_logo', $channel_logo);
-                        update_post_meta($post_id, 'chnl_spotlisgt_poster', $spotlight_poster);
-                        update_post_meta($post_id, 'chnl_comp_id', $company_id);
-
-                        if (isset($categories)) {
-                            $category = array();
-                            foreach ($categories as $cat) {
-                                $category[] = $cat['slug'];
-                            }
-                            update_post_meta($post_id, 'chnl_catagories', implode(',', $category));
-                        }
-                        if (isset($childchannels)) {
-                            $childchannel = array();
-                            foreach ($childchannels as $child) {
-                                $childchannel[] = $child['slug'];
-                            }
-                            update_post_meta($post_id, 'chnl_child_channels', implode(',', $childchannel));
-                        }
+                        )
+                    );
+                    $my_query = new WP_Query($args);
+                    $posts = $my_query->posts;
+                    $new_post = array(
+                        'post_title' => $channel['title'],
+                        'post_content' => isset($channel['description']) ? $channel['description'] : '',
+                        'post_status' => 'publish',
+                        'post_date' => date('Y-m-d H:i:s'),
+                        'post_author' => $user_ID,
+                        'post_type' => 'channel',
+                        'post_name' => $channel['slug'],
+                    );
+                    if (empty($my_query->have_posts())) {
+                        $post_id = wp_insert_post($new_post);
+                        $add_count++;
+                    } else {
+                        $new_post['ID'] = $posts[0];
+                        $post_id = wp_update_post($new_post);
+                        $update_count++;
                     }
-                    $send_response = array('message' => $add_count . ' Channels added.<br/>' . $update_count . ' Channels Updated.');
-                    wp_send_json_success($send_response, 200);
-                } else {
-                    $send_response = array('message' => 'Server Error : ' . $channels->get_error_message());
-                    wp_send_json_error($send_response, 403);
+
+
+                    $channel_id = isset($channel['_id']) ? $channel['_id'] : '';
+                    $company_id = isset($channel['company_id']) ? $channel['company_id'] : '';
+                    $writers = isset($channel['writers']) ? implode(',', $channel['writers']) : '';
+                    $genres = isset($channel['genres']) ? implode(',', $channel['genres']) : '';
+                    $directors = isset($channel['directors']) ? implode(',', $channel['directors']) : '';
+                    $actors = isset($channel['actors']) ? implode(',', $channel['actors']) : '';
+                    $poster = isset($channel['poster']) ? $channel['poster'] : '';
+                    $spotlight_poster = isset($channel['spotlight_poster']) ? $channel['spotlight_poster'] : '';
+                    $channel_logo = isset($channel['channel_logo']) ? $channel['channel_logo'] : '';
+                    $childchannels = isset($channel['childchannels']) ? $channel['childchannels'] : '';
+                    $categories = isset($channel['categories']) ? $channel['categories'] : '';
+
+                    $vidoeArr = array();
+                    if (!empty($channel['playlist'])) {
+                        foreach ($channel['playlist'] as $key => $video):
+                            $vidoeArr[$key]['_id'] = isset($video['_id']) ? $video['_id'] : '';
+                            $vidoeArr[$key]['title'] = isset($video['title']) ? $video['title'] : '';
+                            $vidoeArr[$key]['description'] = isset($video['description']) ? $video['description'] : '';
+                            $vidoeArr[$key]['slug'] = isset($video['slug']) ? $video['slug'] : '';
+                            $vidoeArr[$key]['thumb'] = isset($video['thumb']) ? $video['thumb'] : '';
+                        endforeach;
+                        $videoData = maybe_serialize($vidoeArr);
+                        update_post_meta($post_id, 'chnl_videos', $videoData);
+                    }
+                    elseif (!empty($channel['video'])) {
+                            $video = $channel['video'];
+                            $vidoeArr[$key]['_id'] = isset($video['_id']) ? $video['_id'] : '';
+                            $vidoeArr[$key]['title'] = isset($video['title']) ? $video['title'] : '';
+                            $vidoeArr[$key]['description'] = isset($video['description']) ? $video['description'] : '';
+                            $vidoeArr[$key]['slug'] = isset($video['slug']) ? $video['slug'] : '';
+                            $vidoeArr[$key]['thumb'] = isset($video['thumb']) ? $video['thumb'] : '';
+                        
+                        $videoData = maybe_serialize($vidoeArr);
+                        update_post_meta($post_id, 'chnl_videos', $videoData);
+                    }
+
+                    update_post_meta($post_id, 'chnl_id', $channel_id);
+                    update_post_meta($post_id, 'chnl_writers', $writers);
+                    update_post_meta($post_id, 'chnl_geners', $genres);
+                    update_post_meta($post_id, 'chnl_directors', $directors);
+                    update_post_meta($post_id, 'chnl_actors', $actors);
+                    update_post_meta($post_id, 'chnl_poster', $poster);
+                    update_post_meta($post_id, 'chnl_logo', $channel_logo);
+                    update_post_meta($post_id, 'chnl_spotlisgt_poster', $spotlight_poster);
+                    update_post_meta($post_id, 'chnl_comp_id', $company_id);
+
+                    if (isset($categories)) {
+                        $category = array();
+                        foreach ($categories as $cat) {
+                            $category[] = $cat['slug'];
+                        }
+                        update_post_meta($post_id, 'chnl_catagories', implode(',', $category));
+                    }
+                    if (isset($childchannels)) {
+                        $childchannel = array();
+                        foreach ($childchannels as $child) {
+                            $childchannel[] = $child['slug'];
+                        }
+                        update_post_meta($post_id, 'chnl_child_channels', implode(',', $childchannel));
+                    }
                 }
+                $send_response = array('message' => $add_count . ' Channels added.<br/>' . $update_count . ' Channels Updated.');
+                wp_send_json_success($send_response, 200);
             } else {
-                $send_response = array('message' => 'Server Error : ' . $country->get_error_message());
+                $send_response = array('message' => 'Server Error : ' . $channels->get_error_message());
                 wp_send_json_error($send_response, 403);
             }
         } else {
@@ -526,6 +541,44 @@ class Dsp_Custom_Posttypes {
         </table>
 
         <?php
+    }
+    
+    public function create_video_metabox_callback() {
+        
+        global $post;
+        $videos = maybe_unserialize(get_post_meta($post->ID , 'chnl_videos', true));
+        if($videos):
+        ?>
+        <table class="wp-list-table widefat fixed striped pages">
+            <thead>
+                <tr>
+                    <th class="manage-column column-primary"><strong>Video Title</strong></th>
+                    <th class="manage-column"><strong>Video Thumb</strong></th>
+                    <th class="manage-column"><strong>Video ID</strong></th>
+                    <th class="manage-column"><strong>Video slug</strong></th>
+                    <th class="manage-column"><strong>Video Description</strong></th>
+                </tr>
+            </thead>
+            <tbody id="the-list">
+                <?php foreach ($videos as $video):?>
+                <tr>
+                    <td class="column-title has-row-actions column-primary page-title" data-colname="Video Title">
+                        <strong><?php echo $video['title']; ?></strong>
+                        <button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button>
+                    </td>
+                    <td data-colname="Video Thumb"><img src="<?php echo get_option('dsp_cdn_img_url_field') .'/'. $video['thumb']; ?>/100/70"></td>
+                    <td data-colname="Video ID"><?php echo $video['_id']; ?></td>
+                    <td data-colname="Video Slug"><?php echo $video['slug']; ?></td>
+                    <td data-colname="Video Description"><?php echo wp_trim_words($video['description'], 10, ' ...'); ?></td>
+                </tr>
+                <?php endforeach;?>
+            </tbody>
+        </table>
+        <?php
+        endif;
+        ?>
+            <p> No videos available for this channel</p>    
+        <?php    
     }
 
     /**

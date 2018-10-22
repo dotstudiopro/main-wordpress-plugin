@@ -147,6 +147,11 @@ class Dotstudiopro_Api_Admin {
         );
 
         add_settings_field(
+                'dsp_cdn_img_url_field', __('Dotstudiopro Image CDN URL.', 'dotstudiopro-api'), array($this, 'dsp_cdn_img_url_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
+        );
+        register_setting('dsp-setting-section', 'dsp_cdn_img_url_field');
+        
+        add_settings_field(
                 'dsp_video_autoplay_field', __('Video Autoplay on load', 'dotstudiopro-api'), array($this, 'dsp_video_autoplay_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
         );
         register_setting('dsp-setting-section', 'dsp_video_autoplay_field');
@@ -177,6 +182,7 @@ class Dotstudiopro_Api_Admin {
     /**
      * Callback functions for settings
      */
+    
     // API key configuration
     function dsp_api_key_field_callback_function() {
         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/api/dsp_api_key_field.php';
@@ -196,6 +202,10 @@ class Dotstudiopro_Api_Admin {
     }
 
     // Setting section    
+    function dsp_cdn_img_url_field_callback_function() {
+        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/settings/dsp_cdn_img_url_field.php';
+    }
+    
     function dsp_video_autoplay_field_callback_function() {
         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/settings/dsp_video_autoplay_field.php';
     }

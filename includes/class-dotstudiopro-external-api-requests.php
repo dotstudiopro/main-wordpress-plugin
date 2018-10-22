@@ -93,9 +93,10 @@ class Dsp_External_Api_Request {
      * 
      * @return boolean
      */
-    function get_country() {
+    function get_country($token = null) {
 
-        $token = $this->api_token_check();
+        if(empty($token))
+            $token = $this->api_token_check();
 
         /** DEV MODE * */
         $dev_check = get_option("dsp_is_dev_mode_field");
@@ -132,6 +133,9 @@ class Dsp_External_Api_Request {
     function get_categories() {
 
         $token = $this->api_token_check();
+        
+        $this->get_country($token);
+        
         // If we have no token, or we have no country, the API call will fail, so we return an empty array
         if (!$token || !$this->country)
             return array();
@@ -155,6 +159,8 @@ class Dsp_External_Api_Request {
     function get_channels($detail = 'partial') {
         
         $token = $this->api_token_check();
+        
+        $this->get_country($token);
         
         // If we have no token, or we have no country, the API call will fail, so we return an empty array
         if (!$token || !$this->country)

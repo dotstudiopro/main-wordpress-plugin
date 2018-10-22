@@ -253,6 +253,16 @@ class Dsp_REST_Api_Handler {
                     'description' => esc_html__( 'New channel categories.', 'dotstudiopro-api' ),
                     'type'        => 'array',
                 ];
+                $args['playlist'] = [
+                    'required'    => false,
+                    'description' => esc_html__( 'New channel Playlist.', 'dotstudiopro-api' ),
+                    'type'        => 'array',
+                ];
+                $args['video'] = [
+                    'required'    => false,
+                    'description' => esc_html__( 'New channel video.', 'dotstudiopro-api' ),
+                    'type'        => 'object',
+                ];
                 break;
             case 'delete':
                 $args['_id'] = [
