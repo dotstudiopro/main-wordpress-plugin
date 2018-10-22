@@ -417,6 +417,7 @@ class Dsp_Custom_Posttypes {
                     }
                     elseif (!empty($channel['video'])) {
                             $video = $channel['video'];
+                            $key = 0;
                             $vidoeArr[$key]['_id'] = isset($video['_id']) ? $video['_id'] : '';
                             $vidoeArr[$key]['title'] = isset($video['title']) ? $video['title'] : '';
                             $vidoeArr[$key]['description'] = isset($video['description']) ? $video['description'] : '';
