@@ -121,15 +121,15 @@ class Dsp_Manage_channels {
         update_post_meta($post_id, 'chnl_comp_id', $company_id);
         update_post_meta($post_id, 'chnl_logo', $company_logo);
 
-        if (isset($categories)) {
+        if (!empty($categories)) {
             $category = array();
             foreach ($categories as $cat) {
                 $category[] = $cat['slug'];
             }
-            update_post_meta($post_id, 'chnl_catagories', implode(',', $category));
+            update_post_meta($post_id, 'chnl_catagories', ','.implode(',', $category).',');
         }
 
-        if (isset($childchannels)) {
+        if (!empty($childchannels)) {
             $childchannel = array();
             foreach ($childchannels as $child) {
                 $childchannel[] = $child['slug'];

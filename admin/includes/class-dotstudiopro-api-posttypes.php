@@ -355,7 +355,6 @@ class Dsp_Custom_Posttypes {
         if (wp_verify_nonce($_POST['nonce'], 'import_channel')) {
 
             $channels = $this->dspExternalApiClass->get_channels();
-
             if (!is_wp_error($channels)) {
                 $add_count = 0;
                 $update_count = 0;
@@ -438,14 +437,14 @@ class Dsp_Custom_Posttypes {
                     update_post_meta($post_id, 'chnl_spotlisgt_poster', $spotlight_poster);
                     update_post_meta($post_id, 'chnl_comp_id', $company_id);
 
-                    if (isset($categories)) {
+                    if (!empty($categories)) {
                         $category = array();
                         foreach ($categories as $cat) {
                             $category[] = $cat['slug'];
                         }
-                        update_post_meta($post_id, 'chnl_catagories', implode(',', $category));
+                        update_post_meta($post_id, 'chnl_catagories', ','.implode(',', $category).',');
                     }
-                    if (isset($childchannels)) {
+                    if (!empty($childchannels)) {
                         $childchannel = array();
                         foreach ($childchannels as $child) {
                             $childchannel[] = $child['slug'];
