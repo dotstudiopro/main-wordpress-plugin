@@ -110,6 +110,7 @@ class Dsp_Manage_channels {
         $spotlight_poster = $request['spotlight_poster'];
         $childchannels = $request['childchannels'];
         $categories = $request['categories'];
+        $dspro_channel_id = $request['dspro_id'];
 
         update_post_meta($post_id, 'chnl_id', $channel_id);
         update_post_meta($post_id, 'chnl_writers', $writers);
@@ -120,13 +121,14 @@ class Dsp_Manage_channels {
         update_post_meta($post_id, 'chnl_spotlisgt_poster', $spotlight_poster);
         update_post_meta($post_id, 'chnl_comp_id', $company_id);
         update_post_meta($post_id, 'chnl_logo', $company_logo);
+        update_post_meta($post_id, 'dspro_channel_id', $dspro_channel_id);
 
         if (!empty($categories)) {
             $category = array();
             foreach ($categories as $cat) {
                 $category[] = $cat['slug'];
             }
-            update_post_meta($post_id, 'chnl_catagories', ','.implode(',', $category).',');
+            update_post_meta($post_id, 'chnl_catagories', ',' . implode(',', $category) . ',');
         }
 
         if (!empty($childchannels)) {

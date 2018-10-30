@@ -35,8 +35,8 @@ class Dsp_Custom_Posttypes {
             'singular_name' => _x('Channel', 'Post Type Singular Name', 'dotstudiopro-api'),
             'menu_name' => __('Channels', 'dotstudiopro-api'),
             'name_admin_bar' => __('Channels', 'dotstudiopro-api'),
-            'edit_item' => __( 'Edit Channel', 'dotstudiopro-api' ),
-	    'update_item'=> __( 'Update Channel', 'dotstudiopro-api' )
+            'edit_item' => __('Edit Channel', 'dotstudiopro-api'),
+            'update_item' => __('Update Channel', 'dotstudiopro-api')
         );
         $args = array(
             'hierarchical' => true,
@@ -60,8 +60,8 @@ class Dsp_Custom_Posttypes {
             'singular_name' => _x('Category', 'Post Type Singular Name', 'dotstudiopro-api'),
             'menu_name' => __('Categories', 'dotstudiopro-api'),
             'name_admin_bar' => __('Categories', 'dotstudiopro-api'),
-            'edit_item' => __( 'Edit Category', 'dotstudiopro-api' ),
-	    'update_item'=> __( 'Update Category', 'dotstudiopro-api' )
+            'edit_item' => __('Edit Category', 'dotstudiopro-api'),
+            'update_item' => __('Update Category', 'dotstudiopro-api')
         );
         $args = array(
             'hierarchical' => true,
@@ -326,7 +326,7 @@ class Dsp_Custom_Posttypes {
                         update_post_meta($post_id, 'cat_id', isset($category['_id']) ? $category['_id'] : '');
                         update_post_meta($post_id, 'cat_wallpaper', isset($category['wallpaper']) ? $category['wallpaper'] : '');
                         update_post_meta($post_id, 'cat_poster', isset($category['poster']) ? $category['poster'] : '');
-                        update_post_meta($post_id, 'is_in_cat_menu', isset($category['menu']) ? $category['menu'] : '') ;
+                        update_post_meta($post_id, 'is_in_cat_menu', isset($category['menu']) ? $category['menu'] : '');
                         update_post_meta($post_id, 'is_on_cat_homepage', isset($category['homepage']) ? $category['homepage'] : '');
                     }
                 }
@@ -401,6 +401,7 @@ class Dsp_Custom_Posttypes {
                     $channel_logo = isset($channel['channel_logo']) ? $channel['channel_logo'] : '';
                     $childchannels = isset($channel['childchannels']) ? $channel['childchannels'] : '';
                     $categories = isset($channel['categories']) ? $channel['categories'] : '';
+                    $dspro_channel_id = isset($channel['dspro_id']) ? $channel['dspro_id'] : '';
 
                     $vidoeArr = array();
                     if (!empty($channel['playlist'])) {
@@ -415,14 +416,14 @@ class Dsp_Custom_Posttypes {
                         update_post_meta($post_id, 'chnl_videos', $videoData);
                     }
                     elseif (!empty($channel['video'])) {
-                            $video = $channel['video'];
-                            $key = 0;
-                            $vidoeArr[$key]['_id'] = isset($video['_id']) ? $video['_id'] : '';
-                            $vidoeArr[$key]['title'] = isset($video['title']) ? $video['title'] : '';
-                            $vidoeArr[$key]['description'] = isset($video['description']) ? $video['description'] : '';
-                            $vidoeArr[$key]['slug'] = isset($video['slug']) ? $video['slug'] : '';
-                            $vidoeArr[$key]['thumb'] = isset($video['thumb']) ? $video['thumb'] : '';
-                        
+                        $video = $channel['video'];
+                        $key = 0;
+                        $vidoeArr[$key]['_id'] = isset($video['_id']) ? $video['_id'] : '';
+                        $vidoeArr[$key]['title'] = isset($video['title']) ? $video['title'] : '';
+                        $vidoeArr[$key]['description'] = isset($video['description']) ? $video['description'] : '';
+                        $vidoeArr[$key]['slug'] = isset($video['slug']) ? $video['slug'] : '';
+                        $vidoeArr[$key]['thumb'] = isset($video['thumb']) ? $video['thumb'] : '';
+
                         $videoData = maybe_serialize($vidoeArr);
                         update_post_meta($post_id, 'chnl_videos', $videoData);
                     }
@@ -436,13 +437,14 @@ class Dsp_Custom_Posttypes {
                     update_post_meta($post_id, 'chnl_logo', $channel_logo);
                     update_post_meta($post_id, 'chnl_spotlisgt_poster', $spotlight_poster);
                     update_post_meta($post_id, 'chnl_comp_id', $company_id);
+                    update_post_meta($post_id, 'dspro_channel_id', $dspro_channel_id);
 
                     if (!empty($categories)) {
                         $category = array();
                         foreach ($categories as $cat) {
                             $category[] = $cat['slug'];
                         }
-                        update_post_meta($post_id, 'chnl_catagories', ','.implode(',', $category).',');
+                        update_post_meta($post_id, 'chnl_catagories', ',' . implode(',', $category) . ',');
                     }
                     if (!empty($childchannels)) {
                         $childchannel = array();
@@ -487,6 +489,7 @@ class Dsp_Custom_Posttypes {
         $chnl_catagories = isset($values['chnl_catagories'][0]) ? $values['chnl_catagories'][0] : '';
         $chnl_actors = isset($values['chnl_actors'][0]) ? $values['chnl_actors'][0] : '';
         $chnl_child_channels = isset($values['chnl_child_channels'][0]) ? $values['chnl_child_channels'][0] : '';
+        $dspro_channel_id = isset($values['dspro_channel_id'][0]) ? $values['dspro_channel_id'][0] : '';
 
         wp_nonce_field('category_metabox_nonce', 'category_metabox');
         ?>
@@ -496,6 +499,10 @@ class Dsp_Custom_Posttypes {
                 <tr>
                     <th scope="row">Channel ID</th>
                     <td><input type="text" class="dsp-field"  name="chnl_id" id="chnl_id" value="<?php echo $chnl_id; ?>" readonly/></td>
+                </tr>
+                <tr>
+                    <th scope="row">Dotstudiopro Channel ID</th>
+                    <td><input type="text" class="dsp-field"  name="chnl_id" id="dspro_channel_id" value="<?php echo $dspro_channel_id; ?>" readonly/></td>
                 </tr>
                 <tr>
                     <th scope="row">Channel Logo</th>
@@ -542,43 +549,43 @@ class Dsp_Custom_Posttypes {
 
         <?php
     }
-    
+
     public function create_video_metabox_callback() {
-        
+
         global $post;
-        $videos = maybe_unserialize(get_post_meta($post->ID , 'chnl_videos', true));
-        if($videos):
-        ?>
-        <table class="wp-list-table widefat fixed striped pages">
-            <thead>
-                <tr>
-                    <th class="manage-column column-primary"><strong>Video Title</strong></th>
-                    <th class="manage-column"><strong>Video Thumb</strong></th>
-                    <th class="manage-column"><strong>Video ID</strong></th>
-                    <th class="manage-column"><strong>Video slug</strong></th>
-                    <th class="manage-column"><strong>Video Description</strong></th>
-                </tr>
-            </thead>
-            <tbody id="the-list">
-                <?php foreach ($videos as $video):?>
-                <tr>
-                    <td class="column-title has-row-actions column-primary page-title" data-colname="Video Title">
-                        <strong><?php echo $video['title']; ?></strong>
-                        <button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button>
-                    </td>
-                    <td data-colname="Video Thumb"><img src="<?php echo get_option('dsp_cdn_img_url_field') .'/'. $video['thumb']; ?>/100/70"></td>
-                    <td data-colname="Video ID"><?php echo $video['_id']; ?></td>
-                    <td data-colname="Video Slug"><?php echo $video['slug']; ?></td>
-                    <td data-colname="Video Description"><?php echo wp_trim_words($video['description'], 10, ' ...'); ?></td>
-                </tr>
-                <?php endforeach;?>
-            </tbody>
-        </table>
-        <?php
+        $videos = maybe_unserialize(get_post_meta($post->ID, 'chnl_videos', true));
+        if ($videos):
+            ?>
+            <table class="wp-list-table widefat fixed striped pages">
+                <thead>
+                    <tr>
+                        <th class="manage-column column-primary"><strong>Video Title</strong></th>
+                        <th class="manage-column"><strong>Video Thumb</strong></th>
+                        <th class="manage-column"><strong>Video ID</strong></th>
+                        <th class="manage-column"><strong>Video slug</strong></th>
+                        <th class="manage-column"><strong>Video Description</strong></th>
+                    </tr>
+                </thead>
+                <tbody id="the-list">
+                    <?php foreach ($videos as $video): ?>
+                        <tr>
+                            <td class="column-title has-row-actions column-primary page-title" data-colname="Video Title">
+                                <strong><?php echo $video['title']; ?></strong>
+                                <button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button>
+                            </td>
+                            <td data-colname="Video Thumb"><img src="<?php echo get_option('dsp_cdn_img_url_field') . '/' . $video['thumb']; ?>/100/70"></td>
+                            <td data-colname="Video ID"><?php echo $video['_id']; ?></td>
+                            <td data-colname="Video Slug"><?php echo $video['slug']; ?></td>
+                            <td data-colname="Video Description"><?php echo wp_trim_words($video['description'], 10, ' ...'); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+            <?php
         endif;
         ?>
-            <p> No videos available for this channel</p>    
-        <?php    
+        <p> No videos available for this channel</p>    
+        <?php
     }
 
     /**

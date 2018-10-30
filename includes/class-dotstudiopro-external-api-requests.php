@@ -177,6 +177,62 @@ class Dsp_External_Api_Request {
         return $this->api_request_get($path, null, $headers);
         
     }
+    
+    /**
+     * Function to get recommendation by channel or video id
+     * @since 1.0.0
+     * @param type $type
+     * @param type $id
+     * @return type
+     */
+    
+    function get_recommendation($type = NULL, $id) {
+        
+        $token = $this->api_token_check();
+        
+        // If we have no token, the API call will fail, so we return an empty array
+        if (!$token)
+            return array();
+        
+        if($type == 'channel')
+            $path = 'search/recommendation/channel';
+        else
+            $path = 'search/recommendation';
+        
+        $headers = array(
+            'x-access-token' => $token
+        );
+        
+        $query = array('q' => $id);
+
+        return $this->api_request_get($path, $query, $headers);
+        
+    }
+    
+    /**
+     * function to get video detail by video id
+     * @since 1.0.0
+     * @param type $id
+     * @return type
+     */
+    
+    function get_video_by_id($id) {
+        
+        $token = $this->api_token_check();
+        
+        // If we have no token, or we have no country, the API call will fail, so we return an empty array
+        if (!$token)
+            return array();
+        
+        $path = 'video/play2/'.$id;
+        
+        $headers = array(
+            'x-access-token' => $token
+        );
+        
+        return $this->api_request_get($path, null, $headers);
+        
+    }
 
     /**
      * Get the IP of the user
