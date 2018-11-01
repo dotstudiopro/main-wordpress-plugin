@@ -8,7 +8,7 @@
  *
  * @link              https://www.dotstudiopro.com
  * @since             1.0.0
- * 
+ *
  * @package           Dotstudiopro_Api
  * @subpackage        Dotstudiopro_Api/includes
  */
@@ -124,7 +124,7 @@ class Dotstudiopro_Api {
          * The class responsible for custom post type category and channel in the Dashboard.
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/includes/class-dotstudiopro-api-posttypes.php';
-        
+
         /**
          * The class responsible for REST API
          */
@@ -164,7 +164,7 @@ class Dotstudiopro_Api {
         $plugin_admin = new Dotstudiopro_Api_Admin($this->get_Dotstudiopro_Api(), $this->get_version());
         $rest_api = new Dsp_REST_Api_Handler($this->get_Dotstudiopro_Api(), $this->get_version());
         $posttype = new Dsp_Custom_Posttypes();
-        
+
         $this->loader->add_action('admin_menu', $plugin_admin, 'add_admin_menu');
         $this->loader->add_action('admin_notices', $plugin_admin, 'show_admin_notice');
         $this->loader->add_action('admin_init', $plugin_admin, 'settings_api_init');
@@ -175,7 +175,7 @@ class Dotstudiopro_Api {
         $this->loader->add_action('wp_ajax_validate_dotstudiopro_api', $plugin_admin, 'validate_dotstudiopro_api');
         $this->loader->add_action('init', $posttype, 'create_dotstudiopro_post_types');
         $this->loader->add_action('add_meta_boxes', $posttype, 'create_custom_metabox');
-        //$this->loader->add_action('save_post', $posttype, 'category_metabox_save'); // Right now this action is not in use. 
+        //$this->loader->add_action('save_post', $posttype, 'category_metabox_save'); // Right now this action is not in use.
         $this->loader->add_action('admin_head-edit.php', $posttype, 'add_button_to_custom_posttypes');
         $this->loader->add_filter('manage_category_posts_columns', $posttype, 'dsp_category_table_head');
         $this->loader->add_action('manage_category_posts_custom_column', $posttype, 'dsp_category_table_content', 10, 2);
@@ -185,6 +185,8 @@ class Dotstudiopro_Api {
         $this->loader->add_filter('manage_channel_posts_columns', $posttype, 'dsp_channel_table_head');
         $this->loader->add_action('manage_channel_posts_custom_column', $posttype, 'dsp_channel_table_content', 10, 2);
         $this->loader->add_action( 'rest_api_init', $rest_api, 'dsp_webhook_routes');
+        // Add settings link in Plugins page
+        $this->loader->add_filter( 'plugin_action_links', $plugin_admin, 'add_settings_link', 10, 2 );
     }
 
     /**
