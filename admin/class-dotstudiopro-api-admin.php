@@ -134,7 +134,7 @@ class Dotstudiopro_Api_Admin {
         register_setting('dsp-dev-mode-section', 'dsp_country_code_field');
 
         add_settings_field(
-                'dsp_reset_token_field', __('Reset token', 'dotstudiopro-api'), array($this, 'dsp_reset_token_field_callback_function'), 'dsp-dev-mode-section', 'dotstudiopro_api_dev_mode_section'
+                'dsp_reset_token_field', __('Reset Token', 'dotstudiopro-api'), array($this, 'dsp_reset_token_field_callback_function'), 'dsp-dev-mode-section', 'dotstudiopro_api_dev_mode_section'
         );
         register_setting('dsp-dev-mode-section', 'dsp_reset_token_field');
 
@@ -148,22 +148,22 @@ class Dotstudiopro_Api_Admin {
         );
 
         add_settings_field(
-                'dsp_cdn_img_url_field', __('Dotstudiopro Image CDN URL.', 'dotstudiopro-api'), array($this, 'dsp_cdn_img_url_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
+                'dsp_cdn_img_url_field', __('dotstudioPro Image CDN URL', 'dotstudiopro-api'), array($this, 'dsp_cdn_img_url_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
         );
         register_setting('dsp-setting-section', 'dsp_cdn_img_url_field');
 
         add_settings_field(
-                'dsp_video_autoplay_field', __('Video Autoplay on load', 'dotstudiopro-api'), array($this, 'dsp_video_autoplay_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
+                'dsp_video_autoplay_field', __('Video Autoplay on Load', 'dotstudiopro-api'), array($this, 'dsp_video_autoplay_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
         );
         register_setting('dsp-setting-section', 'dsp_video_autoplay_field');
 
         add_settings_field(
-                'dsp_video_muteload_field', __('Video Mute on load', 'dotstudiopro-api'), array($this, 'dsp_video_muteload_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
+                'dsp_video_muteload_field', __('Video Mute on Load', 'dotstudiopro-api'), array($this, 'dsp_video_muteload_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
         );
         register_setting('dsp-setting-section', 'dsp_video_muteload_field');
 
         add_settings_field(
-                'dsp_video_color_field', __('Video player color', 'dotstudiopro-api'), array($this, 'dsp_video_color_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
+                'dsp_video_color_field', __('Video Player Color', 'dotstudiopro-api'), array($this, 'dsp_video_color_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
         );
         register_setting('dsp-setting-section', 'dsp_video_color_field');
 

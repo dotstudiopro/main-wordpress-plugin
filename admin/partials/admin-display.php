@@ -5,7 +5,7 @@
  *
  * @link              https://www.dotstudiopro.com
  * @since             1.0.0
- * 
+ *
  * @package           Dotstudiopro_Api
  * @subpackage        Dotstudiopro_Api/admin/partials
  */
@@ -32,7 +32,7 @@ $button = $active ? __('Update Api Key', 'dotstudiopro-api') : __('Activate Api 
             <h3><?php _e('API key information', 'dotstudiopro-api'); ?></h3>
         </div>
         <div class="inner">
-            <p><?php printf(__('Please add you Dotstudio Pro API key here. If you don\'t have API key <a href="%s" target="_blank">click here</a>.', 'dotstudiopro-api'), esc_url('https://www.dotstudiopro.com/user/register')); ?></p>
+            <p><?php printf(__('Please add your dotstudioPRO API key here. If you don\'t have API key <a href="%s" target="_blank">click here</a>.', 'dotstudiopro-api'), esc_url('https://www.dotstudiopro.com/user/register')); ?></p>
             <form action="#" class="dsp_api" id="dsp_api_form">
                 <div class="dsp-hidden">
                     <input type='hidden' name='action' value='validate_dotstudiopro_api' />
@@ -58,7 +58,7 @@ $button = $active ? __('Update Api Key', 'dotstudiopro-api') : __('Activate Api 
                 <h3><?php _e('Development Mode Options', 'dotstudiopro-api'); ?></h3>
             </div>
             <div class="inner">
-                <p><?php _e('Please note: Any options set here wil override normal settings. Please make sure to turn these settings off when you done testing.', 'dotstudiopro-api') ?></p>
+                <p><?php _e('Please note: Any options set here will override normal settings. Please make sure to turn these settings off when you are done testing.', 'dotstudiopro-api') ?></p>
                 <form method="post" action="options.php">
                     <input type="hidden" name="option_page" value="dsp-dev-mode-section">
                     <input type="hidden" name="action" value="update">
