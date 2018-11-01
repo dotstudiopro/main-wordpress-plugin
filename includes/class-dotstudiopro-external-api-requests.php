@@ -95,7 +95,7 @@ class Dsp_External_Api_Request {
      */
     function get_country($token = null) {
 
-        if(empty($token))
+        if (empty($token))
             $token = $this->api_token_check();
 
         /** DEV MODE * */
@@ -133,9 +133,9 @@ class Dsp_External_Api_Request {
     function get_categories() {
 
         $token = $this->api_token_check();
-        
+
         $this->get_country($token);
-        
+
         // If we have no token, or we have no country, the API call will fail, so we return an empty array
         if (!$token || !$this->country)
             return array();
@@ -145,10 +145,10 @@ class Dsp_External_Api_Request {
         $headers = array(
             'x-access-token' => $token
         );
-        
+
         return $this->api_request_get($path, null, $headers);
     }
-    
+
     /**
      * Get an array with all of the published channels in a company
      *
@@ -157,27 +157,26 @@ class Dsp_External_Api_Request {
      * @return Array Returns an array of channels, or an empty array if something is wrong or there are no channels
      */
     function get_channels($detail = 'partial') {
-        
+
         $token = $this->api_token_check();
-        
+
         $this->get_country($token);
-        
+
         // If we have no token, or we have no country, the API call will fail, so we return an empty array
         if (!$token || !$this->country)
             return array();
-        
+
         $path = 'channels/' . $this->country;
-        
+
         $headers = array(
             'x-access-token' => $token
         );
-        
+
         $query = array('detail' => $detail);
 
         return $this->api_request_get($path, null, $headers);
-        
     }
-    
+
     /**
      * Function to get recommendation by channel or video id
      * @since 1.0.0
@@ -185,53 +184,131 @@ class Dsp_External_Api_Request {
      * @param type $id
      * @return type
      */
-    
     function get_recommendation($type = NULL, $id) {
-        
+
         $token = $this->api_token_check();
-        
+
         // If we have no token, the API call will fail, so we return an empty array
         if (!$token)
             return array();
-        
-        if($type == 'channel')
+
+        if ($type == 'channel')
             $path = 'search/recommendation/channel';
         else
             $path = 'search/recommendation';
-        
+
         $headers = array(
             'x-access-token' => $token
         );
-        
+
         $query = array('q' => $id);
 
         return $this->api_request_get($path, $query, $headers);
-        
     }
-    
+
     /**
      * function to get video detail by video id
      * @since 1.0.0
      * @param type $id
      * @return type
      */
-    
     function get_video_by_id($id) {
-        
+
         $token = $this->api_token_check();
-        
+
         // If we have no token, or we have no country, the API call will fail, so we return an empty array
         if (!$token)
             return array();
-        
-        $path = 'video/play2/'.$id;
-        
+
+        $path = 'video/play2/' . $id;
+
         $headers = array(
             'x-access-token' => $token
         );
-        
+
         return $this->api_request_get($path, null, $headers);
-        
+    }
+
+    function get_video_by_slug_or_id($channel_sulg, $video_slug) {
+        $token = $this->api_token_check();
+
+        // If we have no token, or we have no country, the API call will fail, so we return an empty array
+        if (!$token)
+            return array();
+        $headers = array(
+            'x-access-token' => $token
+        );
+
+        if (preg_match('/^[a-f\d]{24}$/i', $video_slug)) {
+            $path = 'video/play2/' . $video_slug;
+            return $this->api_request_get($path, null, $headers);
+        } else {
+            $data = array();
+            $single_channel = $this->get_single_channel(array('channel_slug' => $channel_sulg));
+            if (!empty($single_channel)) {
+                foreach ($single_channel['channels'] as $channel) {
+                    if (!empty($channel['childchannels'])) {
+                        if ($channel['slug'] == $channel_sulg) {
+                            foreach ($channel['childchannels'] as $child) {
+                                if (!empty($child['playlist'])) {
+                                    foreach ($child['playlist'] as $video) {
+                                        if ((isset($video['slug']) && $video['slug'] == $video_slug) || (isset($video['_id']) && $video['_id'] == $video_slug)) {
+                                            $data = $video;
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            foreach ($channel['childchannels'] as $child) {
+                                if ($child['slug'] != $channel_slug)
+                                    return;
+                                if (!empty($child['playlist'])) {
+                                    foreach ($child['playlist'] as $video) {
+                                        if ((isset($video['slug']) && $video['slug'] == $video_slug) || (isset($video['_id']) && $video['_id'] == $video_slug)) {
+                                            $data =  $video;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        if (!empty($channel['playlist'])) {
+                            foreach ($channel['playlist'] as $video) {
+                                if ((isset($video['slug']) && $video['slug'] == $video_slug) || (isset($video['_id']) && $video['_id'] == $video_slug)) {
+                                    $data = $video;
+                                }
+                            }
+                        } else if (!empty($channel['video'])) {
+                            $data =  $channel['video'];
+                        }
+                    }
+                }
+            }
+            return $data;
+        }
+    }
+
+    function get_single_channel($args = array()) {
+
+        $token = $this->api_token_check();
+        $this->get_country($token);
+        // If we have no token, or we have no country, the API call will fail, so we return an empty array
+        if (!$token || !$this->country)
+            return array();
+        $headers = array(
+            'x-access-token' => $token
+        );
+
+        $channel_id = isset($args['channel_id']) ? $args['channel_id'] : false;
+        $channel_slug = isset($args['channel_slug']) ? $args['channel_slug'] : false;
+
+        if ($channel_id)
+            $path = 'channel/' . $this->country . '/id/' . $channel_id;
+
+        if ($channel_slug)
+            $path = 'channel/' . $this->country . '/' . $channel_slug;
+
+        return $this->api_request_get($path, null, $headers);
     }
 
     /**
@@ -264,9 +341,9 @@ class Dsp_External_Api_Request {
 
         // vars
         $url = $this->common_url . $path;
-        
-        if($query){
-            $url = add_query_arg($query,  $url );
+
+        if ($query) {
+            $url = add_query_arg($query, $url);
         }
 
         $raw_response = wp_remote_post($url, array(
@@ -311,11 +388,11 @@ class Dsp_External_Api_Request {
 
         // vars
         $url = $this->common_url . $path;
-        
-        if($query){
-            $url = add_query_arg($query,  $url );
+
+        if ($query) {
+            $url = add_query_arg($query, $url);
         }
-        
+
         $raw_response = wp_remote_get($url, array(
             'headers' => $headers,
             'timeout' => 50,
@@ -344,23 +421,22 @@ class Dsp_External_Api_Request {
         // return
         return $json;
     }
-    
+
     /**
      * Function to write the error log in file.
      * 
      * @param type $log
      */
-    
     private function write_log($message, $log) {
         if (true === WP_DEBUG) {
             if (is_array($log) || is_object($log)) {
-                error_log($message."-----" .print_r($log, true));
+                error_log($message . "-----" . print_r($log, true));
             } else {
-                error_log($message."-----".$log);
+                error_log($message . "-----" . $log);
             }
         }
     }
-    
+
     /**
      * Function to handel error responce which comes form DSP API
      * 
@@ -368,29 +444,23 @@ class Dsp_External_Api_Request {
      * @param type $raw_response
      * @return string
      */
-    
     public function error_message($raw_response) {
 
         $responce_body = wp_remote_retrieve_body($raw_response);
         $send_res = json_decode($responce_body);
-            if ($send_res->reason){
-                return $send_res->reason;
+        if ($send_res->reason) {
+            return $send_res->reason;
+        } elseif ($send_res->error) {
+            if (is_object($send_res->error)) {
+                return $send_res->error->name . ':' . $send_res->error->message;
+            } else {
+                return $send_res->error;
             }
-            elseif ($send_res->error){
-                if(is_object($send_res->error)){
-                    return $send_res->error->name.':'.$send_res->error->message;
-                }
-                else{
-                    return $send_res->error;
-                }
-            }
-            elseif ($send_res->message){
-                return $send_res->message;
-            }
-            else{
-                return 'Internal Server error.';
-            }
-        
+        } elseif ($send_res->message) {
+            return $send_res->message;
+        } else {
+            return 'Internal Server error.';
+        }
     }
 
 }
