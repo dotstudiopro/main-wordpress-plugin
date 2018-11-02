@@ -241,50 +241,18 @@ class Dsp_External_Api_Request {
 
         if (preg_match('/^[a-f\d]{24}$/i', $video_slug)) {
             $path = 'video/play2/' . $video_slug;
-            return $this->api_request_get($path, null, $headers);
+            $video = $this->api_request_get($path, null, $headers);
+            if(!is_wp_error($video)){
+                $video['object_type'] = 'video';
+            }
+            return $video;
         } else {
             $data = array();
             $single_channel = $this->get_single_channel(array('channel_slug' => $channel_sulg));
-            if (!empty($single_channel)) {
-                foreach ($single_channel['channels'] as $channel) {
-                    if (!empty($channel['childchannels'])) {
-                        if ($channel['slug'] == $channel_sulg) {
-                            foreach ($channel['childchannels'] as $child) {
-                                if (!empty($child['playlist'])) {
-                                    foreach ($child['playlist'] as $video) {
-                                        if ((isset($video['slug']) && $video['slug'] == $video_slug) || (isset($video['_id']) && $video['_id'] == $video_slug)) {
-                                            $data = $video;
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            foreach ($channel['childchannels'] as $child) {
-                                if ($child['slug'] != $channel_slug)
-                                    return;
-                                if (!empty($child['playlist'])) {
-                                    foreach ($child['playlist'] as $video) {
-                                        if ((isset($video['slug']) && $video['slug'] == $video_slug) || (isset($video['_id']) && $video['_id'] == $video_slug)) {
-                                            $data =  $video;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        if (!empty($channel['playlist'])) {
-                            foreach ($channel['playlist'] as $video) {
-                                if ((isset($video['slug']) && $video['slug'] == $video_slug) || (isset($video['_id']) && $video['_id'] == $video_slug)) {
-                                    $data = $video;
-                                }
-                            }
-                        } else if (!empty($channel['video'])) {
-                            $data =  $channel['video'];
-                        }
-                    }
-                }
+            if(!is_wp_error($single_channel)){
+                $single_channel['object_type'] = 'channel';
             }
-            return $data;
+            return $single_channel;
         }
     }
 
