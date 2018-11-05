@@ -57,7 +57,7 @@ class Dsp_Manage_channels {
      * 
      * @return json
      */
-    public function manage_channel($request) {
+    public function manage_channel($request, $type = null) {
 
         $user_ID = 1;
         $message = '';
@@ -99,18 +99,19 @@ class Dsp_Manage_channels {
             return new WP_Error('rest_internal_server_error', __('Internal Server Error.'), array('status' => 500));
         }
 
-        $channel_id = $request['_id'];
-        $company_id = $request['company_id'];
-        $company_logo = $request['company_logo'];
+        $channel_id = isset($request['_id']) ? $request['_id'] : '';
+        $company_id = isset($request['company_id']) ? $request['company_id'] : '';
+        $company_logo = isset($request['company_logo']) ? $request['company_logo'] : '';
         $writers = implode(',', $request['writers']);
         $genres = implode(',', $request['genres']);
         $directors = implode(',', $request['directors']);
         $actors = implode(',', $request['actors']);
-        $poster = $request['poster'];
-        $spotlight_poster = $request['spotlight_poster'];
-        $childchannels = $request['childchannels'];
-        $categories = $request['categories'];
-        $dspro_channel_id = $request['dspro_id'];
+        $poster = isset($request['poster']) ? $request['poster'] : '';
+        $spotlight_poster = isset($request['spotlight_poster']) ? $request['spotlight_poster'] : '';
+        $childchannels = isset($request['childchannels']) ? $request['childchannels'] : '';
+        $categories = isset($request['categories']) ? $request['categories'] : '';
+        $dspro_channel_id = isset($request['dspro_id']) ? $request['dspro_id'] : '';
+        $weightings = isset($request['weightings']) ? $request['weightings'] : '';
 
         update_post_meta($post_id, 'chnl_id', $channel_id);
         update_post_meta($post_id, 'chnl_writers', $writers);
@@ -138,9 +139,37 @@ class Dsp_Manage_channels {
             }
             update_post_meta($post_id, 'chnl_child_channels', implode(',', $childchannel));
         }
+
+        $weightingsArr = array();
+        if (!empty($weightings)) {
+            foreach ($weightings as $key => $weighting):
+                $weightingsArr[$key] = isset($weighting) ? $weighting : '';
+            endforeach;
+            $weightingData = maybe_serialize($weightingsArr);
+
+            update_post_meta($post_id, 'chnl_weightings', $weightingData);
+        }
         wp_reset_postdata();
 
-        $send_response = array('code' => 'rest_success', 'message' => 'Channel data ' . $message, 'data' => array('status' => 200));
+        if (empty($type)) {
+            $send_response = array('code' => 'rest_success', 'message' => 'Channel data ' . $message, 'data' => array('status' => 200));
+            wp_send_json($send_response, 200);
+        }
+    }
+    
+    /**
+     * This function to update channel order when the request is comes form an API Routes.
+     * @since 1.0.0
+     * @param type $request
+     */
+
+    public function order_channel($request) {
+
+        $channels = $request['channels'];
+        foreach ($channels as $channel):
+            $this->manage_channel($channel, 'order');
+        endforeach;
+        $send_response = array('code' => 'rest_success', 'message' => 'Channel order updated succesfully. ', 'data' => array('status' => 200));
         wp_send_json($send_response, 200);
     }
 

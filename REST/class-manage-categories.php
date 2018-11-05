@@ -57,7 +57,7 @@ class Dsp_Manage_categories {
      * 
      * @return json
      */
-    public function manage_category($request) {
+    public function manage_category($request, $type = null) {
         $user_ID = 1;
         $message = '';
 
@@ -105,12 +105,36 @@ class Dsp_Manage_categories {
             update_post_meta($post_id, 'cat_poster', $request['poster']);
             update_post_meta($post_id, 'is_in_cat_menu', $request['menu']);
             update_post_meta($post_id, 'is_on_cat_homepage', $request['homepage']);
+            update_post_meta($post_id, 'weight', isset($request['weight']) ? $request['weight'] : '');
 
             wp_reset_postdata();
-            $send_response = array('code' => 'rest_success', 'message' => 'Category data ' . $message, 'data' => array('status' => 200));
-            wp_send_json($send_response, 200);
+
+            if (empty($type)) {
+                $send_response = array('code' => 'rest_success', 'message' => 'Category data ' . $message, 'data' => array('status' => 200));
+                wp_send_json($send_response, 200);
+            }
+        } else {
+            if (empty($type)) {
+                return new WP_Error('rest_syndication_error', __('Syndication for this category is not enabled for website.'), array('status' => 406));
+            }
         }
-        return new WP_Error('rest_syndication_error', __('Syndication for this category is not enabled for website.'), array('status' => 406));
+    }
+    
+    /**
+     * This function to update category order when the request is comes form an API Routes.
+     * @since 1.0.0
+     * @param type $request
+     */
+
+    public function order_category($request) {
+
+        $categories = $request['categories'];
+        foreach ($categories as $category):
+            $this->manage_category($category, 'order');
+        endforeach;
+
+        $send_response = array('code' => 'rest_success', 'message' => 'Category order updated succesfully. ', 'data' => array('status' => 200));
+        wp_send_json($send_response, 200);
     }
 
 }

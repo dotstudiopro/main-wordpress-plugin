@@ -55,6 +55,12 @@ class Dsp_REST_Api_Handler {
             'callback' => array($this->manageCategories, 'manage_category'),
             'args' => $this->dsp_get_category_args('add')
         ]);
+        register_rest_route($this->namespace, '/category/order/update', [
+            'methods' => WP_REST_Server::CREATABLE,
+            'permission_callback' => $this->dsp_check_auth(),
+            'callback' => array($this->manageCategories, 'order_category'),
+            'args' => $this->dsp_get_category_args('order')
+        ]);
 
         // Channel endpoints 
 
@@ -75,6 +81,12 @@ class Dsp_REST_Api_Handler {
             'permission_callback' => $this->dsp_check_auth(),
             'callback' => array($this->manageChannels, 'manage_channel'),
             'args' => $this->dsp_get_channel_args('add')
+        ]);
+        register_rest_route($this->namespace, '/channel/order/update', [
+            'methods' => WP_REST_Server::CREATABLE,
+            'permission_callback' => $this->dsp_check_auth(),
+            'callback' => array($this->manageChannels, 'order_channel'),
+            'args' => $this->dsp_get_channel_args('order')
         ]);
     }
 
@@ -155,6 +167,12 @@ class Dsp_REST_Api_Handler {
                     'required' => true,
                     'description' => esc_html__('Pass the category ID which you would like to delete.', 'dotstudiopro-api'),
                     'type' => 'string',
+                ];
+                break;
+            case 'order':
+                $args['categories'] = [
+                    'required' => true,
+                    'description' => esc_html__('Pass the categories object which you need to update ', 'dotstudiopro-api'),
                 ];
                 break;
         endswitch;
@@ -267,6 +285,12 @@ class Dsp_REST_Api_Handler {
                     'required' => true,
                     'description' => esc_html__('Pass the channel ID which you would like to delete.', 'dotstudiopro-api'),
                     'type' => 'string',
+                ];
+                break;
+            case 'order':
+                $args['channels'] = [
+                    'required' => true,
+                    'description' => esc_html__('Pass the channels object which you need to update ', 'dotstudiopro-api'),
                 ];
                 break;
         endswitch;
