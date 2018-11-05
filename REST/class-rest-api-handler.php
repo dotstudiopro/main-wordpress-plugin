@@ -114,11 +114,6 @@ class Dsp_REST_Api_Handler {
                     'description' => esc_html__('New category ID.', 'dotstudiopro-api'),
                     'type' => 'string',
                 ];
-                $args['dspro_id'] = [
-                    'required' => true,
-                    'description' => esc_html__('Dotstudiopro Channel ID.', 'dotstudiopro-api'),
-                    'type' => 'string',
-                ];
                 $args['name'] = [
                     'required' => true,
                     'description' => esc_html__('New category Name.', 'dotstudiopro-api'),
@@ -184,6 +179,11 @@ class Dsp_REST_Api_Handler {
                 $args['_id'] = [
                     'required' => true,
                     'description' => esc_html__('New channel ID.', 'dotstudiopro-api'),
+                    'type' => 'string',
+                ];
+                $args['dspro_id'] = [
+                    'required' => true,
+                    'description' => esc_html__('Dotstudiopro Channel ID.', 'dotstudiopro-api'),
                     'type' => 'string',
                 ];
                 $args['title'] = [
