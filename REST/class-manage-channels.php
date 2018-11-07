@@ -2,12 +2,12 @@
 
 /**
  * The file that manage the Channels class
- * 
+ *
  * Maintain a list of all webhook routes for Channels (Ex: delete channel, add or update channel)
  *
  * @link              https://www.dotstudiopro.com
  * @since             1.0.0
- * 
+ *
  * @package           Dotstudiopro_Api
  * @subpackage        Dotstudiopro_Api/REST
  */
@@ -15,20 +15,23 @@ class Dsp_Manage_channels {
 
     /**
      * This Function is used to delete the category when the request is comes form an API Routes.
-     * 
+     *
      * @version 1.0.0
      * @param type $request
-     * 
+     *
      * @return json
      */
     public function delete_channel($request) {
+
+        $dsp_channel = json_decode(json_encode($request['channel']));
+
         $args = array(
             'posts_per_page' => -1,
             'post_type' => 'channel',
             'meta_query' => array(
                 array(
                     'key' => 'chnl_id',
-                    'value' => $request['_id']
+                    'value' => $dsp_channel->_id
                 )
             )
         );
@@ -51,13 +54,15 @@ class Dsp_Manage_channels {
 
     /**
      * This Function is used to add or update the channel when the request is comes form an API Routes.
-     * 
+     *
      * @version 1.0.0
      * @param type $request
-     * 
+     *
      * @return json
      */
     public function manage_channel($request, $type = null) {
+
+        $dsp_channel = json_decode(json_encode($request['channel']));
 
         $user_ID = 1;
         $message = '';
@@ -68,7 +73,7 @@ class Dsp_Manage_channels {
             'meta_query' => array(
                 array(
                     'key' => 'chnl_id',
-                    'value' => $request['_id']
+                    'value' => $dsp_channel->_id']
                 )
             )
         );
@@ -77,13 +82,13 @@ class Dsp_Manage_channels {
         $posts = $channel->posts;
 
         $new_post = array(
-            'post_title' => $request['title'],
-            'post_content' => ($request['description']) ? $request['description'] : '',
+            'post_title' => $dsp_channel->title'],
+            'post_content' => ($dsp_channel->description']) ? $dsp_channel->description'] : '',
             'post_status' => 'publish',
             'post_date' => date('Y-m-d H:i:s'),
             'post_author' => $user_ID,
             'post_type' => 'channel',
-            'post_name' => $request['slug'],
+            'post_name' => $dsp_channel->slug'],
         );
 
         if (empty($channel->have_posts())) {
@@ -99,19 +104,19 @@ class Dsp_Manage_channels {
             return new WP_Error('rest_internal_server_error', __('Internal Server Error.'), array('status' => 500));
         }
 
-        $channel_id = isset($request['_id']) ? $request['_id'] : '';
-        $company_id = isset($request['company_id']) ? $request['company_id'] : '';
-        $company_logo = isset($request['company_logo']) ? $request['company_logo'] : '';
-        $writers = implode(',', $request['writers']);
-        $genres = implode(',', $request['genres']);
-        $directors = implode(',', $request['directors']);
-        $actors = implode(',', $request['actors']);
-        $poster = isset($request['poster']) ? $request['poster'] : '';
-        $spotlight_poster = isset($request['spotlight_poster']) ? $request['spotlight_poster'] : '';
-        $childchannels = isset($request['childchannels']) ? $request['childchannels'] : '';
-        $categories = isset($request['categories']) ? $request['categories'] : '';
-        $dspro_channel_id = isset($request['dspro_id']) ? $request['dspro_id'] : '';
-        $weightings = isset($request['weightings']) ? $request['weightings'] : '';
+        $channel_id = isset($dsp_channel->_id']) ? $dsp_channel->_id'] : '';
+        $company_id = isset($dsp_channel->company_id']) ? $dsp_channel->company_id'] : '';
+        $company_logo = isset($dsp_channel->company_logo']) ? $dsp_channel->company_logo'] : '';
+        $writers = implode(',', $dsp_channel->writers']);
+        $genres = implode(',', $dsp_channel->genres']);
+        $directors = implode(',', $dsp_channel->directors']);
+        $actors = implode(',', $dsp_channel->actors']);
+        $poster = isset($dsp_channel->poster']) ? $dsp_channel->poster'] : '';
+        $spotlight_poster = isset($dsp_channel->spotlight_poster']) ? $dsp_channel->spotlight_poster'] : '';
+        $childchannels = isset($dsp_channel->childchannels']) ? $dsp_channel->childchannels'] : '';
+        $categories = isset($dsp_channel->categories']) ? $dsp_channel->categories'] : '';
+        $dspro_channel_id = isset($dsp_channel->dspro_id']) ? $dsp_channel->dspro_id'] : '';
+        $weightings = isset($dsp_channel->weightings']) ? $dsp_channel->weightings'] : '';
 
         update_post_meta($post_id, 'chnl_id', $channel_id);
         update_post_meta($post_id, 'chnl_writers', $writers);
@@ -156,7 +161,7 @@ class Dsp_Manage_channels {
             wp_send_json($send_response, 200);
         }
     }
-    
+
     /**
      * This function to update channel order when the request is comes form an API Routes.
      * @since 1.0.0
@@ -165,7 +170,8 @@ class Dsp_Manage_channels {
 
     public function order_channel($request) {
 
-        $channels = $request['channels'];
+        $dsp_channel = json_decode(json_encode($request['channel']));
+
         foreach ($channels as $channel):
             $this->manage_channel($channel, 'order');
         endforeach;

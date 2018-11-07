@@ -2,12 +2,12 @@
 
 /**
  * The file that manage the Category class
- * 
+ *
  * Maintain a list of all webhook routes for Category (Ex: delete category, add or update category)
  *
  * @link              https://www.dotstudiopro.com
  * @since             1.0.0
- * 
+ *
  * @package           Dotstudiopro_Api
  * @subpackage        Dotstudiopro_Api/REST
  */
@@ -15,10 +15,10 @@ class Dsp_Manage_categories {
 
     /**
      * This Function is used to delete the category when the request is comes form an API Routes.
-     * 
+     *
      * @version 1.0.0
      * @param type $request
-     * 
+     *
      * @return json
      */
     public function delete_category($request) {
@@ -28,7 +28,7 @@ class Dsp_Manage_categories {
             'meta_query' => array(
                 array(
                     'key' => 'cat_id',
-                    'value' => $request['_id']
+                    'value' => $request['category']->_id
                 )
             )
         );
@@ -51,15 +51,17 @@ class Dsp_Manage_categories {
 
     /**
      * This Function is used to add or update the category when the request is comes form an API Routes.
-     * 
+     *
      * @version 1.0.0
      * @param type $request
-     * 
+     *
      * @return json
      */
     public function manage_category($request, $type = null) {
         $user_ID = 1;
         $message = '';
+
+        $dsp_category = json_decode(json_encode($request['category']));
 
         if (isset($request['platforms'][0]['website'])) {
 
@@ -69,7 +71,7 @@ class Dsp_Manage_categories {
                 'meta_query' => array(
                     array(
                         'key' => 'cat_id',
-                        'value' => $request['_id']
+                        'value' =>  $dsp_category->_id
                     )
                 )
             );
@@ -119,7 +121,7 @@ class Dsp_Manage_categories {
             }
         }
     }
-    
+
     /**
      * This function to update category order when the request is comes form an API Routes.
      * @since 1.0.0
