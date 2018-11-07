@@ -29,7 +29,7 @@ class Dsp_Manage_categories {
             'meta_query' => array(
                 array(
                     'key' => 'cat_id',
-                    'value' => $request['category']->_id
+                    'value' => $dsp_category->_id
                 )
             )
         );
@@ -64,7 +64,7 @@ class Dsp_Manage_categories {
 
         $dsp_category = json_decode(json_encode($request['category']));
 
-        if (isset($request['platforms'][0]['website'])) {
+        if (isset($dsp_category->platforms[0]->website)) {
 
             $args = array(
                 'posts_per_page' => -1,

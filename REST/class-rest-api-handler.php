@@ -7,7 +7,7 @@
  *
  * @link              https://www.dotstudiopro.com
  * @since             1.0.0
- * 
+ *
  * @package           Dotstudiopro_Api
  * @subpackage        Dotstudiopro_Api/REST
  */
@@ -30,12 +30,12 @@ class Dsp_REST_Api_Handler {
 
     /**
      * Add the endpoints to the API
-     * 
+     *
      * @since 1.0.0
      */
     public function dsp_webhook_routes() {
 
-        // Category endpoints 
+        // Category endpoints
 
         register_rest_route($this->namespace, '/category/delete', [
             'methods' => WP_REST_Server::DELETABLE,
@@ -62,7 +62,7 @@ class Dsp_REST_Api_Handler {
             'args' => $this->dsp_get_category_args('order')
         ]);
 
-        // Channel endpoints 
+        // Channel endpoints
 
         register_rest_route($this->namespace, '/channel/delete', [
             'methods' => WP_REST_Server::DELETABLE,
@@ -91,9 +91,9 @@ class Dsp_REST_Api_Handler {
     }
 
     /**
-     * This function is used as a middleware for all the API 
+     * This function is used as a middleware for all the API
      * (Right now this function is not in use because we don't need to add authentication on our API)
-     * 
+     *
      * @since 1.0.0
      */
     private function dsp_check_auth() {
@@ -109,7 +109,7 @@ class Dsp_REST_Api_Handler {
 
     /**
      * This function is used to check the category api's arguments
-     * 
+     *
      * @since 1.0.0
      * @param type $event
      * @return string
@@ -121,49 +121,49 @@ class Dsp_REST_Api_Handler {
         switch ($event):
             case 'add':
             case 'update':
-                $args['_id'] = [
+                $args['category']['_id'] = [
                     'required' => true,
                     'description' => esc_html__('New category ID.', 'dotstudiopro-api'),
                     'type' => 'string',
                 ];
-                $args['name'] = [
+                $args['category']['name'] = [
                     'required' => true,
                     'description' => esc_html__('New category Name.', 'dotstudiopro-api'),
                     'type' => 'string',
                 ];
-                $args['slug'] = [
+                $args['category']['slug'] = [
                     'required' => true,
                     'description' => esc_html__('New category slug.', 'dotstudiopro-api'),
                     'type' => 'string',
                 ];
-                $args['description'] = [
+                $args['category']['description'] = [
                     'required' => false,
                     'description' => esc_html__('New category description.', 'dotstudiopro-api'),
                     'type' => 'string',
                 ];
-                $args['wallpaper'] = [
+                $args['category']['wallpaper'] = [
                     'required' => false,
                     'description' => esc_html__('New category wallpaper.', 'dotstudiopro-api'),
                     'type' => 'string',
                 ];
-                $args['poster'] = [
+                $args['category']['poster'] = [
                     'required' => false,
                     'description' => esc_html__('New category poster.', 'dotstudiopro-api'),
                     'type' => 'string',
                 ];
-                $args['menu'] = [
+                $args['category']['menu'] = [
                     'required' => false,
                     'description' => esc_html__('New category in menu (true/false).', 'dotstudiopro-api'),
                     'type' => 'boolean',
                 ];
-                $args['homepage'] = [
+                $args['category']['homepage'] = [
                     'required' => false,
                     'description' => esc_html__('New category on homepage (true/false).', 'dotstudiopro-api'),
                     'type' => 'boolean',
                 ];
                 break;
             case 'delete':
-                $args['_id'] = [
+                $args['category']['_id'] = [
                     'required' => true,
                     'description' => esc_html__('Pass the category ID which you would like to delete.', 'dotstudiopro-api'),
                     'type' => 'string',
@@ -182,7 +182,7 @@ class Dsp_REST_Api_Handler {
 
     /**
      * This function is used to check the channel api's arguments
-     * 
+     *
      * @since 1.0.0
      * @param type $event
      * @return string
@@ -193,95 +193,101 @@ class Dsp_REST_Api_Handler {
 
         switch ($event):
             case 'add':
-            case 'update':
-                $args['_id'] = [
+            $args['channel']['_id'] = [
                     'required' => true,
                     'description' => esc_html__('New channel ID.', 'dotstudiopro-api'),
                     'type' => 'string',
                 ];
-                $args['dspro_id'] = [
+                $args['channel']['dspro_id'] = [
                     'required' => true,
                     'description' => esc_html__('Dotstudiopro Channel ID.', 'dotstudiopro-api'),
                     'type' => 'string',
                 ];
-                $args['title'] = [
+                $args['channel']['title'] = [
                     'required' => true,
                     'description' => esc_html__('New channel Name.', 'dotstudiopro-api'),
                     'type' => 'string',
                 ];
-                $args['slug'] = [
+                $args['channel']['slug'] = [
                     'required' => true,
                     'description' => esc_html__('New channel slug.', 'dotstudiopro-api'),
                     'type' => 'string',
                 ];
-                $args['description'] = [
+                $args['channel']['description'] = [
                     'required' => false,
                     'description' => esc_html__('New channel description.', 'dotstudiopro-api'),
                     'type' => 'string',
                 ];
-                $args['company_id'] = [
+                $args['channel']['company_id'] = [
                     'required' => true,
                     'description' => esc_html__('New channel company_id.', 'dotstudiopro-api'),
                     'type' => 'string',
                 ];
-                $args['company_logo'] = [
+                $args['channel']['company_logo'] = [
                     'required' => true,
                     'description' => esc_html__('New channel Company logo.', 'dotstudiopro-api'),
                     'type' => 'string',
                 ];
-                $args['poster'] = [
+                $args['channel']['poster'] = [
                     'required' => false,
                     'description' => esc_html__('New channel poster.', 'dotstudiopro-api'),
                     'type' => 'string',
                 ];
-                $args['spotlight_poster'] = [
+                $args['channel']['spotlight_poster'] = [
                     'required' => false,
                     'description' => esc_html__('New channel Spotlight poster.', 'dotstudiopro-api'),
                     'type' => 'string',
                 ];
-                $args['writers'] = [
+                $args['channel']['writers'] = [
                     'required' => false,
                     'description' => esc_html__('New channel writers.', 'dotstudiopro-api'),
                     'type' => 'array',
                 ];
-                $args['genres'] = [
+                $args['channel']['genres'] = [
                     'required' => false,
                     'description' => esc_html__('New channel genres.', 'dotstudiopro-api'),
                     'type' => 'array',
                 ];
-                $args['directors'] = [
+                $args['channel']['directors'] = [
                     'required' => false,
                     'description' => esc_html__('New channel directors.', 'dotstudiopro-api'),
                     'type' => 'array',
                 ];
-                $args['actors'] = [
+                $args['channel']['actors'] = [
                     'required' => false,
                     'description' => esc_html__('New channel actors.', 'dotstudiopro-api'),
                     'type' => 'array',
                 ];
-                $args['childchannels'] = [
+                $args['channel']['childchannels'] = [
                     'required' => false,
                     'description' => esc_html__('New channel childchannels.', 'dotstudiopro-api'),
                     'type' => 'array',
                 ];
-                $args['categories'] = [
+                $args['channel']['categories'] = [
                     'required' => false,
                     'description' => esc_html__('New channel categories.', 'dotstudiopro-api'),
                     'type' => 'array',
                 ];
-                $args['playlist'] = [
+                $args['channel']['playlist'] = [
                     'required' => false,
                     'description' => esc_html__('New channel Playlist.', 'dotstudiopro-api'),
                     'type' => 'array',
                 ];
-                $args['video'] = [
+                $args['channel']['video'] = [
                     'required' => false,
                     'description' => esc_html__('New channel video.', 'dotstudiopro-api'),
                     'type' => 'object',
                 ];
                 break;
+            case 'update':
+                $args['channels'] = [
+                    'required' => true,
+                    'description' => esc_html__('The channel info we are updating.', 'dotstudiopro-api'),
+                    'type' => 'array',
+                ];
+                break;
             case 'delete':
-                $args['_id'] = [
+                $args['channel']['_id'] = [
                     'required' => true,
                     'description' => esc_html__('Pass the channel ID which you would like to delete.', 'dotstudiopro-api'),
                     'type' => 'string',
