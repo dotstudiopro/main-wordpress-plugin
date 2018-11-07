@@ -73,7 +73,7 @@ class Dsp_Manage_channels {
             'meta_query' => array(
                 array(
                     'key' => 'chnl_id',
-                    'value' => $dsp_channel->_id']
+                    'value' => $dsp_channel->_id
                 )
             )
         );
@@ -82,13 +82,13 @@ class Dsp_Manage_channels {
         $posts = $channel->posts;
 
         $new_post = array(
-            'post_title' => $dsp_channel->title'],
-            'post_content' => ($dsp_channel->description']) ? $dsp_channel->description'] : '',
+            'post_title' => $dsp_channel->title,
+            'post_content' => ($dsp_channel->description) ? $dsp_channel->description : '',
             'post_status' => 'publish',
             'post_date' => date('Y-m-d H:i:s'),
             'post_author' => $user_ID,
             'post_type' => 'channel',
-            'post_name' => $dsp_channel->slug'],
+            'post_name' => $dsp_channel->slug,
         );
 
         if (empty($channel->have_posts())) {
@@ -104,19 +104,19 @@ class Dsp_Manage_channels {
             return new WP_Error('rest_internal_server_error', __('Internal Server Error.'), array('status' => 500));
         }
 
-        $channel_id = isset($dsp_channel->_id']) ? $dsp_channel->_id'] : '';
-        $company_id = isset($dsp_channel->company_id']) ? $dsp_channel->company_id'] : '';
-        $company_logo = isset($dsp_channel->company_logo']) ? $dsp_channel->company_logo'] : '';
-        $writers = implode(',', $dsp_channel->writers']);
-        $genres = implode(',', $dsp_channel->genres']);
-        $directors = implode(',', $dsp_channel->directors']);
-        $actors = implode(',', $dsp_channel->actors']);
-        $poster = isset($dsp_channel->poster']) ? $dsp_channel->poster'] : '';
-        $spotlight_poster = isset($dsp_channel->spotlight_poster']) ? $dsp_channel->spotlight_poster'] : '';
-        $childchannels = isset($dsp_channel->childchannels']) ? $dsp_channel->childchannels'] : '';
-        $categories = isset($dsp_channel->categories']) ? $dsp_channel->categories'] : '';
-        $dspro_channel_id = isset($dsp_channel->dspro_id']) ? $dsp_channel->dspro_id'] : '';
-        $weightings = isset($dsp_channel->weightings']) ? $dsp_channel->weightings'] : '';
+        $channel_id = isset($dsp_channel->_id) ? $dsp_channel->_id : '';
+        $company_id = isset($dsp_channel->company_id) ? $dsp_channel->company_id : '';
+        $company_logo = isset($dsp_channel->company_logo) ? $dsp_channel->company_logo : '';
+        $writers = implode(',', $dsp_channel->writers);
+        $genres = implode(',', $dsp_channel->genres);
+        $directors = implode(',', $dsp_channel->directors);
+        $actors = implode(',', $dsp_channel->actors);
+        $poster = isset($dsp_channel->poster) ? $dsp_channel->poster : '';
+        $spotlight_poster = isset($dsp_channel->spotlight_poster) ? $dsp_channel->spotlight_poster : '';
+        $childchannels = isset($dsp_channel->childchannels) ? $dsp_channel->childchannels : '';
+        $categories = isset($dsp_channel->categories) ? $dsp_channel->categories : '';
+        $dspro_channel_id = isset($dsp_channel->dspro_id) ? $dsp_channel->dspro_id : '';
+        $weightings = isset($dsp_channel->weightings) ? $dsp_channel->weightings : '';
 
         update_post_meta($post_id, 'chnl_id', $channel_id);
         update_post_meta($post_id, 'chnl_writers', $writers);

@@ -22,6 +22,7 @@ class Dsp_Manage_categories {
      * @return json
      */
     public function delete_category($request) {
+        $dsp_category = json_decode(json_encode($request['category']));
         $args = array(
             'posts_per_page' => -1,
             'post_type' => 'category',
@@ -80,13 +81,13 @@ class Dsp_Manage_categories {
             $posts = $category->posts;
 
             $new_post = array(
-                'post_title' => $request['name'],
-                'post_content' => ($request['description']) ? $request['description'] : '',
+                'post_title' => $dsp_category->name,
+                'post_content' => ($dsp_category->description) ? $dsp_category->description : '',
                 'post_status' => 'publish',
                 'post_date' => date('Y-m-d H:i:s'),
                 'post_author' => $user_ID,
                 'post_type' => 'category',
-                'post_name' => $request['slug'],
+                'post_name' => $dsp_category->slug,
             );
 
             if (empty($category->have_posts())) {
@@ -102,12 +103,12 @@ class Dsp_Manage_categories {
                 return new WP_Error('rest_internal_server_error', __('Internal Server Error.'), array('status' => 500));
             }
 
-            update_post_meta($post_id, 'cat_id', $request['_id']);
-            update_post_meta($post_id, 'cat_wallpaper', $request['wallpaper']);
-            update_post_meta($post_id, 'cat_poster', $request['poster']);
-            update_post_meta($post_id, 'is_in_cat_menu', $request['menu']);
-            update_post_meta($post_id, 'is_on_cat_homepage', $request['homepage']);
-            update_post_meta($post_id, 'weight', isset($request['weight']) ? $request['weight'] : '');
+            update_post_meta($post_id, 'cat_id', $dsp_category->_id);
+            update_post_meta($post_id, 'cat_wallpaper', $dsp_category->wallpaper);
+            update_post_meta($post_id, 'cat_poster', $dsp_category->poster);
+            update_post_meta($post_id, 'is_in_cat_menu', $dsp_category->menu);
+            update_post_meta($post_id, 'is_on_cat_homepage', $dsp_category->homepage);
+            update_post_meta($post_id, 'weight', isset($dsp_category->weight) ? $dsp_category->weight : '');
 
             wp_reset_postdata();
 
