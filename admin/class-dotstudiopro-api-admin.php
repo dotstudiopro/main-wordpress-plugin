@@ -344,13 +344,13 @@ class Dotstudiopro_Api_Admin {
         if (!$dotstudiopro_api_key)
             wp_send_json_error(array('message' => 'Api Key Not Found..'), 404);
 
-        $channels = get_pages( array( 'post_type' => 'channel') );
-        foreach ( $channels as $channel ) {
+        $channels = get_pages(array('post_type' => 'channel'));
+        foreach ($channels as $channel) {
             wp_delete_post($channel->ID, true);
         }
 
-        $categories = get_pages( array( 'post_type' => 'category') );
-        foreach ( $categories as $category ) {
+        $categories = get_pages(array('post_type' => 'category'));
+        foreach ($categories as $category) {
             wp_delete_post($category->ID, true);
         }
 
@@ -372,16 +372,16 @@ class Dotstudiopro_Api_Admin {
         static $plugin;
 
         // If we don't have a plugin, get one
-        if (!isset($plugin)) $plugin = plugin_basename(dirname(__FILE__, 2)) . "/" . $this->name . ".php";
+        if (!isset($plugin))
+            $plugin = plugin_basename(dirname(__FILE__)) . "/" . $this->name . ".php";
 
         if ($plugin == $plugin_file) {
 
-            $settings = array('settings' => '<a href="' . admin_url( "admin.php?page=dsp-api-settings" ) . '">' . __('Settings') . '</a>');
+            $settings = array('settings' => '<a href="' . admin_url("admin.php?page=dsp-api-settings") . '">' . __('Settings') . '</a>');
             $site_link = array('support' => '<a href="https://www.dotstudiopro.com/contact-us#support" target="_blank">Support</a>');
 
             $actions = array_merge($settings, $actions);
             $actions = array_merge($site_link, $actions);
-
         }
 
         return $actions;
