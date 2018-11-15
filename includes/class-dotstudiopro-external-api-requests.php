@@ -42,7 +42,7 @@ class Dsp_External_Api_Request {
         if (empty($this->api_key))
             return false;
         $body = array(
-            'key' => $_POST['dotstudiopro_api_key'],
+            'key' => $this->api_key
         );
         return $this->api_request_post('token', null, null, $body);
     }
@@ -66,9 +66,9 @@ class Dsp_External_Api_Request {
     function api_new_token() {
         // Acquire an API token and save it for later use.
         $token = $this->get_token();
-        update_option('dotstudiopro_api_token', $token);
+        update_option('dotstudiopro_api_token', $token['token']);
         update_option('dotstudiopro_api_token_time', time());
-        return $token;
+        return $token['token'];
     }
 
     /**
@@ -305,7 +305,7 @@ class Dsp_External_Api_Request {
      * @param type $headers
      * @return \WP_Error or Json Responce
      */
-    private function api_request_post($path = null, $query = null, $headers = null, $body = null) {
+    public function api_request_post($path = null, $query = null, $headers = null, $body = null) {
 
         // vars
         $url = $this->common_url . $path;
@@ -352,7 +352,7 @@ class Dsp_External_Api_Request {
      * @param type $headers
      * @return \WP_Error or  Json Responce 
      */
-    private function api_request_get($path = null, $query = null, $headers = null) {
+    public function api_request_get($path = null, $query = null, $headers = null) {
 
         // vars
         $url = $this->common_url . $path;
