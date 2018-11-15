@@ -229,56 +229,6 @@ class Dsp_External_Api_Request {
         return $this->api_request_get($path, null, $headers);
     }
 
-    function get_video_by_slug_or_id($channel_sulg, $video_slug) {
-        $token = $this->api_token_check();
-
-        // If we have no token, or we have no country, the API call will fail, so we return an empty array
-        if (!$token)
-            return array();
-        $headers = array(
-            'x-access-token' => $token
-        );
-
-        if (preg_match('/^[a-f\d]{24}$/i', $video_slug)) {
-            $path = 'video/play2/' . $video_slug;
-            $video = $this->api_request_get($path, null, $headers);
-            if(!is_wp_error($video)){
-                $video['object_type'] = 'video';
-            }
-            return $video;
-        } else {
-            $data = array();
-            $single_channel = $this->get_single_channel(array('channel_slug' => $channel_sulg));
-            if(!is_wp_error($single_channel)){
-                $single_channel['object_type'] = 'channel';
-            }
-            return $single_channel;
-        }
-    }
-
-    function get_single_channel($args = array()) {
-
-        $token = $this->api_token_check();
-        $this->get_country($token);
-        // If we have no token, or we have no country, the API call will fail, so we return an empty array
-        if (!$token || !$this->country)
-            return array();
-        $headers = array(
-            'x-access-token' => $token
-        );
-
-        $channel_id = isset($args['channel_id']) ? $args['channel_id'] : false;
-        $channel_slug = isset($args['channel_slug']) ? $args['channel_slug'] : false;
-
-        if ($channel_id)
-            $path = 'channel/' . $this->country . '/id/' . $channel_id;
-
-        if ($channel_slug)
-            $path = 'channel/' . $this->country . '/' . $channel_slug;
-
-        return $this->api_request_get($path, null, $headers);
-    }
-
     /**
      * Get the IP of the user
      *

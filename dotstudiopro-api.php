@@ -29,6 +29,13 @@ if (!defined('WPINC')) {
 }
 
 /**
+ * Defining global variable for plugin basefile to use anywhere througnt the site
+ */
+if (!defined('DOTSTUDIOPRO_API_BASENAME')) {
+    define('DOTSTUDIOPRO_API_BASENAME', plugin_basename(__FILE__));
+}
+
+/**
  * The code that runs during plugin activation.
  */
 require_once plugin_dir_path(__FILE__) . 'includes/class-dotstudiopro-api-activator.php';
