@@ -42,7 +42,7 @@ class Dsp_External_Api_Request {
         if (empty($this->api_key))
             return false;
         $body = array(
-            'key' => $_POST['dotstudiopro_api_key'],
+            'key' => $this->api_key
         );
         return $this->api_request_post('token', null, null, $body);
     }
@@ -66,9 +66,9 @@ class Dsp_External_Api_Request {
     function api_new_token() {
         // Acquire an API token and save it for later use.
         $token = $this->get_token();
-        update_option('dotstudiopro_api_token', $token);
+        update_option('dotstudiopro_api_token', $token['token']);
         update_option('dotstudiopro_api_token_time', time());
-        return $token;
+        return $token['token'];
     }
 
     /**
@@ -95,7 +95,7 @@ class Dsp_External_Api_Request {
      */
     function get_country($token = null) {
 
-        if(empty($token))
+        if (empty($token))
             $token = $this->api_token_check();
 
         /** DEV MODE * */
@@ -133,9 +133,9 @@ class Dsp_External_Api_Request {
     function get_categories() {
 
         $token = $this->api_token_check();
-        
+
         $this->get_country($token);
-        
+
         // If we have no token, or we have no country, the API call will fail, so we return an empty array
         if (!$token || !$this->country)
             return array();
@@ -145,10 +145,10 @@ class Dsp_External_Api_Request {
         $headers = array(
             'x-access-token' => $token
         );
-        
+
         return $this->api_request_get($path, null, $headers);
     }
-    
+
     /**
      * Get an array with all of the published channels in a company
      *
@@ -157,27 +157,26 @@ class Dsp_External_Api_Request {
      * @return Array Returns an array of channels, or an empty array if something is wrong or there are no channels
      */
     function get_channels($detail = 'partial') {
-        
+
         $token = $this->api_token_check();
-        
+
         $this->get_country($token);
-        
+
         // If we have no token, or we have no country, the API call will fail, so we return an empty array
         if (!$token || !$this->country)
             return array();
-        
+
         $path = 'channels/' . $this->country;
-        
+
         $headers = array(
             'x-access-token' => $token
         );
-        
+
         $query = array('detail' => $detail);
 
         return $this->api_request_get($path, null, $headers);
-        
     }
-    
+
     /**
      * Function to get recommendation by channel or video id
      * @since 1.0.0
@@ -185,53 +184,49 @@ class Dsp_External_Api_Request {
      * @param type $id
      * @return type
      */
-    
     function get_recommendation($type = NULL, $id) {
-        
+
         $token = $this->api_token_check();
-        
+
         // If we have no token, the API call will fail, so we return an empty array
         if (!$token)
             return array();
-        
-        if($type == 'channel')
+
+        if ($type == 'channel')
             $path = 'search/recommendation/channel';
         else
             $path = 'search/recommendation';
-        
+
         $headers = array(
             'x-access-token' => $token
         );
-        
+
         $query = array('q' => $id);
 
         return $this->api_request_get($path, $query, $headers);
-        
     }
-    
+
     /**
      * function to get video detail by video id
      * @since 1.0.0
      * @param type $id
      * @return type
      */
-    
     function get_video_by_id($id) {
-        
+
         $token = $this->api_token_check();
-        
+
         // If we have no token, or we have no country, the API call will fail, so we return an empty array
         if (!$token)
             return array();
-        
-        $path = 'video/play2/'.$id;
-        
+
+        $path = 'video/play2/' . $id;
+
         $headers = array(
             'x-access-token' => $token
         );
-        
+
         return $this->api_request_get($path, null, $headers);
-        
     }
 
     /**
@@ -260,13 +255,13 @@ class Dsp_External_Api_Request {
      * @param type $headers
      * @return \WP_Error or Json Responce
      */
-    private function api_request_post($path = null, $query = null, $headers = null, $body = null) {
+    public function api_request_post($path = null, $query = null, $headers = null, $body = null) {
 
         // vars
         $url = $this->common_url . $path;
-        
-        if($query){
-            $url = add_query_arg($query,  $url );
+
+        if ($query) {
+            $url = add_query_arg($query, $url);
         }
 
         $raw_response = wp_remote_post($url, array(
@@ -307,15 +302,15 @@ class Dsp_External_Api_Request {
      * @param type $headers
      * @return \WP_Error or  Json Responce 
      */
-    private function api_request_get($path = null, $query = null, $headers = null) {
+    public function api_request_get($path = null, $query = null, $headers = null) {
 
         // vars
         $url = $this->common_url . $path;
-        
-        if($query){
-            $url = add_query_arg($query,  $url );
+
+        if ($query) {
+            $url = add_query_arg($query, $url);
         }
-        
+
         $raw_response = wp_remote_get($url, array(
             'headers' => $headers,
             'timeout' => 50,
@@ -344,23 +339,22 @@ class Dsp_External_Api_Request {
         // return
         return $json;
     }
-    
+
     /**
      * Function to write the error log in file.
      * 
      * @param type $log
      */
-    
     private function write_log($message, $log) {
         if (true === WP_DEBUG) {
             if (is_array($log) || is_object($log)) {
-                error_log($message."-----" .print_r($log, true));
+                error_log($message . "-----" . print_r($log, true));
             } else {
-                error_log($message."-----".$log);
+                error_log($message . "-----" . $log);
             }
         }
     }
-    
+
     /**
      * Function to handel error responce which comes form DSP API
      * 
@@ -368,29 +362,23 @@ class Dsp_External_Api_Request {
      * @param type $raw_response
      * @return string
      */
-    
     public function error_message($raw_response) {
 
         $responce_body = wp_remote_retrieve_body($raw_response);
         $send_res = json_decode($responce_body);
-            if ($send_res->reason){
-                return $send_res->reason;
+        if ($send_res->reason) {
+            return $send_res->reason;
+        } elseif ($send_res->error) {
+            if (is_object($send_res->error)) {
+                return $send_res->error->name . ':' . $send_res->error->message;
+            } else {
+                return $send_res->error;
             }
-            elseif ($send_res->error){
-                if(is_object($send_res->error)){
-                    return $send_res->error->name.':'.$send_res->error->message;
-                }
-                else{
-                    return $send_res->error;
-                }
-            }
-            elseif ($send_res->message){
-                return $send_res->message;
-            }
-            else{
-                return 'Internal Server error.';
-            }
-        
+        } elseif ($send_res->message) {
+            return $send_res->message;
+        } else {
+            return 'Internal Server error.';
+        }
     }
 
 }

@@ -13,11 +13,11 @@
  * @package           Dotstudiopro_Api
  *
  * @wordpress-plugin
- * Plugin Name:       Dotstudio Pro API v3
+ * Plugin Name:       dotstudioPRO API
  * Plugin URI:        https://www.dotstudiopro.com
  * Description:       This plugin provides a connector class to the dotstudioPRO API for use in plugin/theme development.
  * Version:           1.0.0
- * Author:            Dotstudio Pro
+ * Author:            dotstudioPRO
  * Author URI:        http://www.dotstudiopro.com
  * License:           GPLv3
  * Text Domain:       dotstudiopro-api
@@ -29,7 +29,7 @@ if (!defined('WPINC')) {
 }
 
 /**
- * A script/plugin that runs our plugin update check for our plugin
+ * A script/plugin that communicates with our WP Updater service to determine plugin updates
  */
 require 'plugin-update-checker/plugin-update-checker.php';
 $myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
@@ -37,6 +37,13 @@ $myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
     __FILE__,
     'dspdev-main-plugin'
 );
+
+/**
+ * Defining global variable for plugin basefile to use anywhere througnt the site
+ */
+if (!defined('DOTSTUDIOPRO_API_BASENAME')) {
+    define('DOTSTUDIOPRO_API_BASENAME', plugin_basename(__FILE__));
+}
 
 /**
  * The code that runs during plugin activation.

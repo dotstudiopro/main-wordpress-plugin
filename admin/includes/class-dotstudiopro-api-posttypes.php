@@ -328,6 +328,7 @@ class Dsp_Custom_Posttypes {
                         update_post_meta($post_id, 'cat_poster', isset($category['poster']) ? $category['poster'] : '');
                         update_post_meta($post_id, 'is_in_cat_menu', isset($category['menu']) ? $category['menu'] : '');
                         update_post_meta($post_id, 'is_on_cat_homepage', isset($category['homepage']) ? $category['homepage'] : '');
+                        update_post_meta($post_id, 'weight', isset($category['weight']) ? $category['weight'] : '');
                     }
                 }
                 $send_response = array('message' => $add_count . ' Categories added.<br/>' . $update_count . ' Categories Updated');
@@ -402,6 +403,7 @@ class Dsp_Custom_Posttypes {
                     $childchannels = isset($channel['childchannels']) ? $channel['childchannels'] : '';
                     $categories = isset($channel['categories']) ? $channel['categories'] : '';
                     $dspro_channel_id = isset($channel['dspro_id']) ? $channel['dspro_id'] : '';
+                    $weightings = isset($channel['weightings']) ? $channel['weightings'] : '';
 
                     $vidoeArr = array();
                     if (!empty($channel['playlist'])) {
@@ -452,6 +454,14 @@ class Dsp_Custom_Posttypes {
                             $childchannel[] = $child['slug'];
                         }
                         update_post_meta($post_id, 'chnl_child_channels', implode(',', $childchannel));
+                    }
+                    $weightingsArr = array();
+                    if (!empty($weightings)) {
+                        foreach ($weightings as $key => $weighting):
+                            $weightingsArr[$key] = isset($weighting) ? $weighting : '';
+                        endforeach;
+                        $weightingData = maybe_serialize($weightingsArr);
+                        update_post_meta($post_id, 'chnl_weightings', $weightingData);
                     }
                 }
                 $send_response = array('message' => $add_count . ' Channels added.<br/>' . $update_count . ' Channels Updated.');

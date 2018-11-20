@@ -5,7 +5,7 @@
  *
  * @link              https://www.dotstudiopro.com
  * @since             1.0.0
- * 
+ *
  * @package           Dotstudiopro_Api
  * @subpackage        Dotstudiopro_Api/admin
  */
@@ -47,6 +47,7 @@ class Dotstudiopro_Api_Admin {
      * Add admin notices
      *
      * @since   1.0.0
+     * @var     string    $message       The message to display to the admin.
      */
     public function add_admin_notice($message) {
 
@@ -103,7 +104,7 @@ class Dotstudiopro_Api_Admin {
     public function settings_api_init() {
         /**
          * API key section and its setting fields
-         * 
+         *
          * @since 1.0.0
          */
         add_settings_section(
@@ -115,7 +116,7 @@ class Dotstudiopro_Api_Admin {
         register_setting('dsp-api-key-section', 'dsp_api_key_field');
         /**
          * Development mode Settings section and its setting fields
-         * 
+         *
          * @since 1.0.0
          */
         add_settings_section(
@@ -133,13 +134,13 @@ class Dotstudiopro_Api_Admin {
         register_setting('dsp-dev-mode-section', 'dsp_country_code_field');
 
         add_settings_field(
-                'dsp_reset_token_field', __('Reset token', 'dotstudiopro-api'), array($this, 'dsp_reset_token_field_callback_function'), 'dsp-dev-mode-section', 'dotstudiopro_api_dev_mode_section'
+                'dsp_reset_token_field', __('Reset Token', 'dotstudiopro-api'), array($this, 'dsp_reset_token_field_callback_function'), 'dsp-dev-mode-section', 'dotstudiopro_api_dev_mode_section'
         );
         register_setting('dsp-dev-mode-section', 'dsp_reset_token_field');
 
         /**
          * General Settings section and its setting fields
-         * 
+         *
          * @since 1.0.0
          */
         add_settings_section(
@@ -147,22 +148,22 @@ class Dotstudiopro_Api_Admin {
         );
 
         add_settings_field(
-                'dsp_cdn_img_url_field', __('Dotstudiopro Image CDN URL.', 'dotstudiopro-api'), array($this, 'dsp_cdn_img_url_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
+                'dsp_cdn_img_url_field', __('dotstudioPro Image CDN URL', 'dotstudiopro-api'), array($this, 'dsp_cdn_img_url_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
         );
         register_setting('dsp-setting-section', 'dsp_cdn_img_url_field');
-        
+
         add_settings_field(
-                'dsp_video_autoplay_field', __('Video Autoplay on load', 'dotstudiopro-api'), array($this, 'dsp_video_autoplay_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
+                'dsp_video_autoplay_field', __('Video Autoplay on Load', 'dotstudiopro-api'), array($this, 'dsp_video_autoplay_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
         );
         register_setting('dsp-setting-section', 'dsp_video_autoplay_field');
 
         add_settings_field(
-                'dsp_video_muteload_field', __('Video Mute on load', 'dotstudiopro-api'), array($this, 'dsp_video_muteload_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
+                'dsp_video_muteload_field', __('Video Mute on Load', 'dotstudiopro-api'), array($this, 'dsp_video_muteload_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
         );
         register_setting('dsp-setting-section', 'dsp_video_muteload_field');
 
         add_settings_field(
-                'dsp_video_color_field', __('Video player color', 'dotstudiopro-api'), array($this, 'dsp_video_color_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
+                'dsp_video_color_field', __('Video Player Color', 'dotstudiopro-api'), array($this, 'dsp_video_color_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
         );
         register_setting('dsp-setting-section', 'dsp_video_color_field');
 
@@ -182,7 +183,7 @@ class Dotstudiopro_Api_Admin {
     /**
      * Callback functions for settings
      */
-    
+
     // API key configuration
     function dsp_api_key_field_callback_function() {
         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/api/dsp_api_key_field.php';
@@ -201,11 +202,11 @@ class Dotstudiopro_Api_Admin {
         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/development/dsp_reset_token_field.php';
     }
 
-    // Setting section    
+    // Setting section
     function dsp_cdn_img_url_field_callback_function() {
         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/settings/dsp_cdn_img_url_field.php';
     }
-    
+
     function dsp_video_autoplay_field_callback_function() {
         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/settings/dsp_video_autoplay_field.php';
     }
@@ -342,22 +343,48 @@ class Dotstudiopro_Api_Admin {
         $dotstudiopro_api_key = get_option('dotstudiopro_api_key');
         if (!$dotstudiopro_api_key)
             wp_send_json_error(array('message' => 'Api Key Not Found..'), 404);
-        
-        $channels = get_pages( array( 'post_type' => 'channel') );
-        foreach ( $channels as $channel ) {
+
+        $channels = get_pages(array('post_type' => 'channel'));
+        foreach ($channels as $channel) {
             wp_delete_post($channel->ID, true);
         }
-        
-        $categories = get_pages( array( 'post_type' => 'category') );
-        foreach ( $categories as $category ) {
+
+        $categories = get_pages(array('post_type' => 'category'));
+        foreach ($categories as $category) {
             wp_delete_post($category->ID, true);
         }
-        
+
         delete_option('dotstudiopro_api_key');
         delete_option('dotstudiopro_api_token');
         delete_option('dotstudiopro_api_token_time');
         $send_response = array('message' => 'The API key Deactivate successfully.');
         wp_send_json_success($send_response, 200);
+    }
+
+    /**
+     * Add a link to the settings page for the plugin in the Plugins page
+     *
+     * @since    1.0.0
+     * @var      array    $actions       An array of links for the plugins page
+     * @var      string    $plugin_file       Our plugin file
+     */
+    public function add_settings_link($actions, $plugin_file) {
+        static $plugin;
+
+        // If we don't have a plugin, get one
+        if (!isset($plugin))
+            $plugin = plugin_basename(dirname(__FILE__)) . "/" . $this->name . ".php";
+
+        if ($plugin == $plugin_file) {
+
+            $settings = array('settings' => '<a href="' . admin_url("admin.php?page=dsp-api-settings") . '">' . __('Settings') . '</a>');
+            $site_link = array('support' => '<a href="https://www.dotstudiopro.com/contact-us#support" target="_blank">Support</a>');
+
+            $actions = array_merge($settings, $actions);
+            $actions = array_merge($site_link, $actions);
+        }
+
+        return $actions;
     }
 
 }
