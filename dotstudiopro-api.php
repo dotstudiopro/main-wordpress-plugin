@@ -29,6 +29,16 @@ if (!defined('WPINC')) {
 }
 
 /**
+ * A script/plugin that runs our plugin update check for our plugin
+ */
+require 'plugin-update-checker/plugin-update-checker.php';
+$myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
+    'https://updates.wordpress.dotstudiopro.com/wp-update-server/?action=get_metadata&slug=dspdev-main-plugin',
+    __FILE__,
+    'dspdev-main-plugin'
+);
+
+/**
  * The code that runs during plugin activation.
  */
 require_once plugin_dir_path(__FILE__) . 'includes/class-dotstudiopro-api-activator.php';
