@@ -446,7 +446,7 @@ class Dsp_Custom_Posttypes {
                         foreach ($categories as $cat) {
                             $category[] = $cat['slug'];
                         }
-                        update_post_meta($post_id, 'chnl_catagories', ',' . implode(',', $category) . ',');
+                        update_post_meta($post_id, 'chnl_categories', ',' . implode(',', $category) . ',');
                     }
                     if (!empty($childchannels)) {
                         $childchannel = array();
@@ -496,7 +496,7 @@ class Dsp_Custom_Posttypes {
         $chnl_writers = isset($values['chnl_writers'][0]) ? $values['chnl_writers'][0] : '';
         $chnl_geners = isset($values['chnl_geners'][0]) ? $values['chnl_geners'][0] : '';
         $chnl_directors = isset($values['chnl_directors'][0]) ? $values['chnl_directors'][0] : '';
-        $chnl_catagories = isset($values['chnl_catagories'][0]) ? $values['chnl_catagories'][0] : '';
+        $chnl_categories = isset($values['chnl_categories'][0]) ? $values['chnl_categories'][0] : '';
         $chnl_actors = isset($values['chnl_actors'][0]) ? $values['chnl_actors'][0] : '';
         $chnl_child_channels = isset($values['chnl_child_channels'][0]) ? $values['chnl_child_channels'][0] : '';
         $dspro_channel_id = isset($values['dspro_channel_id'][0]) ? $values['dspro_channel_id'][0] : '';
@@ -536,7 +536,7 @@ class Dsp_Custom_Posttypes {
                 </tr>
                 <tr>
                     <th scope="row">Categories</th>
-                    <td><input type="text" name="chnl_catagories" class="dsp-field" id="chnl_catagories" value="<?php echo $chnl_catagories; ?>" readonly data-role="tagsinput"/></td>
+                    <td><input type="text" name="chnl_categories" class="dsp-field" id="chnl_categories" value="<?php echo $chnl_categories; ?>" readonly data-role="tagsinput"/></td>
                 </tr>
                 <tr>
                     <th scope="row">Actors</th>

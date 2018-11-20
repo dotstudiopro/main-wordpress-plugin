@@ -140,7 +140,7 @@ class Dsp_Manage_channels {
                 foreach ($categories as $cat) {
                     $category[] = $cat->slug;
                 }
-                update_post_meta($post_id, 'chnl_catagories', ',' . implode(',', $category) . ',');
+                update_post_meta($post_id, 'chnl_categories', ',' . implode(',', $category) . ',');
             }
 
             if (!empty($childchannels)) {
