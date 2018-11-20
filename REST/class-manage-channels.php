@@ -130,7 +130,7 @@ class Dsp_Manage_channels {
             update_post_meta($post_id, 'chnl_directors', $directors);
             update_post_meta($post_id, 'chnl_actors', $actors);
             update_post_meta($post_id, 'chnl_poster', $poster);
-            update_post_meta($post_id, 'chnl_spotlisgt_poster', $spotlight_poster);
+            update_post_meta($post_id, 'chnl_spotlight_poster', $spotlight_poster);
             update_post_meta($post_id, 'chnl_comp_id', $company_id);
             update_post_meta($post_id, 'chnl_logo', $company_logo);
             update_post_meta($post_id, 'dspro_channel_id', $dspro_channel_id);

@@ -7,7 +7,7 @@
  *
  * @link              https://www.dotstudiopro.com
  * @since             1.0.0
- * 
+ *
  * @package           Dotstudiopro_Api
  * @subpackage        Dotstudiopro_Api/admin/includes
  */
@@ -26,8 +26,8 @@ class Dsp_Custom_Posttypes {
 
     /**
      * Creating custom posttypes (Channels | Category)
-     * 
-     * @since 1.0.0 
+     *
+     * @since 1.0.0
      */
     public function create_dotstudiopro_post_types() {
         $labels = array(
@@ -83,7 +83,7 @@ class Dsp_Custom_Posttypes {
 
     /**
      * Create MetaBox for Category Post Type
-     * 
+     *
      * @since 1.0.0
      */
     public function create_custom_metabox() {
@@ -94,8 +94,8 @@ class Dsp_Custom_Posttypes {
 
     /**
      * Custom callback function to generate metabox fields for category post type
-     * 
-     * 
+     *
+     *
      * global type $post
      * @since 1.0.0
      */
@@ -153,7 +153,7 @@ class Dsp_Custom_Posttypes {
 
     /**
      * Custom function to save metabox values for category post type
-     * 
+     *
      * @param type $post_id
      * @since 1.0.0
      */
@@ -172,7 +172,7 @@ class Dsp_Custom_Posttypes {
 
     /**
      * Function to add a custom action button to custom post types (Category | Channels)
-     * 
+     *
      * @global type $current_screen
      * @since 1.0.0
      */
@@ -202,8 +202,8 @@ class Dsp_Custom_Posttypes {
     }
 
     /**
-     * Add Custom Column Title (Category ID) to Category Post Type List. 
-     * 
+     * Add Custom Column Title (Category ID) to Category Post Type List.
+     *
      * @param array $columns
      * @return array
      * @since 1.0.0
@@ -220,8 +220,8 @@ class Dsp_Custom_Posttypes {
     }
 
     /**
-     * Add Custom Column Value (Category ID) to Category Post Type List. 
-     * 
+     * Add Custom Column Value (Category ID) to Category Post Type List.
+     *
      * @param type $column_name
      * @param type $post_id
      * @since 1.0.0
@@ -237,8 +237,8 @@ class Dsp_Custom_Posttypes {
     }
 
     /**
-     * Add Custom Column Title (Channel ID) to Category Post Type List. 
-     * 
+     * Add Custom Column Title (Channel ID) to Category Post Type List.
+     *
      * @param array $columns
      * @return array
      * @since 1.0.0
@@ -256,8 +256,8 @@ class Dsp_Custom_Posttypes {
     }
 
     /**
-     * Add Custom Column Value (Category ID) to Category Post Type List. 
-     * 
+     * Add Custom Column Value (Category ID) to Category Post Type List.
+     *
      * @param type $column_name
      * @param type $post_id
      * @since 1.0.0
@@ -278,7 +278,7 @@ class Dsp_Custom_Posttypes {
 
     /**
      * This function is used for import the Category data form DSP External API to Custom Post Type (Category).
-     * 
+     *
      * @global type $user_ID
      * @since 1.0.0
      */
@@ -345,7 +345,7 @@ class Dsp_Custom_Posttypes {
 
     /**
      * This function is used for import the Channel data form DSP External API to Custom Post Type (Channel).
-     * 
+     *
      * @global type $user_ID
      * @since 1.0.0
      */
@@ -437,7 +437,7 @@ class Dsp_Custom_Posttypes {
                     update_post_meta($post_id, 'chnl_actors', $actors);
                     update_post_meta($post_id, 'chnl_poster', $poster);
                     update_post_meta($post_id, 'chnl_logo', $channel_logo);
-                    update_post_meta($post_id, 'chnl_spotlisgt_poster', $spotlight_poster);
+                    update_post_meta($post_id, 'chnl_spotlight_poster', $spotlight_poster);
                     update_post_meta($post_id, 'chnl_comp_id', $company_id);
                     update_post_meta($post_id, 'dspro_channel_id', $dspro_channel_id);
 
@@ -478,8 +478,8 @@ class Dsp_Custom_Posttypes {
 
     /**
      * Custom callback function to generate metabox fields for channel post type
-     * 
-     * 
+     *
+     *
      * global type $post
      * @since 1.0.0
      */
@@ -492,7 +492,7 @@ class Dsp_Custom_Posttypes {
         $chnl_logo = isset($values['chnl_logo'][0]) ? esc_attr($values['chnl_logo'][0]) : '';
         $chnl_comp_id = isset($values['chnl_comp_id'][0]) ? esc_attr($values['chnl_comp_id'][0]) : '';
         $chnl_poster = isset($values['chnl_poster'][0]) ? $values['chnl_poster'][0] : '';
-        $chnl_spotlisgt_poster = isset($values['chnl_spotlisgt_poster'][0]) ? $values['chnl_spotlisgt_poster'][0] : '';
+        $chnl_spotlight_poster = isset($values['chnl_spotlight_poster'][0]) ? $values['chnl_spotlight_poster'][0] : '';
         $chnl_writers = isset($values['chnl_writers'][0]) ? $values['chnl_writers'][0] : '';
         $chnl_geners = isset($values['chnl_geners'][0]) ? $values['chnl_geners'][0] : '';
         $chnl_directors = isset($values['chnl_directors'][0]) ? $values['chnl_directors'][0] : '';
@@ -548,7 +548,7 @@ class Dsp_Custom_Posttypes {
                 </tr>
                 <tr>
                     <th scope="row">Spotlight Poster</th>
-                    <td><input type="text" name="chnl_spotlisgt_poster" class="dsp-field" id="chnl_spotlisgt_poster" value="<?php echo $chnl_spotlisgt_poster; ?>" readonly/></td>
+                    <td><input type="text" name="chnl_spotlight_poster" class="dsp-field" id="chnl_spotlight_poster" value="<?php echo $chnl_spotlight_poster; ?>" readonly/></td>
                 </tr>
                 <tr>
                     <th scope="row">Child Chanels</th>
@@ -594,15 +594,15 @@ class Dsp_Custom_Posttypes {
             <?php
         endif;
         ?>
-        <p> No videos available for this channel</p>    
+        <p> No videos available for this channel</p>
         <?php
     }
 
     /**
      * Function to remove Add new Submenu form Channel and Category Custom post type
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      */
     public function remove_submenus() {
         global $submenu;
