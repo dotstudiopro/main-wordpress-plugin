@@ -167,10 +167,6 @@ class Dotstudiopro_Api_Admin {
         );
         register_setting('dsp-setting-section', 'dsp_video_color_field');
 
-        add_settings_field(
-                'dsp_enable_search_field', __('Enable search for videos and/or channels', 'dotstudiopro-api'), array($this, 'dsp_enable_search_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
-        );
-        register_setting('dsp-setting-section', 'dsp_enable_search_field');
 
         /* Right now this field not in use */
 
@@ -217,10 +213,6 @@ class Dotstudiopro_Api_Admin {
 
     function dsp_video_color_field_callback_function() {
         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/settings/dsp_video_color_field.php';
-    }
-
-    function dsp_enable_search_field_callback_function() {
-        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/settings/dsp_enable_search_field.php';
     }
 
     function dsp_sync_data_field_callback_function() {
