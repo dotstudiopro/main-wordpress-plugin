@@ -15,11 +15,13 @@ class Dsp_External_Api_Request {
     public $api_key;
     public $token;
     public $common_url;
+    public $client_token;
 
     function __construct() {
 
         $this->api_key = get_option('dotstudiopro_api_key');
         $this->common_url = "https://api.myspotlight.tv/";
+        $this->client_token = get_option('dotstudiopro_client_token');
     }
 
     /**
@@ -227,6 +229,59 @@ class Dsp_External_Api_Request {
         );
 
         return $this->api_request_get($path, null, $headers);
+    }
+    
+    /**
+     * function to serch the channels or videos
+     * @since 1.0.0
+     * @param type $type
+     * @param type $size
+     * @param type $from
+     * @param type $q
+     * @return type
+     */
+    
+    function search($type, $size, $from, $q){
+        
+        $token = $this->api_token_check();
+
+        // If we have no token, the API call will fail, so we return an empty array
+        if (!$token)
+            return array();
+
+        if ($type == 'channel')
+            $path = 'search';
+        else
+            $path = 'search/videos';
+
+        $headers = array(
+            'x-access-token' => $token
+        );
+
+        $query = array('size' => $size, 'from' => $from, 'q' => $q);
+
+        return $this->api_request_get($path, $query, $headers);
+        
+    }
+    
+    /**
+     * function to update client token
+     * @since 1.0.0
+     * @return type
+     */
+
+    function refresh_client_token() {
+        if (!$client_token) {
+            return array();
+        }
+
+        $path = 'users/token/refresh';
+
+        $header = array(
+            ' x-client-token' => $client_token
+        );
+
+        return $this->api_request_post($path, null, $headers);
     }
 
     /**
