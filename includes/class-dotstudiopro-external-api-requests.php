@@ -230,7 +230,7 @@ class Dsp_External_Api_Request {
 
         return $this->api_request_get($path, null, $headers);
     }
-    
+
     /**
      * function to serch the channels or videos
      * @since 1.0.0
@@ -240,9 +240,8 @@ class Dsp_External_Api_Request {
      * @param type $q
      * @return type
      */
-    
-    function search($type, $size, $from, $q){
-        
+    function search($type, $size, $from, $q) {
+
         $token = $this->api_token_check();
 
         // If we have no token, the API call will fail, so we return an empty array
@@ -261,15 +260,38 @@ class Dsp_External_Api_Request {
         $query = array('size' => $size, 'from' => $from, 'q' => $q);
 
         return $this->api_request_get($path, $query, $headers);
-        
     }
-    
+
+    /**
+     * function to search suggestion
+     * @since 1.0.0
+     * @param type $q
+     * @return type
+     */
+    function search_suggestion($q) {
+
+        $token = $this->api_token_check();
+
+        // If we have no token, the API call will fail, so we return an empty array
+        if (!$token)
+            return array();
+
+        $path = 'search/s';
+
+        $headers = array(
+            'x-access-token' => $token
+        );
+
+        $query = array('q' => $q);
+
+        return $this->api_request_get($path, $query, $headers);
+    }
+
     /**
      * function to update client token
      * @since 1.0.0
      * @return type
      */
-
     function refresh_client_token() {
         if (!$client_token) {
             return array();
