@@ -15,13 +15,11 @@ class Dsp_External_Api_Request {
     public $api_key;
     public $token;
     public $common_url;
-    public $client_token;
 
     function __construct() {
 
         $this->api_key = get_option('dotstudiopro_api_key');
         $this->common_url = "https://api.myspotlight.tv/";
-        $this->client_token = get_option('dotstudiopro_client_token');
     }
 
     /**
@@ -292,7 +290,7 @@ class Dsp_External_Api_Request {
      * @since 1.0.0
      * @return type
      */
-    function refresh_client_token() {
+    function refresh_client_token($client_token) {
         if (!$client_token) {
             return array();
         }
@@ -342,6 +340,55 @@ class Dsp_External_Api_Request {
         }
 
         $raw_response = wp_remote_post($url, array(
+            'body' => $body,
+            'headers' => $headers,
+            'timeout' => 50
+        ));
+
+        // wp error
+        if (is_wp_error($raw_response)) {
+            return $raw_response;
+        }
+        // http error
+        elseif (wp_remote_retrieve_response_code($raw_response) != 200) {
+            $this->write_log('URL', $url);
+            $this->write_log('Header Parameters', $headers);
+            $this->write_log('Body Parameters', $body);
+            $this->write_log('API Responce', wp_remote_retrieve_body($raw_response));
+            $error_message = $this->error_message($raw_response);
+            return new WP_Error('server_error', $error_message);
+        }
+
+        // decode response
+        $json = json_decode(wp_remote_retrieve_body($raw_response), true);
+
+        // allow non json value
+        if ($json === null) {
+            return wp_remote_retrieve_body($raw_response);
+        }
+        // return
+        return $json;
+    }
+
+    /**
+     * This is common function to use PUT request of External DSP API.
+     * 
+     * @param type $path
+     * @param type $body
+     * @param type $headers
+     * @return \WP_Error or Json Responce
+     */
+    public function api_request_put($path = null, $query = null, $headers = null, $body = null) {
+
+        // vars
+        $url = $this->common_url . $path;
+
+        if ($query) {
+            $url = add_query_arg($query, $url);
+        }
+
+        $raw_response = wp_remote_request($url, array(
+            'method' => 'PUT',
             'body' => $body,
             'headers' => $headers,
             'timeout' => 50
