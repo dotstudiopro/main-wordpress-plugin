@@ -291,14 +291,17 @@ class Dsp_External_Api_Request {
      * @return type
      */
     function refresh_client_token($client_token) {
-        if (!$client_token) {
+        $token = $this->api_token_check();
+
+        if (!$client_token && !$token) {
             return array();
         }
 
         $path = 'users/token/refresh';
 
-        $header = array(
-            ' x-client-token' => $client_token
+        $headers = array(
+            'x-client-token' => $client_token,
+            'x-access-token' => $token
         );
 
         return $this->api_request_post($path, null, $headers);
@@ -490,15 +493,15 @@ class Dsp_External_Api_Request {
 
         $responce_body = wp_remote_retrieve_body($raw_response);
         $send_res = json_decode($responce_body);
-        if ($send_res->reason) {
+        if (isset($send_res->reason)) {
             return $send_res->reason;
-        } elseif ($send_res->error) {
+        } elseif (isset($send_res->error)) {
             if (is_object($send_res->error)) {
                 return $send_res->error->name . ':' . $send_res->error->message;
             } else {
                 return $send_res->error;
             }
-        } elseif ($send_res->message) {
+        } elseif (isset($send_res->message)) {
             return $send_res->message;
         } else {
             return 'Internal Server error.';
