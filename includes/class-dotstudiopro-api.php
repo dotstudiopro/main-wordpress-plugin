@@ -131,6 +131,7 @@ class Dotstudiopro_Api {
         require_once plugin_dir_path(dirname(__FILE__)) . 'REST/class-rest-api-handler.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'REST/class-manage-categories.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'REST/class-manage-channels.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'REST/class-manage-videos.php';
 
         $this->loader = new Dotstudiopro_Api_Loader();
     }
@@ -184,9 +185,9 @@ class Dotstudiopro_Api {
         $this->loader->add_action('admin_menu', $posttype, 'remove_submenus');
         $this->loader->add_filter('manage_channel_posts_columns', $posttype, 'dsp_channel_table_head');
         $this->loader->add_action('manage_channel_posts_custom_column', $posttype, 'dsp_channel_table_content', 10, 2);
-        $this->loader->add_action( 'rest_api_init', $rest_api, 'dsp_webhook_routes');
+        $this->loader->add_action('rest_api_init', $rest_api, 'dsp_webhook_routes');
         // Add settings link in Plugins page
-        $this->loader->add_filter( 'plugin_action_links', $plugin_admin, 'add_settings_link', 10, 2 );
+        $this->loader->add_filter('plugin_action_links', $plugin_admin, 'add_settings_link', 10, 2);
     }
 
     /**
@@ -207,6 +208,18 @@ class Dotstudiopro_Api {
      */
     public function get_Dotstudiopro_Api() {
         return $this->Dotstudiopro_Api;
+    }
+
+    /**
+     * The name of the plugin used to uniquely identify it within the context of
+     * WordPress and to define internationalization functionality.
+     *
+     * @since     1.0.0
+     * @return    string    The name of the plugin.
+     */
+    public function get_Dotstudiopro_Video_Table() {
+        global $wpdb;
+        return $wpdb->prefix . 'videos';
     }
 
     /**

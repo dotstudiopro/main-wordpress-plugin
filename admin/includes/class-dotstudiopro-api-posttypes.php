@@ -351,7 +351,9 @@ class Dsp_Custom_Posttypes {
      */
     public function import_channel_post_data() {
 
-        global $user_ID;
+        global $user_ID, $wpdb;
+        $dsp = new Dotstudiopro_Api();
+        $dsp_video_table = $dsp->get_Dotstudiopro_Video_Table();
 
         if (wp_verify_nonce($_POST['nonce'], 'import_channel')) {
 
@@ -405,29 +407,45 @@ class Dsp_Custom_Posttypes {
                     $dspro_channel_id = isset($channel['dspro_id']) ? $channel['dspro_id'] : '';
                     $weightings = isset($channel['weightings']) ? $channel['weightings'] : '';
 
-                    $vidoeArr = array();
+
+                    $video_id = array();
+
                     if (!empty($channel['playlist'])) {
                         foreach ($channel['playlist'] as $key => $video):
-                            $vidoeArr[$key]['_id'] = isset($video['_id']) ? $video['_id'] : '';
-                            $vidoeArr[$key]['title'] = isset($video['title']) ? $video['title'] : '';
-                            $vidoeArr[$key]['description'] = isset($video['description']) ? $video['description'] : '';
-                            $vidoeArr[$key]['slug'] = isset($video['slug']) ? $video['slug'] : '';
-                            $vidoeArr[$key]['thumb'] = isset($video['thumb']) ? $video['thumb'] : '';
+                            $video_id[] = isset($video['_id']) ? $video['_id'] : '';
+                            $vidoeArr = array();
+                            $vidoeArr['title'] = isset($video['title']) ? $video['title'] : '';
+                            $vidoeArr['description'] = isset($video['description']) ? $video['description'] : '';
+                            $vidoeArr['slug'] = isset($video['slug']) ? $video['slug'] : '';
+                            $vidoeArr['thumb'] = isset($video['thumb']) ? get_option('dsp_cdn_img_url_field') . '/' . $video['thumb'] : '';
+                            $videoData = base64_encode(maybe_serialize($vidoeArr));
+                            $data = array('video_id' => $video['_id'], 'video_detail' => $videoData);
+                            $is_video_exists = $wpdb->get_results("SELECT * FROM $dsp_video_table WHERE video_id = '" . $video['_id'] . "'");
+                            if ($wpdb->num_rows > 0)
+                                $wpdb->update($dsp_video_table, $data, array('video_id' => $video['_id']));
+                            else
+                                $wpdb->insert($dsp_video_table, $data);
+
                         endforeach;
-                        $videoData = maybe_serialize($vidoeArr);
-                        update_post_meta($post_id, 'chnl_videos', $videoData);
+                        update_post_meta($post_id, 'chnl_videos', implode(',', $video_id));
                     }
                     elseif (!empty($channel['video'])) {
                         $video = $channel['video'];
-                        $key = 0;
-                        $vidoeArr[$key]['_id'] = isset($video['_id']) ? $video['_id'] : '';
-                        $vidoeArr[$key]['title'] = isset($video['title']) ? $video['title'] : '';
-                        $vidoeArr[$key]['description'] = isset($video['description']) ? $video['description'] : '';
-                        $vidoeArr[$key]['slug'] = isset($video['slug']) ? $video['slug'] : '';
-                        $vidoeArr[$key]['thumb'] = isset($video['thumb']) ? $video['thumb'] : '';
+                        $vidoeArr = array();
+                        $video_id[] = isset($video['_id']) ? $video['_id'] : '';
+                        $vidoeArr['title'] = isset($video['title']) ? $video['title'] : '';
+                        $vidoeArr['description'] = isset($video['description']) ? $video['description'] : '';
+                        $vidoeArr['slug'] = isset($video['slug']) ? $video['slug'] : '';
+                        $vidoeArr['thumb'] = isset($video['thumb']) ? get_option('dsp_cdn_img_url_field') . '/' . $video['thumb'] : '';
 
-                        $videoData = maybe_serialize($vidoeArr);
-                        update_post_meta($post_id, 'chnl_videos', $videoData);
+                        $videoData = base64_encode(maybe_serialize($vidoeArr));
+                        $data = array('video_id' => $video['_id'], 'video_detail' => $videoData);
+                        $is_video_exists = $wpdb->get_results("SELECT * FROM $dsp_video_table WHERE video_id = '" . $video['_id'] . "'");
+                        if ($wpdb->num_rows > 0)
+                            $wpdb->update($dsp_video_table, $data, array('video_id' => $video['_id']));
+                        else
+                            $wpdb->insert($dsp_video_table, $data);
+                        update_post_meta($post_id, 'chnl_videos', implode(',', $video_id));
                     }
 
                     update_post_meta($post_id, 'chnl_id', $channel_id);
@@ -562,9 +580,12 @@ class Dsp_Custom_Posttypes {
 
     public function create_video_metabox_callback() {
 
-        global $post;
-        $videos = maybe_unserialize(get_post_meta($post->ID, 'chnl_videos', true));
-        if ($videos):
+        global $post, $wpdb;
+        $dsp = new Dotstudiopro_Api();
+        $dsp_video_table = $dsp->get_Dotstudiopro_Video_Table();
+
+        $videos = explode(',', get_post_meta($post->ID, 'chnl_videos', true));
+        if ($videos[0]):
             ?>
             <table class="wp-list-table widefat fixed striped pages">
                 <thead>
@@ -577,16 +598,20 @@ class Dsp_Custom_Posttypes {
                     </tr>
                 </thead>
                 <tbody id="the-list">
-                    <?php foreach ($videos as $video): ?>
+                    <?php
+                    foreach ($videos as $video):
+                        $data = $wpdb->get_results("SELECT * FROM $dsp_video_table WHERE video_id = '" . $video . "'");
+                        $video_detail = maybe_unserialize(base64_decode($data[0]->video_detail));
+                        ?>
                         <tr>
                             <td class="column-title has-row-actions column-primary page-title" data-colname="Video Title">
-                                <strong><?php echo $video['title']; ?></strong>
+                                <strong><?php echo $video_detail['title']; ?></strong>
                                 <button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button>
                             </td>
-                            <td data-colname="Video Thumb"><img src="<?php echo get_option('dsp_cdn_img_url_field') . '/' . $video['thumb']; ?>/100/70"></td>
-                            <td data-colname="Video ID"><?php echo $video['_id']; ?></td>
-                            <td data-colname="Video Slug"><?php echo $video['slug']; ?></td>
-                            <td data-colname="Video Description"><?php echo wp_trim_words($video['description'], 10, ' ...'); ?></td>
+                            <td data-colname="Video Thumb"><img src="<?php echo $video_detail['thumb']; ?>/100/70"></td>
+                            <td data-colname="Video ID"><?php echo $video; ?></td>
+                            <td data-colname="Video Slug"><?php echo $video_detail['slug']; ?></td>
+                            <td data-colname="Video Description"><?php echo wp_trim_words($video_detail['description'], 10, ' ...'); ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

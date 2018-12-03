@@ -26,6 +26,7 @@ class Dsp_REST_Api_Handler {
         $this->namespace = $this->plugin_name . '/v' . intval($this->version);
         $this->manageCategories = new Dsp_Manage_categories();
         $this->manageChannels = new Dsp_Manage_channels();
+        $this->manageVideos = new Dsp_Manage_videos();
     }
 
     /**
@@ -87,6 +88,15 @@ class Dsp_REST_Api_Handler {
             'permission_callback' => $this->dsp_check_auth(),
             'callback' => array($this->manageChannels, 'order_channel'),
             'args' => $this->dsp_get_channel_args('order')
+        ]);
+
+        // Video endpoints
+
+        register_rest_route($this->namespace, '/video/update', [
+            'methods' => WP_REST_Server::EDITABLE,
+            'permission_callback' => $this->dsp_check_auth(),
+            'callback' => array($this->manageVideos, 'manage_videos'),
+            'args' => $this->dsp_get_video_args('update')
         ]);
     }
 
@@ -187,13 +197,13 @@ class Dsp_REST_Api_Handler {
      * @param type $event
      * @return string
      */
-    function dsp_get_channel_args($event = null) {
+    private function dsp_get_channel_args($event = null) {
 
         $args = [];
 
         switch ($event):
             case 'add':
-            $args['channel']['_id'] = [
+                $args['channel']['_id'] = [
                     'required' => true,
                     'description' => esc_html__('New channel ID.', 'dotstudiopro-api'),
                     'type' => 'string',
@@ -297,6 +307,29 @@ class Dsp_REST_Api_Handler {
                 $args['channels'] = [
                     'required' => true,
                     'description' => esc_html__('Pass the channels object which you need to update ', 'dotstudiopro-api'),
+                ];
+                break;
+        endswitch;
+        return $args;
+    }
+
+    /**
+     * This function is used to check the videos api's arguments
+     *
+     * @since 1.0.0
+     * @param type $event
+     * @return string
+     */
+    private function dsp_get_video_args($event = null) {
+
+        $args = [];
+
+        switch ($event):
+            case 'update':
+                $args['_id'] = [
+                    'required' => true,
+                    'description' => esc_html__('Video ID to update.', 'dotstudiopro-api'),
+                    'type' => 'string',
                 ];
                 break;
         endswitch;

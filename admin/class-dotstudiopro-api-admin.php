@@ -179,7 +179,6 @@ class Dotstudiopro_Api_Admin {
     /**
      * Callback functions for settings
      */
-
     // API key configuration
     function dsp_api_key_field_callback_function() {
         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/api/dsp_api_key_field.php';
@@ -335,6 +334,11 @@ class Dotstudiopro_Api_Admin {
         $dotstudiopro_api_key = get_option('dotstudiopro_api_key');
         if (!$dotstudiopro_api_key)
             wp_send_json_error(array('message' => 'Api Key Not Found..'), 404);
+
+        global $wpdb;
+        $dsp = new Dotstudiopro_Api();
+        $dsp_video_table = $dsp->get_Dotstudiopro_Video_Table();
+        $delete = $wpdb->query("TRUNCATE TABLE `$dsp_video_table`");
 
         $channels = get_pages(array('post_type' => 'channel'));
         foreach ($channels as $channel) {
