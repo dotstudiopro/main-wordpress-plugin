@@ -417,7 +417,7 @@ class Dsp_Custom_Posttypes {
                             $vidoeArr['title'] = isset($video['title']) ? $video['title'] : '';
                             $vidoeArr['description'] = isset($video['description']) ? $video['description'] : '';
                             $vidoeArr['slug'] = isset($video['slug']) ? $video['slug'] : '';
-                            $vidoeArr['thumb'] = isset($video['thumb']) ? get_option('dsp_cdn_img_url_field') . '/' . $video['thumb'] : '';
+                            $vidoeArr['thumb'] = isset($video['thumb']) ? get_option('dsp_cdn_img_url_field'). $video['thumb'] : '';
                             $videoData = base64_encode(maybe_serialize($vidoeArr));
                             $data = array('video_id' => $video['_id'], 'video_detail' => $videoData);
                             $is_video_exists = $wpdb->get_results("SELECT * FROM $dsp_video_table WHERE video_id = '" . $video['_id'] . "'");
@@ -436,7 +436,7 @@ class Dsp_Custom_Posttypes {
                         $vidoeArr['title'] = isset($video['title']) ? $video['title'] : '';
                         $vidoeArr['description'] = isset($video['description']) ? $video['description'] : '';
                         $vidoeArr['slug'] = isset($video['slug']) ? $video['slug'] : '';
-                        $vidoeArr['thumb'] = isset($video['thumb']) ? get_option('dsp_cdn_img_url_field') . '/' . $video['thumb'] : '';
+                        $vidoeArr['thumb'] = isset($video['thumb']) ? get_option('dsp_cdn_img_url_field'). $video['thumb'] : '';
 
                         $videoData = base64_encode(maybe_serialize($vidoeArr));
                         $data = array('video_id' => $video['_id'], 'video_detail' => $videoData);
