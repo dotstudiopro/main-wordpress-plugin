@@ -1,9 +1,9 @@
 /**
- * The file that defines the global Javscript for the plugin 
+ * The file that defines the global Javscript for the plugin
  *
  * @link              https://www.dotstudiopro.com
  * @since             1.0.0
- * 
+ *
  * @package           Dotstudiopro_Api
  * @subpackage        Dotstudiopro_Api/admin
  */
@@ -18,7 +18,7 @@ var url = customVars.ajaxurl;
 
     /**
      * Ajax event to reset token form DotstudioPro Api Dashboard
-     * 
+     *
      * @since 1.0.0
      */
 
@@ -49,9 +49,9 @@ var url = customVars.ajaxurl;
 
 
     /**
-     * Ajax event to validate DotstudioPro Api key 
+     * Ajax event to validate DotstudioPro Api key
      * After Validation Import the Category and Channels for DSP Dashboard.
-     * 
+     *
      * @since 1.0.0
      */
 
@@ -74,9 +74,9 @@ var url = customVars.ajaxurl;
     });
 
     /**
-     * Ajax event to Deactivate DotstudioPro Api key 
+     * Ajax event to Deactivate DotstudioPro Api key
      * After Conformation delete the Category and Channels for DSP Dashboard and Deactivate the API key.
-     * 
+     *
      * @since 1.0.0
      */
 
@@ -122,9 +122,9 @@ var url = customVars.ajaxurl;
 
     /**
      * Common Ajax Function to activating and deactivating the Key
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @param {type} action
      * @param {type} dotstudiopro_api_key
      * @param {type} nonce
@@ -182,7 +182,7 @@ var url = customVars.ajaxurl;
 
     /**
      * Function to check which button is clicked
-     * 
+     *
      * @since 1.0.0
      */
     $("form input[type=submit]").click(function () {
@@ -192,7 +192,7 @@ var url = customVars.ajaxurl;
 
     /**
      * Ajax event to Import Categories and Channels When Import Button is clicked.
-     * 
+     *
      * @since 1.0.0
      */
 
@@ -210,13 +210,13 @@ var url = customVars.ajaxurl;
 
     /**
      * Comman Ajax Call to get the Categories and Channels
-     * 
+     *
      * @param {type} url
      * @param {type} action
      * @param {type} nonce
      * @param {type} callback
      * @since 1.0.0
-     * 
+     *
      * @returns json
      */
 
@@ -239,7 +239,7 @@ var url = customVars.ajaxurl;
     /**
      *
      * This function is used to display the final output of the responce in dialog (model popup)
-     *  
+     *
      * @param {type} title
      * @param {type} message
      * @since 1.0.0
@@ -271,10 +271,10 @@ var url = customVars.ajaxurl;
 
     /**
      * jQuery function to display loader during ajax event.
-     * 
+     *
      * @type |window.loading|Window.loading
      * @since 1.0.0
-     * 
+     *
      */
     var loading = window.loading = function () {
         var show = function (message) {
@@ -307,7 +307,7 @@ var url = customVars.ajaxurl;
 
     /**
      * Add Color Picker to all inputs that have 'color-field' class
-     * 
+     *
      * @since 1.0.0
      */
     $(function () {
@@ -316,7 +316,7 @@ var url = customVars.ajaxurl;
 
     /**
      * Toggle eye open-close for API Key Field.
-     * 
+     *
      * @since 1.0.0
      */
 
@@ -332,14 +332,14 @@ var url = customVars.ajaxurl;
 
     /**
      * Hide Add new Button
-     * 
+     *
      * @since 1.0.0
      */
 
     $(function () {
         if ($('.page-title-action').length) {
             var querystring = $('.page-title-action').prop('href').split("?")[1];
-            if (querystring == 'post_type=category' || querystring == 'post_type=channel')
+            if (querystring == 'post_type=channel-category' || querystring == 'post_type=channel')
                 $('.page-title-action').remove();
         }
     });

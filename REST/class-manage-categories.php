@@ -25,7 +25,7 @@ class Dsp_Manage_categories {
         $dsp_category = json_decode(json_encode($request['category']));
         $args = array(
             'posts_per_page' => -1,
-            'post_type' => 'category',
+            'post_type' => 'channel-category',
             'meta_query' => array(
                 array(
                     'key' => 'cat_id',
@@ -68,7 +68,7 @@ class Dsp_Manage_categories {
 
             $args = array(
                 'posts_per_page' => -1,
-                'post_type' => 'category',
+                'post_type' => 'channel-category',
                 'meta_query' => array(
                     array(
                         'key' => 'cat_id',
@@ -86,7 +86,7 @@ class Dsp_Manage_categories {
                 'post_status' => 'publish',
                 'post_date' => date('Y-m-d H:i:s'),
                 'post_author' => $user_ID,
-                'post_type' => 'category',
+                'post_type' => 'channel-category',
                 'post_name' => $dsp_category->slug,
             );
 

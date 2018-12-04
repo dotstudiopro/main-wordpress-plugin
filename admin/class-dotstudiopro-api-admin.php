@@ -345,7 +345,7 @@ class Dotstudiopro_Api_Admin {
             wp_delete_post($channel->ID, true);
         }
 
-        $categories = get_pages(array('post_type' => 'category'));
+        $categories = get_pages(array('post_type' => 'channel-category'));
         foreach ($categories as $category) {
             wp_delete_post($category->ID, true);
         }

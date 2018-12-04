@@ -39,7 +39,7 @@ $myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
 );
 
 /**
- * Defining global variable for plugin basefile to use anywhere througnt the site
+ * Defining global variable for plugin basefile to use anywhere throughout the site
  */
 if (!defined('DOTSTUDIOPRO_API_BASENAME')) {
     define('DOTSTUDIOPRO_API_BASENAME', plugin_basename(__FILE__));

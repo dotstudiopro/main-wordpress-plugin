@@ -78,7 +78,7 @@ class Dsp_Custom_Posttypes {
             'menu_icon' => 'dashicons-playlist-video',
             'supports' => array('title', 'editor', 'author', 'thumbnail', 'revisions', 'page-attributes')
         );
-        register_post_type('category', $args);
+        register_post_type('channel-category', $args);
     }
 
     /**
@@ -87,7 +87,7 @@ class Dsp_Custom_Posttypes {
      * @since 1.0.0
      */
     public function create_custom_metabox() {
-        add_meta_box('category_metabox', 'Category: Additional details', array($this, 'create_category_metabox_callback'), 'category', 'normal', 'high');
+        add_meta_box('category_metabox', 'Category: Additional details', array($this, 'create_category_metabox_callback'), 'channel-category', 'normal', 'high');
         add_meta_box('channel_metabox', 'Channel: Additional details', array($this, 'create_channel_metabox_callback'), 'channel', 'normal', 'high');
         add_meta_box('channel_video_metabox', 'Channel: Video\'s details', array($this, 'create_video_metabox_callback'), 'channel', 'normal', 'high');
     }
@@ -165,7 +165,7 @@ class Dsp_Custom_Posttypes {
             return;
         if (!current_user_can('edit_post', $post_id))
             return;
-        if ($_POST['post_type'] == 'category' || $_POST['post_type'] == 'channel') {
+        if ($_POST['post_type'] == 'channel-category' || $_POST['post_type'] == 'channel') {
             return;
         }
     }
@@ -178,7 +178,7 @@ class Dsp_Custom_Posttypes {
      */
     public function add_button_to_custom_posttypes() {
         global $current_screen;
-        if ($current_screen->post_type == 'category') {
+        if ($current_screen->post_type == 'channel-category') {
             ?>
             <script type="text/javascript">
                 jQuery(document).ready(function ($)
@@ -631,7 +631,7 @@ class Dsp_Custom_Posttypes {
      */
     public function remove_submenus() {
         global $submenu;
-        unset($submenu['edit.php?post_type=category'][10]); // Removes 'Add New'.
+        unset($submenu['edit.php?post_type=channel-category'][10]); // Removes 'Add New'.
         unset($submenu['edit.php?post_type=channel'][10]); // Removes 'Add New'.
     }
 
