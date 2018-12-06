@@ -326,6 +326,177 @@ class Dsp_External_Api_Request {
     }
 
     /**
+     * function to check subscriptiom status
+     * @since 1.0.0
+     * @param type $client_token
+     * @param type $channel_id
+     * @return type
+     */
+    public function check_subscription_status($client_token = null, $channel_id) {
+
+        $token = $this->api_token_check();
+
+        if (!$token)
+            return array();
+
+        $path = 'subscriptions/check/' . $channel_id;
+
+        $headers = array(
+            'x-access-token' => $token,
+        );
+
+        if (!empty($client_token)) {
+            $headers['x-client-token'] = $client_token;
+        }
+
+        return $this->api_request_get($path, null, $headers, null);
+    }
+
+    /**
+     * function to get user's watchlist
+     * @since 1.0.0
+     * @param type $client_token
+     * @return type
+     */
+    function get_user_watchlist($client_token) {
+        $token = $this->api_token_check();
+
+        if (!$token && !$client_token)
+            return array();
+
+        $path = 'watchlist/channels';
+
+        $headers = array(
+            'x-access-token' => $token,
+            'x-client-token' => $client_token
+        );
+
+        return $this->api_request_get($path, null, $headers);
+    }
+
+    /**
+     * function to to add channel to user's watchlist
+     * @since 1.0.0
+     * @param type $client_token
+     * @param type $channel_id
+     * @return type
+     */
+    function add_to_user_list($client_token, $channel_id) {
+        $token = $this->api_token_check();
+
+        if (!$token && !$client_token)
+            return array();
+
+        $path = 'watchlist/channels/add';
+
+        $headers = array(
+            'x-access-token' => $token,
+            'x-client-token' => $client_token
+        );
+
+        $body = array(
+            'channel_id' => $channel_id,
+        );
+
+        return $this->api_request_post($path, null, $headers, $body);
+    }
+
+    /**
+     * function to remove data from user's watchlist
+     * @since 1.0.0
+     * @param type $client_token
+     * @param type $channel_id
+     * @return type
+     */
+    function remove_from_user_list($client_token, $channel_id) {
+        $token = $this->api_token_check();
+
+        if (!$token && !$client_token)
+            return array();
+
+        $path = 'watchlist/channels/delete';
+
+        $headers = array(
+            'x-access-token' => $token,
+            'x-client-token' => $client_token
+        );
+
+        $body = array(
+            'channel_id' => $channel_id,
+        );
+
+        return $this->api_request_delete($path, null, $headers, $body);
+    }
+
+    /**
+     * function to get recent view data
+     * @since 1.0.0
+     * @param type $client_token
+     * @return type
+     */
+    function get_recent_viewed_data($client_token) {
+        $token = $this->api_token_check();
+
+        if (!$token && !$client_token)
+            return array();
+
+        $path = 'users/resumption/videos';
+
+        $headers = array(
+            'x-access-token' => $token,
+            'x-client-token' => $client_token
+        );
+
+        return $this->api_request_get($path, null, $headers);
+    }
+
+    /**
+     * function to store the point data of video
+     * @param type $client_token
+     * @param type $video_id
+     * @param type $point
+     * @return type
+     */
+    public function create_point_data($client_token, $video_id, $point) {
+
+        $token = $this->api_token_check();
+
+        if (!$client_token && !$token) {
+            return array();
+        }
+
+        $path = 'users/videos/point/' . $video_id . '/' . $point;
+
+        $headers = array(
+            'x-client-token' => $client_token,
+            'x-access-token' => $token
+        );
+
+        return $this->api_request_post($path, null, $headers);
+    }
+
+    /**
+     * 
+     */
+    public function get_recent_viewed_data_video($client_token, $video_id) {
+
+        $token = $this->api_token_check();
+
+        if (!$client_token && !$token) {
+            return array();
+        }
+
+        $path = 'users/videos/point/' . $video_id;
+
+        $headers = array(
+            'x-client-token' => $client_token,
+            'x-access-token' => $token
+        );
+
+        return $this->api_request_get($path, null, $headers);
+    }
+
+    /**
      * This is common function to use POST request of External DSP API.
      * 
      * @param type $path
@@ -451,6 +622,55 @@ class Dsp_External_Api_Request {
         elseif (wp_remote_retrieve_response_code($raw_response) != 200) {
             $this->write_log('URL', $url);
             $this->write_log('Header Parameters', $headers);
+            $this->write_log('API Responce', wp_remote_retrieve_body($raw_response));
+            $error_message = $this->error_message($raw_response);
+            return new WP_Error('server_error', $error_message);
+        }
+
+        // decode response
+        $json = json_decode(wp_remote_retrieve_body($raw_response), true);
+
+        // allow non json value
+        if ($json === null) {
+            return wp_remote_retrieve_body($raw_response);
+        }
+        // return
+        return $json;
+    }
+
+    /**
+     * This is common function to use DELETE request of External DSP API.
+     * 
+     * @param type $path
+     * @param type $body
+     * @param type $headers
+     * @return \WP_Error or Json Responce
+     */
+    public function api_request_delete($path = null, $query = null, $headers = null, $body = null) {
+
+        // vars
+        $url = $this->common_url . $path;
+
+        if ($query) {
+            $url = add_query_arg($query, $url);
+        }
+
+        $raw_response = wp_remote_request($url, array(
+            'method' => 'DELETE',
+            'body' => $body,
+            'headers' => $headers,
+            'timeout' => 50
+        ));
+
+        // wp error
+        if (is_wp_error($raw_response)) {
+            return $raw_response;
+        }
+        // http error
+        elseif (wp_remote_retrieve_response_code($raw_response) != 200) {
+            $this->write_log('URL', $url);
+            $this->write_log('Header Parameters', $headers);
+            $this->write_log('Body Parameters', $body);
             $this->write_log('API Responce', wp_remote_retrieve_body($raw_response));
             $error_message = $this->error_message($raw_response);
             return new WP_Error('server_error', $error_message);
