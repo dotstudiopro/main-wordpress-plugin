@@ -83,7 +83,7 @@ class Dotstudiopro_Api_Admin {
      * @since    1.0.0
      */
     public function add_admin_menu() {
-        add_menu_page('Dotstudiopro API Settings', __('Dotstudiopro API Settings', 'dotstudiopro-api'), 'manage_options', 'dsp-api-settings', array($this, 'create_admin_interface'), plugin_dir_url(__FILE__) . 'images/dsp.png');
+        add_menu_page('dotstudioPRO API Settings', __('dotstudioPRO API Settings', 'dotstudiopro-api'), 'manage_options', 'dsp-api-settings', array($this, 'create_admin_interface'), plugin_dir_url(__FILE__) . 'images/dsp.png');
     }
 
     /**

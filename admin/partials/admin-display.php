@@ -18,7 +18,7 @@ $button = $active ? __('Update Api Key', 'dotstudiopro-api') : __('Activate Api 
 <div class="wrap dsp-settings-wrap">
 
     <?php settings_errors(); ?>
-    <h1><?php _e('Dotstudiopro API Settings', 'dotstudiopro-api'); ?></h1>
+    <h1><?php _e('dotstudioPRO API Settings', 'dotstudiopro-api'); ?></h1>
     <?php $dotstudiopro_api_key = get_option('dotstudiopro_api_key'); ?>
 
     <div class="dsp-box dsp-box-hidden" style="display: none;">
