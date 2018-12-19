@@ -293,7 +293,7 @@ class Dsp_Custom_Posttypes {
                 $add_count = 0;
                 $update_count = 0;
                 foreach ($categories['categories'] as $category) {
-                    if (isset($category['platforms'][0]['website'])) {
+                    if (isset($category['platforms'][0]['website']) && $category['platforms'][0]['website'] == 'true') {
                         $args = array(
                             'fields' => 'ids',
                             'post_type' => 'channel-category',
