@@ -64,7 +64,7 @@ class Dsp_Manage_categories {
 
         $dsp_category = json_decode(json_encode($request['category']));
 
-        if (isset($dsp_category->platforms[0]->website)) {
+        if (isset($dsp_category->platforms[0]->website) && $dsp_category->platforms[0]->website == 'true') {
 
             $args = array(
                 'posts_per_page' => -1,
@@ -118,6 +118,23 @@ class Dsp_Manage_categories {
             }
         } else {
             if (empty($type)) {
+                if(!empty($dsp_category->_id)){
+                    $args = array(
+                        'fields' => 'ids',
+                        'post_type' => 'channel-category',
+                        'meta_query' => array(
+                            array(
+                                'key' => 'cat_id',
+                                'value' => $dsp_category->_id
+                            )
+                        )
+                    );
+                    $my_query = new WP_Query($args);
+                    $posts = $my_query->posts;
+                    if ($my_query->have_posts()) {
+                        wp_delete_post($posts[0]->ID, true);
+                    }
+                }
                 return new WP_Error('rest_syndication_error', __('Syndication for this category is not enabled for website.'), array('status' => 406));
             }
         }

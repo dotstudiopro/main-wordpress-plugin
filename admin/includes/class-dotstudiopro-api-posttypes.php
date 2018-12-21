@@ -330,6 +330,23 @@ class Dsp_Custom_Posttypes {
                         update_post_meta($post_id, 'is_on_cat_homepage', isset($category['homepage']) ? $category['homepage'] : '');
                         update_post_meta($post_id, 'weight', isset($category['weight']) ? $category['weight'] : '');
                     }
+                    else {
+                        $args = array(
+                            'fields' => 'ids',
+                            'post_type' => 'channel-category',
+                            'meta_query' => array(
+                                array(
+                                    'key' => 'cat_id',
+                                    'value' => $category['_id']
+                                )
+                            )
+                        );
+                        $my_query = new WP_Query($args);
+                        $posts = $my_query->posts;
+                        if ($my_query->have_posts()) {
+                            wp_delete_post($posts[0], true);
+                        }
+                    }
                 }
                 $send_response = array('message' => $add_count . ' Categories added.<br/>' . $update_count . ' Categories Updated');
                 wp_send_json_success($send_response, 200);
