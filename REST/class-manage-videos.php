@@ -36,11 +36,11 @@ class Dsp_Manage_videos {
             if ($wpdb->num_rows > 0) {
                 $wpdb->update($dsp_video_table, $data, array('video_id' => $request['_id']));
                 $send_response = array('message' => 'Video Detail Updated Succesfully.');
-                wp_send_json_error($send_response, 200);
+                wp_send_json_success($send_response, 200);
             } else {
                 $wpdb->insert($dsp_video_table, $data);
                 $send_response = array('message' => 'Video Detail Added Succesfully.');
-                wp_send_json_error($send_response, 200);
+                wp_send_json_success($send_response, 200);
             }
         }
     }
