@@ -119,10 +119,12 @@ class Dsp_External_Api_Request {
         );
 
         $country = $this->api_request_post('country', null, $headers, $body);
-        if (!is_wp_error($country))
+        if (!is_wp_error($country)) {
             $this->country = $country['data']['countryCode'];
+            return $this->country;
+        }
 
-        return $country;
+        return false;
     }
 
     /**
