@@ -5,7 +5,7 @@
  *
  * @link              https://www.dotstudiopro.com
  * @since             1.0.0
- * 
+ *
  * @package           Dotstudiopro_Api
  * @subpackage        Dotstudiopro_Api/includes
  */
@@ -90,7 +90,7 @@ class Dsp_External_Api_Request {
 
     /**
      * Get the country code of the user
-     * 
+     *
      * @return boolean
      */
     function get_country($token = null) {
@@ -163,16 +163,18 @@ class Dsp_External_Api_Request {
         $this->get_country($token);
 
         // If we have no token, or we have no country, the API call will fail, so we return an empty array
-        if (!$token || !$this->country)
-            return array();
+        if (!$token || !$this->country) {
+            return array($token, $this->country);
+        }
 
-        $path = 'channels/' . $this->country;
+        // We don't use the country here, although we call it before here in case we need
+        // to re-up our token or get the country for another call later. Instead, we use
+        // ALL because it gives us every channel, so we can put it in the DB
+        $path = 'channels/ALL';
 
         $headers = array(
             'x-access-token' => $token
         );
-
-        $query = array('detail' => $detail);
 
         return $this->api_request_get($path, null, $headers);
     }
@@ -476,7 +478,7 @@ class Dsp_External_Api_Request {
     }
 
     /**
-     * 
+     *
      */
     public function get_recent_viewed_data_video($client_token, $video_id) {
 
@@ -498,7 +500,7 @@ class Dsp_External_Api_Request {
 
     /**
      * This is common function to use POST request of External DSP API.
-     * 
+     *
      * @param type $path
      * @param type $body
      * @param type $headers
@@ -546,7 +548,7 @@ class Dsp_External_Api_Request {
 
     /**
      * This is common function to use PUT request of External DSP API.
-     * 
+     *
      * @param type $path
      * @param type $body
      * @param type $headers
@@ -595,10 +597,10 @@ class Dsp_External_Api_Request {
 
     /**
      * This is common function to use GET request of External DSP API.
-     * 
+     *
      * @param type $path
      * @param type $headers
-     * @return \WP_Error or  Json Responce 
+     * @return \WP_Error or  Json Responce
      */
     public function api_request_get($path = null, $query = null, $headers = null) {
 
@@ -640,7 +642,7 @@ class Dsp_External_Api_Request {
 
     /**
      * This is common function to use DELETE request of External DSP API.
-     * 
+     *
      * @param type $path
      * @param type $body
      * @param type $headers
@@ -689,7 +691,7 @@ class Dsp_External_Api_Request {
 
     /**
      * Function to write the error log in file.
-     * 
+     *
      * @param type $log
      */
     private function write_log($message, $log) {
@@ -704,7 +706,7 @@ class Dsp_External_Api_Request {
 
     /**
      * Function to handel error responce which comes form DSP API
-     * 
+     *
      * @since 1.0.0
      * @param type $raw_response
      * @return string

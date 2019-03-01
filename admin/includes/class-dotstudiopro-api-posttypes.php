@@ -423,6 +423,7 @@ class Dsp_Custom_Posttypes {
                     $categories = isset($channel['categories']) ? $channel['categories'] : '';
                     $dspro_channel_id = isset($channel['dspro_id']) ? $channel['dspro_id'] : '';
                     $weightings = isset($channel['weightings']) ? $channel['weightings'] : '';
+                    $geo = isset($channel['geo']) ? $channel['geo'] : '';
 
 
                     $video_id = array();
@@ -475,6 +476,7 @@ class Dsp_Custom_Posttypes {
                     update_post_meta($post_id, 'chnl_spotlight_poster', $spotlight_poster);
                     update_post_meta($post_id, 'chnl_comp_id', $company_id);
                     update_post_meta($post_id, 'dspro_channel_id', $dspro_channel_id);
+                    update_post_meta($post_id, 'dspro_channel_geo', $geo);
 
                     if (!empty($categories)) {
                         $category = array();
@@ -535,6 +537,7 @@ class Dsp_Custom_Posttypes {
         $chnl_actors = isset($values['chnl_actors'][0]) ? $values['chnl_actors'][0] : '';
         $chnl_child_channels = isset($values['chnl_child_channels'][0]) ? $values['chnl_child_channels'][0] : '';
         $dspro_channel_id = isset($values['dspro_channel_id'][0]) ? $values['dspro_channel_id'][0] : '';
+        $dspro_channel_geo = isset($values['dspro_channel_geo'][0]) ? $values['dspro_channel_geo'][0] : array();
 
         wp_nonce_field('category_metabox_nonce', 'category_metabox');
         ?>
@@ -562,7 +565,7 @@ class Dsp_Custom_Posttypes {
                     <td><input type="text" name="chnl_writers" class="dsp-field" id="chnl_writers" value="<?php echo $chnl_writers; ?>" readonly data-role="tagsinput"/></td>
                 </tr>
                 <tr>
-                    <th scope="row">Geners</th>
+                    <th scope="row">Genres</th>
                     <td><input type="text" name="chnl_geners" class="dsp-field" id="chnl_geners" value="<?php echo $chnl_geners; ?>" readonly data-role="tagsinput"/></td>
                 </tr>
                 <tr>
@@ -586,8 +589,12 @@ class Dsp_Custom_Posttypes {
                     <td><input type="text" name="chnl_spotlight_poster" class="dsp-field" id="chnl_spotlight_poster" value="<?php echo $chnl_spotlight_poster; ?>" readonly/></td>
                 </tr>
                 <tr>
-                    <th scope="row">Child Chanels</th>
+                    <th scope="row">Child Channels</th>
                     <td><input type="text" name="chnl_child_channels" class="dsp-field" id="chnl_child_channels" value="<?php echo $chnl_child_channels; ?>" readonly data-role="tagsinput"/></td>
+                </tr>
+                <tr>
+                    <th scope="row">Available Countries</th>
+                    <td><input type="text" name="dspro_channel_geo" class="dsp-field" id="dspro_channel_geo" value="<?php echo implode(",", $dspro_channel_geo); ?>" readonly data-role="tagsinput"/></td>
                 </tr>
             </tbody>
         </table>
