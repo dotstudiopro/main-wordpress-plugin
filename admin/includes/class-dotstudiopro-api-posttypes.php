@@ -537,7 +537,7 @@ class Dsp_Custom_Posttypes {
         $chnl_actors = isset($values['chnl_actors'][0]) ? $values['chnl_actors'][0] : '';
         $chnl_child_channels = isset($values['chnl_child_channels'][0]) ? $values['chnl_child_channels'][0] : '';
         $dspro_channel_id = isset($values['dspro_channel_id'][0]) ? $values['dspro_channel_id'][0] : '';
-        $dspro_channel_geo = isset($values['dspro_channel_geo'][0]) ? $values['dspro_channel_geo'][0] : array();
+        $dspro_channel_geo = isset($values['dspro_channel_geo'][0]) ? unserialize($values['dspro_channel_geo'][0]) : array();
 
         wp_nonce_field('category_metabox_nonce', 'category_metabox');
         ?>
