@@ -295,6 +295,16 @@ class Dsp_REST_Api_Handler {
                     'description' => esc_html__('New channel video.', 'dotstudiopro-api'),
                     'type' => 'object',
                 ];
+                $args['channel']['geo'] = [
+                    'required' => false,
+                    'description' => esc_html__('New channel available countries.', 'dotstudiopro-api'),
+                    'type' => 'array',
+                ];
+                $args['channel']['is_product'] = [
+                    'required' => false,
+                    'description' => esc_html__('New channel is in subscription?.', 'dotstudiopro-api'),
+                    'type' => 'array',
+                ];
                 break;
             case 'update':
                 $args['channels'] = [

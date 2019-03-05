@@ -424,6 +424,7 @@ class Dsp_Custom_Posttypes {
                     $dspro_channel_id = isset($channel['dspro_id']) ? $channel['dspro_id'] : '';
                     $weightings = isset($channel['weightings']) ? $channel['weightings'] : '';
                     $geo = isset($channel['geo']) ? $channel['geo'] : '';
+                    $is_product = isset($channel['is_product']) ? $channel['is_product'] : '';
 
 
                     $video_id = array();
@@ -477,6 +478,7 @@ class Dsp_Custom_Posttypes {
                     update_post_meta($post_id, 'chnl_comp_id', $company_id);
                     update_post_meta($post_id, 'dspro_channel_id', $dspro_channel_id);
                     update_post_meta($post_id, 'dspro_channel_geo', $geo);
+                    update_post_meta($post_id, 'dspro_is_product', $is_product);
 
                     if (!empty($categories)) {
                         $category = array();
@@ -538,6 +540,7 @@ class Dsp_Custom_Posttypes {
         $chnl_child_channels = isset($values['chnl_child_channels'][0]) ? $values['chnl_child_channels'][0] : '';
         $dspro_channel_id = isset($values['dspro_channel_id'][0]) ? $values['dspro_channel_id'][0] : '';
         $dspro_channel_geo = isset($values['dspro_channel_geo'][0]) ? unserialize($values['dspro_channel_geo'][0]) : array();
+        $dspro_is_product = isset($values['dspro_is_product'][0]) ? 'YES' : 'NO';
 
         wp_nonce_field('category_metabox_nonce', 'category_metabox');
         ?>
@@ -595,6 +598,10 @@ class Dsp_Custom_Posttypes {
                 <tr>
                     <th scope="row">Available Countries</th>
                     <td><input type="text" name="dspro_channel_geo" class="dsp-field" id="dspro_channel_geo" value="<?php echo implode(",", $dspro_channel_geo); ?>" readonly data-role="tagsinput"/></td>
+                </tr>
+                <tr>
+                    <th scope="row">Is in subscription?</th>
+                    <td><input type="text" name="dspro_is_product" class="dsp-field" id="dspro_is_product" value="<?php echo $dspro_is_product; ?>" readonly/></td>
                 </tr>
             </tbody>
         </table>

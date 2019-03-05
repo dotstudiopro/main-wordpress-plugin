@@ -123,6 +123,8 @@ class Dsp_Manage_channels {
             $categories = isset($dsp_channel->categories) ? $dsp_channel->categories : '';
             $dspro_channel_id = isset($dsp_channel->dspro_id) ? $dsp_channel->dspro_id : '';
             $weightings = isset($dsp_channel->weightings) ? $dsp_channel->weightings : '';
+            $geo = isset($dsp_channel->geo) ? $dsp_channel->geo : '';
+            $is_product = isset($dsp_channel->is_product) ? $dsp_channel->is_product : '';
 
             update_post_meta($post_id, 'chnl_id', $channel_id);
             update_post_meta($post_id, 'chnl_writers', $writers);
@@ -134,6 +136,8 @@ class Dsp_Manage_channels {
             update_post_meta($post_id, 'chnl_comp_id', $company_id);
             update_post_meta($post_id, 'chnl_logo', $company_logo);
             update_post_meta($post_id, 'dspro_channel_id', $dspro_channel_id);
+            update_post_meta($post_id, 'dspro_channel_geo', $geo);
+            update_post_meta($post_id, 'dspro_is_product', $is_product);
 
             if (!empty($categories)) {
                 $category = array();
