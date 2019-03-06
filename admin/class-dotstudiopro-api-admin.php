@@ -41,6 +41,8 @@ class Dotstudiopro_Api_Admin {
         $this->name = $name;
         $this->version = $version;
         $this->dspExternalApiClass = new Dsp_External_Api_Request();
+        $dsp_import_limit_field = get_option('dsp_import_limit_field'); 
+        $this->limit = empty($dsp_import_limit_field) ? 100 : $dsp_import_limit_field;
     }
 
     /**
@@ -167,6 +169,10 @@ class Dotstudiopro_Api_Admin {
         );
         register_setting('dsp-setting-section', 'dsp_video_color_field');
 
+        add_settings_field(
+          'dsp_import_limit_field', __('Set limit to import channels', 'dotstudiopro-api'), array($this, 'dsp_import_limit_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
+          );
+          register_setting('dsp-setting-section', 'dsp_import_limit_field');
 
         /* Right now this field not in use */
 
@@ -214,6 +220,10 @@ class Dotstudiopro_Api_Admin {
         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/settings/dsp_video_color_field.php';
     }
 
+    function dsp_import_limit_field_callback_function() {
+        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/settings/dsp_import_limit_field.php';
+    }
+    
     function dsp_sync_data_field_callback_function() {
         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/settings/dsp_sync_data_field.php';
     }
@@ -229,7 +239,7 @@ class Dotstudiopro_Api_Admin {
         wp_enqueue_style('wp-color-picker');
         wp_enqueue_script('vex-combined', plugin_dir_url(__FILE__) . 'js/vex.combined.min.js', array('wp-color-picker'), false, true);
         wp_enqueue_script('custom-script-handle', plugin_dir_url(__FILE__) . 'js/custom-script.js', array(), false, true);
-        wp_localize_script('custom-script-handle', 'customVars', array('basedir' => plugin_dir_url(__DIR__), 'ajaxurl' => admin_url('admin-ajax.php')));
+        wp_localize_script('custom-script-handle', 'customVars', array('basedir' => plugin_dir_url(__DIR__), 'ajaxurl' => admin_url('admin-ajax.php'), 'limit' => $this->limit));
         wp_enqueue_style($this->name, plugin_dir_url(__FILE__) . 'css/dsp-global.css', array(), $this->version, 'all');
         wp_enqueue_style('fontawesome', 'http:////netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css', '', '4.0.3', 'all');
         wp_enqueue_style('tasg-inputes-css', plugin_dir_url(__FILE__) . 'css/bootstrap-tagsinput.css', array(), $this->version, 'all');

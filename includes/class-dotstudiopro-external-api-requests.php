@@ -158,7 +158,7 @@ class Dsp_External_Api_Request {
      *
      * @return Array Returns an array of channels, or an empty array if something is wrong or there are no channels
      */
-    function get_channels($detail = 'partial') {
+    function get_channels($detail = 'partial', $limit = '', $page = '') {
 
         $token = $this->api_token_check();
 
@@ -178,7 +178,11 @@ class Dsp_External_Api_Request {
             'x-access-token' => $token
         );
 
-        return $this->api_request_get($path, null, $headers);
+        $query = '';
+        if(!empty($limit) && !empty($page))
+            $query = array('limit' => $limit, 'page' => $page);
+
+        return $this->api_request_get($path, $query, $headers);
     }
 
     /**

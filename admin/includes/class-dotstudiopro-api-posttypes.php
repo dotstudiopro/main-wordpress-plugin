@@ -374,8 +374,9 @@ class Dsp_Custom_Posttypes {
         $dsp_video_table = $dsp->get_Dotstudiopro_Video_Table();
 
         if (wp_verify_nonce($_POST['nonce'], 'import_channel')) {
-
-            $channels = $this->dspExternalApiClass->get_channels();
+            $dsp_import_limit_field = get_option('dsp_import_limit_field'); 
+            $limit = empty($dsp_import_limit_field) ? 100 : $dsp_import_limit_field;
+            $channels = $this->dspExternalApiClass->get_channels('',$limit,$_POST['page']);
             if (!is_wp_error($channels)) {
                 $add_count = 0;
                 $update_count = 0;
@@ -508,7 +509,16 @@ class Dsp_Custom_Posttypes {
                         update_post_meta($post_id, 'chnl_weightings', $weightingData);
                     }
                 }
-                $send_response = array('message' => $add_count . ' Channels added.<br/>' . $update_count . ' Channels Updated.');
+                $send_response = array();
+                if($channels['pages']['page'] == $channels['pages']['pages']){
+                    $send_response['status'] = 'complete';
+                    $send_response['message'] = ' Channels Updated Sucesfully.';
+                }
+                else{
+                  $send_response['status'] = 'pending';
+                  $send_response['page'] = $channels['pages']['page'];
+                  $send_response['pages'] = $channels['pages']['pages'];  
+                }
                 wp_send_json_success($send_response, 200);
             } else {
                 $send_response = array('message' => 'Server Error : ' . $channels->get_error_message());

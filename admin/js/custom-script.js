@@ -14,6 +14,7 @@ var success_img = customVars.basedir + '/admin/images/true.png';
 var loader_gif = customVars.basedir + '/admin/images/Rolling.gif';
 var error_img = customVars.basedir + '/admin/images/false.png';
 var url = customVars.ajaxurl;
+var limit = customVars.limit; 
 (function ($) {
 
     /**
@@ -156,13 +157,9 @@ var url = customVars.ajaxurl;
                             $('.import-cat-img').attr('src', success_img);
                             $('.ajax-resp').append('<div><img class="import-chnl-img" src=' + loader_gif + '><p> Import channels in-progress.</p></div>');
                             vex.closeTop();
-                            loading.show('Step 3: Import channels in-progress.');
-                            var step3 = importData(url, 'import_channel_post_data', dataObj['_channel_nonce'])
-                            step3.done(function (response) {
-                                if (response.success)
-                                    $('.import-chnl-img').attr('src', success_img);
-                                dialogresponse('Api key activation', 'All the categories and channels are imported.')
-                            });
+                            //loading.show('Step 3: Import channels in-progress.');
+                            var step3 = importChannelData(url, 'import_channel_post_data', dataObj['_channel_nonce'], 1);
+                            return step3;
                         }
                     });
                 } else {
@@ -201,11 +198,17 @@ var url = customVars.ajaxurl;
         loading.show('Import process in-progress... Please wait...');
         var action = $(this).data('action');
         var nonce = $(this).data('nonce');
+        if(action == 'import_channel_post_data'){
+            var data = importChannelData(url, action, nonce, 1);
+            return data;
+        }
+        else{
         var data = importData(url, action, nonce)
         data.done(function (response) {
             if (response.success)
                 dialogresponse('Data successfully imported ', response.data.message)
         });
+        }
     });
 
     /**
@@ -234,6 +237,36 @@ var url = customVars.ajaxurl;
             console.log("error in import data");
         })
         return step2;
+    }
+
+    function importChannelData(url, action, nonce, page) {
+        var start = (page - 1) * limit;
+        var end = page * limit;
+        var str = 'Importing ' + (start+1) + ' to ' + end + ' channels';
+        vex.closeTop();
+        loading.show('Step 3: Import channels in-progress.<br/>'+str);
+        var step2 = $.post(
+                url,
+                {
+                    'action': action,
+                    'nonce': nonce,
+                    'page': page,
+                    async: false
+                });
+        step2.fail(function (response) {
+            $('.ajax-resp').append('<div><img class="import-cat-img" src="' + error_img + '"><p> Error in Import process.</p></div>');
+            dialogresponse('Error in Import process', (response.responseJSON) ? response.responseJSON.data.message : response.statusText)
+            console.log("error in import data");
+        })
+        step2.done(function (response) {
+            console.log(response);
+            if (response.data.status == 'complete'){
+                 $('.import-chnl-img').attr('src', success_img);
+                dialogresponse('Data successfully imported ', response.data.message);
+            }
+            else
+                importChannelData(url, action, nonce, response.data.page + 1);
+        })
     }
 
     /**
