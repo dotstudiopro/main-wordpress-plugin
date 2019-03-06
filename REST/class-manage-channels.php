@@ -125,6 +125,8 @@ class Dsp_Manage_channels {
             $weightings = isset($dsp_channel->weightings) ? $dsp_channel->weightings : '';
             $geo = isset($dsp_channel->geo) ? $dsp_channel->geo : '';
             $is_product = isset($dsp_channel->is_product) ? $dsp_channel->is_product : '';
+            $year = isset($dsp_channel->year) ? $dsp_channel->year : '';
+            $language = isset($dsp_channel->language) ? $dsp_channel->language : '';           
 
             update_post_meta($post_id, 'chnl_id', $channel_id);
             update_post_meta($post_id, 'chnl_writers', $writers);
@@ -138,6 +140,8 @@ class Dsp_Manage_channels {
             update_post_meta($post_id, 'dspro_channel_id', $dspro_channel_id);
             update_post_meta($post_id, 'dspro_channel_geo', $geo);
             update_post_meta($post_id, 'dspro_is_product', $is_product);
+            update_post_meta($post_id, 'dspro_channel_year', $year);
+            update_post_meta($post_id, 'dspro_channel_language', $language);
 
             if (!empty($categories)) {
                 $category = array();

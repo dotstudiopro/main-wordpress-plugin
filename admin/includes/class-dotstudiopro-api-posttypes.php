@@ -89,6 +89,7 @@ class Dsp_Custom_Posttypes {
     public function create_custom_metabox() {
         add_meta_box('category_metabox', 'Category: Additional details', array($this, 'create_category_metabox_callback'), 'channel-category', 'normal', 'high');
         add_meta_box('channel_metabox', 'Channel: Additional details', array($this, 'create_channel_metabox_callback'), 'channel', 'normal', 'high');
+        add_meta_box('channel_metabox_additional', 'Channel: Publishing details', array($this, 'create_channel_publishing_metabox_callback'), 'channel', 'side', 'high');
         add_meta_box('channel_video_metabox', 'Channel: Video\'s details', array($this, 'create_video_metabox_callback'), 'channel', 'normal', 'high');
     }
 
@@ -425,6 +426,8 @@ class Dsp_Custom_Posttypes {
                     $weightings = isset($channel['weightings']) ? $channel['weightings'] : '';
                     $geo = isset($channel['geo']) ? $channel['geo'] : '';
                     $is_product = isset($channel['is_product']) ? $channel['is_product'] : '';
+                    $language = isset($channel['language']) ? $channel['language'] : '';
+                    $year = isset($channel['year']) ? $channel['year'] : '';
 
 
                     $video_id = array();
@@ -479,6 +482,8 @@ class Dsp_Custom_Posttypes {
                     update_post_meta($post_id, 'dspro_channel_id', $dspro_channel_id);
                     update_post_meta($post_id, 'dspro_channel_geo', $geo);
                     update_post_meta($post_id, 'dspro_is_product', $is_product);
+                    update_post_meta($post_id, 'dspro_channel_language', $language);
+                    update_post_meta($post_id, 'dspro_channel_year', $year);
 
                     if (!empty($categories)) {
                         $category = array();
@@ -651,6 +656,25 @@ class Dsp_Custom_Posttypes {
         endif;
         ?>
         <p> No videos available for this channel</p>
+        <?php
+    }
+
+    function create_channel_publishing_metabox_callback() {
+        global $post;
+
+        $values = get_post_custom($post->ID);
+        $chnl_lang = isset($values['dspro_channel_language'][0]) ? esc_attr($values['dspro_channel_language'][0]) : '';
+        $chnl_year = isset($values['dspro_channel_year'][0]) ? esc_attr($values['dspro_channel_year'][0]) : '';
+
+        wp_nonce_field('category_metabox_nonce', 'category_metabox');
+        ?>
+        <div class="inside">
+            <p class="post-attributes-label-wrapper"><label class="post-attributes-label" for="chnl_lang">Language</label></p>
+            <input type="text" class="dsp-field"  name="chnl_lang" id="chnl_lang" value="<?php echo $chnl_lang; ?>" readonly/>
+            <p class="post-attributes-label-wrapper"><label class="post-attributes-label" for="chnl_year">Year</label></p>
+            <input type="text" class="dsp-field"  name="chnl_year" id="chnl_year" value="<?php echo $chnl_year; ?>" readonly/>
+        </div>
+
         <?php
     }
 

@@ -305,6 +305,16 @@ class Dsp_REST_Api_Handler {
                     'description' => esc_html__('New channel is in subscription?.', 'dotstudiopro-api'),
                     'type' => 'array',
                 ];
+                $args['channel']['year'] = [
+                    'required' => false,
+                    'description' => esc_html__('New channel publisher year.', 'dotstudiopro-api'),
+                    'type' => 'array',
+                ];
+                $args['channel']['language'] = [
+                    'required' => false,
+                    'description' => esc_html__('New channel language.', 'dotstudiopro-api'),
+                    'type' => 'array',
+                ];
                 break;
             case 'update':
                 $args['channels'] = [
