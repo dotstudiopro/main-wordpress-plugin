@@ -389,7 +389,7 @@ class Dsp_External_Api_Request {
      * @param type $channel_id
      * @return type
      */
-    function add_to_user_list($client_token, $channel_id) {
+    function add_to_user_list($client_token, $channel_id, $parent_channel_id = null) {
         $token = $this->api_token_check();
 
         if (!$token && !$client_token)
@@ -405,6 +405,9 @@ class Dsp_External_Api_Request {
         $body = array(
             'channel_id' => $channel_id,
         );
+        if (!empty($parent_channel_id)) {
+            $body['parent_channel_id'] = $parent_channel_id;
+        }
 
         return $this->api_request_post($path, null, $headers, $body);
     }
