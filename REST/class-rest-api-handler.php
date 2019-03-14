@@ -23,7 +23,7 @@ class Dsp_REST_Api_Handler {
     public function __construct($name, $version) {
         $this->plugin_name = $name;
         $this->version = $version;
-        $this->namespace = $this->plugin_name . '/v' . intval($this->version);
+        $this->namespace = $this->plugin_name . '/v1/';
         $this->manageCategories = new Dsp_Manage_categories();
         $this->manageChannels = new Dsp_Manage_channels();
         $this->manageVideos = new Dsp_Manage_videos();
