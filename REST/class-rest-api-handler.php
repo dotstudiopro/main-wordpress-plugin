@@ -321,6 +321,9 @@ class Dsp_REST_Api_Handler {
                     'required' => true,
                     'description' => esc_html__('The channel info we are updating.', 'dotstudiopro-api'),
                     'type' => 'array',
+                    'items' => array(
+                        'type' => 'object'
+                    )
                 ];
                 break;
             case 'delete':
