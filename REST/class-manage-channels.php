@@ -61,6 +61,8 @@ class Dsp_Manage_channels {
      * @return json
      */
     public function manage_channel($request, $type = null) {
+        global $wpdb;
+        $dsp_video_table = $wpdb->prefix . 'videos';
 
         $dsp_channels = json_decode(json_encode($request['channels']));
 
@@ -112,7 +114,7 @@ class Dsp_Manage_channels {
 
             $channel_id = isset($dsp_channel->_id) ? $dsp_channel->_id : '';
             $company_id = isset($dsp_channel->company_id) ? $dsp_channel->company_id : '';
-            $company_logo = isset($dsp_channel->company_logo) ? $dsp_channel->company_logo : '';
+            $channel_logo = isset($dsp_channel->channel_logo) ? $dsp_channel->channel_logo : '';
             $writers = implode(',', $dsp_channel->writers);
             $genres = implode(',', $dsp_channel->genres);
             $directors = implode(',', $dsp_channel->directors);
@@ -126,8 +128,48 @@ class Dsp_Manage_channels {
             $geo = isset($dsp_channel->geo) ? $dsp_channel->geo : '';
             $is_product = isset($dsp_channel->is_product) ? $dsp_channel->is_product : '';
             $year = isset($dsp_channel->year) ? $dsp_channel->year : '';
-            $language = isset($dsp_channel->language) ? $dsp_channel->language : '';           
+            $language = isset($dsp_channel->language) ? $dsp_channel->language : '';   
+            
+            $video_id = array();
 
+            if (!empty($dsp_channel->playlist)) {
+                foreach ($dsp_channel->playlist as $key => $video):
+                    $video_id[] = isset($video->_id) ? $video->_id : '';
+                    $vidoeArr = array();
+                    $vidoeArr['title'] = isset($video->title) ? $video->title : '';
+                    $vidoeArr['description'] = isset($video->description) ? $video->description : '';
+                    $vidoeArr['slug'] = isset($video->slug) ? $video->slug : '';
+                    $vidoeArr['thumb'] = isset($video->thumb) ? get_option('dsp_cdn_img_url_field'). $video->thumb : '';
+                    $videoData = base64_encode(maybe_serialize($vidoeArr));
+                    $data = array('video_id' => $video->_id, 'video_detail' => $videoData);
+                    $is_video_exists = $wpdb->get_results("SELECT * FROM $dsp_video_table WHERE video_id = '" . $video->_id . "'");
+                    if ($wpdb->num_rows > 0)
+                        $wpdb->update($dsp_video_table, $data, array('video_id' => $video->_id));
+                    else
+                        $wpdb->insert($dsp_video_table, $data);
+
+                endforeach;
+                update_post_meta($post_id, 'chnl_videos', implode(',', $video_id));
+            }
+            elseif (!empty($dsp_channel->video)) {
+                $video = $dsp_channel->video;
+                $vidoeArr = array();
+                $video_id[] = isset($video->_id) ? $video->_id: '';
+                $vidoeArr['title'] = isset($video->title) ? $video->title : '';
+                $vidoeArr['description'] = isset($video->description) ? $video->description : '';
+                $vidoeArr['slug'] = isset($video->slug) ? $video->slug : '';
+                $vidoeArr['thumb'] = isset($video->thumb) ? get_option('dsp_cdn_img_url_field'). $video->thumb : '';
+
+                $videoData = base64_encode(maybe_serialize($vidoeArr));
+                $data = array('video_id' => $video->_id, 'video_detail' => $videoData);
+                $is_video_exists = $wpdb->get_results("SELECT * FROM $dsp_video_table WHERE video_id = '" . $video->_id . "'");
+                if ($wpdb->num_rows > 0)
+                    $wpdb->update($dsp_video_table, $data, array('video_id' => $video->_id));
+                else
+                    $wpdb->insert($dsp_video_table, $data);
+                update_post_meta($post_id, 'chnl_videos', implode(',', $video_id));
+            }
+            
             update_post_meta($post_id, 'chnl_id', $channel_id);
             update_post_meta($post_id, 'chnl_writers', $writers);
             update_post_meta($post_id, 'chnl_geners', $genres);
@@ -136,7 +178,7 @@ class Dsp_Manage_channels {
             update_post_meta($post_id, 'chnl_poster', $poster);
             update_post_meta($post_id, 'chnl_spotlight_poster', $spotlight_poster);
             update_post_meta($post_id, 'chnl_comp_id', $company_id);
-            update_post_meta($post_id, 'chnl_logo', $company_logo);
+            update_post_meta($post_id, 'chnl_logo', $channel_logo);
             update_post_meta($post_id, 'dspro_channel_id', $dspro_channel_id);
             update_post_meta($post_id, 'dspro_channel_geo', $geo);
             update_post_meta($post_id, 'dspro_is_product', $is_product);
