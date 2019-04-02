@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.1] - 2019-4-2
+
+### Fixed
+- Fixed an issue with the webhook receiver for channels that was causing channel logos to be saved incorrectly.
+
 ## [1.1.0] - 2019-3-18
 
 ### Fixed
