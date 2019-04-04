@@ -169,6 +169,9 @@ class Dsp_Manage_channels {
                     $wpdb->insert($dsp_video_table, $data);
                 update_post_meta($post_id, 'chnl_videos', implode(',', $video_id));
             }
+            else{
+                update_post_meta($post_id, 'chnl_videos', null);
+            }
             
             update_post_meta($post_id, 'chnl_id', $channel_id);
             update_post_meta($post_id, 'chnl_writers', $writers);
@@ -192,6 +195,9 @@ class Dsp_Manage_channels {
                 }
                 update_post_meta($post_id, 'chnl_categories', ',' . implode(',', $category) . ',');
             }
+            else{
+                update_post_meta($post_id, 'chnl_categories', null);
+            }
 
             if (!empty($childchannels)) {
                 $childchannel = array();
@@ -199,6 +205,9 @@ class Dsp_Manage_channels {
                     $childchannel[] = $child->slug;
                 }
                 update_post_meta($post_id, 'chnl_child_channels', implode(',', $childchannel));
+            }
+            else{
+                update_post_meta($post_id, 'chnl_child_channels', null);
             }
 
             $weightingsArr = array();
