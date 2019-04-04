@@ -30,7 +30,7 @@ class Dsp_Manage_channels {
             'post_type' => 'channel',
             'meta_query' => array(
                 array(
-                    'key' => 'chnl_id',
+                    'key' => 'dspro_channel_id',
                     'value' => $dsp_channel->_id
                 )
             )
