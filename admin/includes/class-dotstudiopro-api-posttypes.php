@@ -663,10 +663,11 @@ class Dsp_Custom_Posttypes {
                 </tbody>
             </table>
             <?php
-        endif;
+        else:
         ?>
-        <p> No videos available for this channel</p>
-        <?php
+            <p> No videos available for this channel</p>
+        <?php    
+        endif;
     }
 
     function create_channel_publishing_metabox_callback() {
