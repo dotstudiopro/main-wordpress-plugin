@@ -39,9 +39,7 @@ class Dsp_Manage_categories {
         if ($category->have_posts()) {
             while ($category->have_posts()) :
                 $category->the_post();
-                $id = get_the_ID();
                 wp_delete_post(get_the_ID());
-                $this->delete_custom_transient($id);
             endwhile;
             wp_reset_postdata();
             $send_response = array('code' => 'rest_success', 'message' => 'Category deleted successfully.', 'data' => array('status' => 200));
@@ -100,7 +98,6 @@ class Dsp_Manage_categories {
                 $post_id = wp_update_post($new_post);
                 $message = 'Updated!';
             }
-            $this->delete_custom_transient($post_id);
             if (is_wp_error($post_id)) {
                 return new WP_Error('rest_internal_server_error', __('Internal Server Error.'), array('status' => 500));
             }
@@ -157,18 +154,5 @@ class Dsp_Manage_categories {
 
         $send_response = array('code' => 'rest_success', 'message' => 'Category order updated succesfully. ', 'data' => array('status' => 200));
         wp_send_json($send_response, 200);
-    }
-     /**
-     * This function is to delete all custom transient of Category
-     */
-    public function delete_custom_transient($post_id){
-        global $wpdb;
-        $sql = "SELECT * FROM $wpdb->options WHERE option_name LIKE '%\_transient\_%' AND option_value LIKE '%$post_id%'";
-        $transients = $wpdb->get_results($sql);
-        if($transients){
-            foreach($transients as $t){
-                $wpdb->query("DELETE FROM $wpdb->options WHERE option_name = '" . $t->option_name . "'");
-            }
-        }
     }
 }

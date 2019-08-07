@@ -41,9 +41,10 @@ class Dsp_Manage_channels {
         if ($channel->have_posts()) {
             while ($channel->have_posts()) :
                 $channel->the_post();
-                $id = get_the_ID();
+                $post_id = get_the_ID();
+                $channel_id =  get_post_meta($post_id, 'chnl_id')[0];
                 wp_delete_post(get_the_ID());
-                $this->delete_custom_transient($id);
+                $this->delete_custom_transient($post_id, $channel_id);
             endwhile;
             wp_reset_postdata();
             $send_response = array('code' => 'rest_success', 'message' => 'Channel deleted successfully.', 'data' => array('status' => 200));
@@ -113,7 +114,6 @@ class Dsp_Manage_channels {
                     continue;
                 }
             }
-            $this->delete_custom_transient($post_id);
             $channel_id = isset($dsp_channel->_id) ? $dsp_channel->_id : '';
             $company_id = isset($dsp_channel->company_id) ? $dsp_channel->company_id : '';
             $channel_logo = isset($dsp_channel->channel_logo) ? $dsp_channel->channel_logo : '';
@@ -132,6 +132,8 @@ class Dsp_Manage_channels {
             $year = isset($dsp_channel->year) ? $dsp_channel->year : '';
             $language = isset($dsp_channel->language) ? $dsp_channel->language : '';   
             
+            $this->delete_custom_transient($post_id, $channel_id);
+
             $video_id = array();
 
             if (!empty($dsp_channel->playlist)) {
@@ -250,9 +252,9 @@ class Dsp_Manage_channels {
     /**
      * This function is to delete all custom transient of channel
      */
-    public function delete_custom_transient($post_id){
+    public function delete_custom_transient($post_id, $channel_id){
         global $wpdb;
-        $sql = "SELECT * FROM $wpdb->options WHERE option_name LIKE '%\_transient\_%' AND option_value LIKE '%$post_id%'";
+        $sql = "SELECT * FROM $wpdb->options WHERE option_name LIKE '%\_transient\_%' AND ( option_value LIKE '%$post_id%' OR option_value LIKE '%$channel_id%' )";
         $transients = $wpdb->get_results($sql);
         if($transients){
             foreach($transients as $t){
