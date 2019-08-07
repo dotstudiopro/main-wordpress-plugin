@@ -37,11 +37,13 @@ class Dsp_Manage_channels {
         );
 
         $channel = new WP_Query($args);
-
+        $transients_keys = array();
         if ($channel->have_posts()) {
             while ($channel->have_posts()) :
                 $channel->the_post();
+                $id = get_the_ID();
                 wp_delete_post(get_the_ID());
+                $this->delete_custom_transient($id);
             endwhile;
             wp_reset_postdata();
             $send_response = array('code' => 'rest_success', 'message' => 'Channel deleted successfully.', 'data' => array('status' => 200));
@@ -111,7 +113,7 @@ class Dsp_Manage_channels {
                     continue;
                 }
             }
-
+            $this->delete_custom_transient($post_id);
             $channel_id = isset($dsp_channel->_id) ? $dsp_channel->_id : '';
             $company_id = isset($dsp_channel->company_id) ? $dsp_channel->company_id : '';
             $channel_logo = isset($dsp_channel->channel_logo) ? $dsp_channel->channel_logo : '';
@@ -245,4 +247,17 @@ class Dsp_Manage_channels {
         wp_send_json($send_response, 200);
     }
 
+    /**
+     * This function is to delete all custom transient of channel
+     */
+    public function delete_custom_transient($post_id){
+        global $wpdb;
+        $sql = "SELECT * FROM $wpdb->options WHERE option_name LIKE '%\_transient\_%' AND option_value LIKE '%$post_id%'";
+        $transients = $wpdb->get_results($sql);
+        if($transients){
+            foreach($transients as $t){
+                $wpdb->query("DELETE FROM $wpdb->options WHERE option_name = '" . $t->option_name . "'");
+            }
+        }
+    }
 }
