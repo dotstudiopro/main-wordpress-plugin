@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.2] - 2019-8-8
+
+### Added
+- Added functionality to delete transients for content related to channels/categories when ingesting webhooks
+
 ## [1.1.1] - 2019-4-2
 
 ### Fixed
