@@ -30,7 +30,7 @@ class Dsp_Manage_channels {
             'post_type' => 'channel',
             'meta_query' => array(
                 array(
-                    'key' => 'dspro_channel_id',
+                    'key' => 'chnl_id',
                     'value' => $dsp_channel->_id
                 )
             )
@@ -130,8 +130,8 @@ class Dsp_Manage_channels {
             $geo = isset($dsp_channel->geo) ? $dsp_channel->geo : '';
             $is_product = isset($dsp_channel->is_product) ? $dsp_channel->is_product : '';
             $year = isset($dsp_channel->year) ? $dsp_channel->year : '';
-            $language = isset($dsp_channel->language) ? $dsp_channel->language : '';   
-            
+            $language = isset($dsp_channel->language) ? $dsp_channel->language : '';
+
             $this->delete_custom_transient($post_id, $channel_id);
 
             $video_id = array();
@@ -176,7 +176,7 @@ class Dsp_Manage_channels {
             else{
                 update_post_meta($post_id, 'chnl_videos', null);
             }
-            
+
             update_post_meta($post_id, 'chnl_id', $channel_id);
             update_post_meta($post_id, 'chnl_writers', $writers);
             update_post_meta($post_id, 'chnl_geners', $genres);
