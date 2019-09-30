@@ -239,10 +239,12 @@ var limit = customVars.limit;
         return step2;
     }
 
-    function importChannelData(url, action, nonce, page) {
+    function importChannelData(url, action, nonce, page, hash_key = '') {
         var start = (page - 1) * limit;
         var end = page * limit;
         var str = 'Importing ' + (start+1) + ' to ' + end + ' channels';
+        var random_string = Math.random().toString(36).substring(7);
+        var hash_key = (hash_key) ? hash_key : new Date().getTime()+'_'+random_string;
         vex.closeTop();
         loading.show('Step 3: Import channels in-progress.<br/>'+str);
         var step2 = $.post(
@@ -251,6 +253,7 @@ var limit = customVars.limit;
                     'action': action,
                     'nonce': nonce,
                     'page': page,
+                    'hash_key': hash_key,
                     async: false
                 });
         step2.fail(function (response) {
@@ -265,7 +268,7 @@ var limit = customVars.limit;
                 dialogresponse('Data successfully imported ', response.data.message);
             }
             else
-                importChannelData(url, action, nonce, response.data.page + 1);
+                importChannelData(url, action, nonce, response.data.page + 1, response.hash_key);
         })
     }
 

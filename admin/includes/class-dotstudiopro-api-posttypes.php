@@ -377,6 +377,7 @@ class Dsp_Custom_Posttypes {
             $dsp_import_limit_field = get_option('dsp_import_limit_field'); 
             $limit = empty($dsp_import_limit_field) ? 100 : $dsp_import_limit_field;
             $channels = $this->dspExternalApiClass->get_channels('',$limit,$_POST['page']);
+            $hash_key = $_POST['hash_key'];
             if (!is_wp_error($channels)) {
                 $add_count = 0;
                 $update_count = 0;
@@ -485,6 +486,7 @@ class Dsp_Custom_Posttypes {
                     update_post_meta($post_id, 'dspro_is_product', $is_product);
                     update_post_meta($post_id, 'dspro_channel_language', $language);
                     update_post_meta($post_id, 'dspro_channel_year', $year);
+                    update_post_meta($post_id, 'dsp_import_hash', $hash_key);
 
                     if (!empty($categories)) {
                         $category = array();
@@ -513,10 +515,30 @@ class Dsp_Custom_Posttypes {
                 if($channels['pages']['page'] == $channels['pages']['pages']){
                     $send_response['status'] = 'complete';
                     $send_response['message'] = ' Channels Updated Sucesfully.';
+
+                    $hashkey_args = array(
+                        'fields' => 'ids',
+                        'post_type' => 'channel',
+                        'meta_query' => array(
+                            array(
+                                'key' => 'dsp_import_hash',
+                                'value' => $hash_key,
+                                'compare' => '!='
+                            )
+                        )
+                    );
+                    $hashkey_query = new WP_Query($hashkey_args);
+                    $hashkey_posts = $hashkey_query->posts;
+
+                    foreach ($hashkey_posts as $channel) {
+                        wp_delete_post($channel, true);
+                    }
+
                 }
                 else{
                   $send_response['status'] = 'pending';
                   $send_response['page'] = $channels['pages']['page'];
+                  $send_response['hash_key'] = $hash_key;
                   $send_response['pages'] = $channels['pages']['pages'];  
                 }
                 wp_send_json_success($send_response, 200);
