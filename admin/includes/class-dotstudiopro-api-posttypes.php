@@ -290,6 +290,8 @@ class Dsp_Custom_Posttypes {
 
             $categories = $this->dspExternalApiClass->get_categories();
 
+            $hash_key = $_POST['hash_key'];
+
             if (!is_wp_error($categories)) {
                 $add_count = 0;
                 $update_count = 0;
@@ -330,6 +332,7 @@ class Dsp_Custom_Posttypes {
                         update_post_meta($post_id, 'is_in_cat_menu', isset($category['menu']) ? $category['menu'] : '');
                         update_post_meta($post_id, 'is_on_cat_homepage', isset($category['homepage']) ? $category['homepage'] : '');
                         update_post_meta($post_id, 'weight', isset($category['weight']) ? $category['weight'] : '');
+                        update_post_meta($post_id, 'dsp_import_hash', $hash_key);
                     }
                     else {
                         $args = array(
@@ -348,6 +351,28 @@ class Dsp_Custom_Posttypes {
                             wp_delete_post($posts[0], true);
                         }
                     }
+                }
+                $hashkey_args = array(
+                    'fields' => 'ids',
+                    'post_type' => 'channel-category',
+                    'meta_query' => array(
+                        'relation' => 'OR',
+                        array(
+                         'key' => 'dsp_import_hash',
+                         'compare' => 'NOT EXISTS', 
+                         'value' => ''
+                        ),
+                        array(
+                            'key' => 'dsp_import_hash',
+                            'value' => $hash_key,
+                            'compare' => '!='
+                        )
+                    )
+                );
+                $hashkey_query = new WP_Query($hashkey_args);
+                $hashkey_posts = $hashkey_query->posts;
+                foreach ($hashkey_posts as $delete_hashcategory) {
+                    wp_delete_post($delete_hashcategory, true);
                 }
                 $send_response = array('message' => $add_count . ' Categories added.<br/>' . $update_count . ' Categories Updated');
                 wp_send_json_success($send_response, 200);
@@ -520,6 +545,12 @@ class Dsp_Custom_Posttypes {
                         'fields' => 'ids',
                         'post_type' => 'channel',
                         'meta_query' => array(
+                            'relation' => 'OR',
+                            array(
+                             'key' => 'dsp_import_hash',
+                             'compare' => 'NOT EXISTS', 
+                             'value' => ''
+                            ),
                             array(
                                 'key' => 'dsp_import_hash',
                                 'value' => $hash_key,

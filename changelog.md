@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.5] - 2019-10-18
+
+### Added
+- Added functionality to add new hash-key while importing the category so the import process can come to know if the category is unpublished in next import process run. Also Fixed minor bugs.
+
 ## [1.1.4] - 2019-9-30
 
 ### Added

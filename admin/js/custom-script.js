@@ -224,11 +224,14 @@ var limit = customVars.limit;
      */
 
     function importData(url, action, nonce) {
+        var random_string = Math.random().toString(36).substring(7);
+        var hash_key = new Date().getTime()+'_'+random_string;
         var step2 = $.post(
                 url,
                 {
                     'action': action,
                     'nonce': nonce,
+                    'hash_key': hash_key,
                     async: false
                 });
         step2.fail(function (response) {
@@ -268,7 +271,7 @@ var limit = customVars.limit;
                 dialogresponse('Data successfully imported ', response.data.message);
             }
             else
-                importChannelData(url, action, nonce, response.data.page + 1, response.hash_key);
+                importChannelData(url, action, nonce, response.data.page + 1, response.data.hash_key);
         })
     }
 
