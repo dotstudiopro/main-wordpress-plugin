@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.6] - 2019-11-07
+
+### Fixed
+- Fixed an issue with the category update.
+
 ## [1.1.5] - 2019-10-18
 
 ### Added

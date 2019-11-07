@@ -131,7 +131,7 @@ class Dsp_Manage_categories {
                     $my_query = new WP_Query($args);
                     $posts = $my_query->posts;
                     if ($my_query->have_posts()) {
-                        wp_delete_post($posts[0]->ID, true);
+                        wp_delete_post($posts[0], true);
                     }
                 }
                 return new WP_Error('rest_syndication_error', __('Syndication for this category is not enabled for website.'), array('status' => 406));
