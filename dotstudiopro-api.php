@@ -16,7 +16,7 @@
  * Plugin Name:       dotstudioPRO API
  * Plugin URI:        https://www.dotstudiopro.com
  * Description:       This plugin provides a connector class to the dotstudioPRO API for use in plugin/theme development.
- * Version:           1.1.6
+ * Version:           1.1.7
  * Author:            dotstudioPRO
  * Author URI:        http://www.dotstudiopro.com
  * License:           GPLv3
@@ -84,3 +84,11 @@ function run_Dotstudiopro_Api() {
 }
 
 run_Dotstudiopro_Api();
+function dsp_plugin_welcome_redirect() {
+	$redirect = get_transient( 'dsp_plugin_welcome_redirect' );
+	delete_transient( 'dsp_plugin_welcome_redirect' );
+	$redirect && wp_redirect( admin_url( 'admin.php?page=dsp-api-settings' ) );
+}
+
+// Enables redirect on activation.
+add_action( 'admin_init', 'dsp_plugin_welcome_redirect' );

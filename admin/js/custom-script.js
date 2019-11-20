@@ -56,7 +56,7 @@ var limit = customVars.limit;
      * @since 1.0.0
      */
 
-    $('#submit-api-data').on('click', function (e) {
+    $('#submit-api-data, #import-sample-api-data').on('click', function (e) {
         e.preventDefault();
         var data = $('#dsp_api_form').serializeArray();
         dataObj = {};
@@ -66,11 +66,17 @@ var limit = customVars.limit;
         var action = dataObj['action'];
         var nonce = dataObj['_dsp_nonce'];
         var btn_value = $(this).attr('id');
-
+        api_key = '';
+        if(btn_value == 'import-sample-api-data'){
+            api_key = dataObj['dpro_api_key'];
+        }
+        else if(btn_value == 'submit-api-data'){
+            api_key = dataObj['dotstudiopro_api_key'];   
+        }
         loading.show('Step 1: Activate API key in-progress.');
         $('.dsp-box-hidden').show();
         $('.ajax-resp').append('<div><img class="activation-img" src="' + loader_gif + '"><p> Activate API key in-progress.</p></div>');
-        AjaxcallForAPIkey(action, dataObj['dotstudiopro_api_key'], nonce, btn_value);
+        AjaxcallForAPIkey(action, api_key, nonce, btn_value);
 
     });
 
@@ -81,7 +87,7 @@ var limit = customVars.limit;
      * @since 1.0.0
      */
 
-    $('#deactivate-api-data').on('click', function (e) {
+    $('#deactivate-api-data, #remove-sample-api-data').on('click', function (e) {
         e.preventDefault();
         var data = $('#dsp_api_form').serializeArray();
         dataObj = {};
@@ -91,7 +97,13 @@ var limit = customVars.limit;
         var action = dataObj['action'];
         var nonce = dataObj['_dsp_nonce'];
         var btn_value = $(this).attr('id');
-
+        api_key = '';
+        if(btn_value == 'remove-sample-api-data'){
+            api_key = dataObj['dpro_api_key'];
+        }
+        else if(btn_value == 'deactivate-api-data'){
+            api_key = dataObj['dotstudiopro_api_key'];   
+        }
         vex.closeAll();
         vex.dialog.open({
             unsafeMessage: [
@@ -105,7 +117,7 @@ var limit = customVars.limit;
                         $('.dsp-box-hidden').show();
                         $('.ajax-resp').append('<div><img class="activation-img" src="' + loader_gif + '"><p> Deactivating API key.</p></div>');
                         loading.show('Deactivating API key.');
-                        AjaxcallForAPIkey(action, dataObj['dotstudiopro_api_key'], nonce, btn_value);
+                        AjaxcallForAPIkey(action, api_key, nonce, btn_value);
                     }
                 }),
                 $.extend({}, vex.dialog.buttons.NO, {
@@ -146,7 +158,7 @@ var limit = customVars.limit;
 
         step1.done(function (response) {
             if (response.success) {
-                if (btn_value == 'submit-api-data') {
+                if (btn_value == 'submit-api-data' || btn_value == 'import-sample-api-data') {
                     $('.activation-img').attr('src', success_img);
                     $('.ajax-resp').append('<div><img class="import-cat-img" src=' + loader_gif + '><p> Import categories in-progress.</p></div>');
                     vex.closeTop();

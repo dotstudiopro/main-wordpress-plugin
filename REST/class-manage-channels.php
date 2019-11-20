@@ -250,6 +250,233 @@ class Dsp_Manage_channels {
     }
 
     /**
+     * This function to update all the channels by page count when the request is comes form an API Routes or Cron.
+     * @since 1.1.7
+     * @param type $request
+     */
+
+    public function update_all_channel() {
+
+        global $user_ID, $wpdb;
+
+        $dsp = new Dotstudiopro_Api();
+        $dsp_video_table = $dsp->get_Dotstudiopro_Video_Table();
+
+        $current_date = current_time('d-m-Y');
+
+        $dsp_import_date = get_option('cron_dsp_plugin_date');
+        $date = empty($dsp_import_date) ? $current_date : $dsp_import_date;
+
+        $dsp_import_flag = get_option('cron_dsp_plugin_complete');
+        $flag = empty($dsp_import_flag) ? 'false' : $dsp_import_flag;
+
+        $dsp_import_limit_field = get_option('cron_dsp_plugin_limit'); 
+        $limit = empty($dsp_import_limit_field) ? 100 : $dsp_import_limit_field;
+
+        $dsp_import_page = get_option('cron_dsp_plugin_page'); 
+        $page = empty($dsp_import_page) ? 0 : $dsp_import_page;
+
+        $dsp_import_hash_key = get_option('cron_dsp_plugin_hash_key');
+        $hash_key = empty($dsp_import_hash_key) ? time() .'_'. rand() : $dsp_import_hash_key;
+
+        if($current_date != $date){
+            $flag = 'false';
+            $page = 0;
+            $hash_key = time() .'_'. rand();
+        }
+
+        if($flag == 'false'){
+            $dspExternalApiClass = new Dsp_External_Api_Request();
+            $channels = $dspExternalApiClass->get_channels('', $limit, $page+1);
+            if (!is_wp_error($channels)) {
+                $add_count = 0;
+                $update_count = 0;
+                foreach ($channels['channels'] as $channel) {
+                    $args = array(
+                        'fields' => 'ids',
+                        'post_type' => 'channel',
+                        'meta_query' => array(
+                            array(
+                                'key' => 'chnl_id',
+                                'value' => $channel['_id']
+                            )
+                        )
+                    );
+                    $my_query = new WP_Query($args);
+                    $posts = $my_query->posts;
+                    $new_post = array(
+                        'post_title' => $channel['title'],
+                        'post_content' => isset($channel['description']) ? $channel['description'] : '',
+                        'post_status' => 'publish',
+                        'post_date' => date('Y-m-d H:i:s'),
+                        'post_author' => $user_ID,
+                        'post_type' => 'channel',
+                        'post_name' => $channel['slug'],
+                    );
+                    if (empty($my_query->have_posts())) {
+                        $post_id = wp_insert_post($new_post);
+                        $add_count++;
+                    } else {
+                        $new_post['ID'] = $posts[0];
+                        $post_id = wp_update_post($new_post);
+                        $update_count++;
+                    }
+
+                    $channel_id = isset($channel['_id']) ? $channel['_id'] : '';
+                    $company_id = isset($channel['company_id']) ? $channel['company_id'] : '';
+                    $writers = isset($channel['writers']) ? implode(',', $channel['writers']) : '';
+                    $genres = isset($channel['genres']) ? implode(',', $channel['genres']) : '';
+                    $directors = isset($channel['directors']) ? implode(',', $channel['directors']) : '';
+                    $actors = isset($channel['actors']) ? implode(',', $channel['actors']) : '';
+                    $poster = isset($channel['poster']) ? $channel['poster'] : '';
+                    $spotlight_poster = isset($channel['spotlight_poster']) ? $channel['spotlight_poster'] : '';
+                    $channel_logo = isset($channel['channel_logo']) ? $channel['channel_logo'] : '';
+                    $childchannels = isset($channel['childchannels']) ? $channel['childchannels'] : '';
+                    $categories = isset($channel['categories']) ? $channel['categories'] : '';
+                    $dspro_channel_id = isset($channel['dspro_id']) ? $channel['dspro_id'] : '';
+                    $weightings = isset($channel['weightings']) ? $channel['weightings'] : '';
+                    $geo = isset($channel['geo']) ? $channel['geo'] : '';
+                    $is_product = isset($channel['is_product']) ? $channel['is_product'] : '';
+                    $language = isset($channel['language']) ? $channel['language'] : '';
+                    $year = isset($channel['year']) ? $channel['year'] : '';
+
+                    $video_id = array();
+
+                    if (!empty($channel['playlist'])) {
+                        foreach ($channel['playlist'] as $key => $video):
+                            $video_id[] = isset($video['_id']) ? $video['_id'] : '';
+                            $vidoeArr = array();
+                            $vidoeArr['title'] = isset($video['title']) ? $video['title'] : '';
+                            $vidoeArr['description'] = isset($video['description']) ? $video['description'] : '';
+                            $vidoeArr['slug'] = isset($video['slug']) ? $video['slug'] : '';
+                            $vidoeArr['thumb'] = isset($video['thumb']) ? get_option('dsp_cdn_img_url_field'). $video['thumb'] : '';
+                            $videoData = base64_encode(maybe_serialize($vidoeArr));
+                            $data = array('video_id' => $video['_id'], 'video_detail' => $videoData);
+                            $is_video_exists = $wpdb->get_results("SELECT * FROM $dsp_video_table WHERE video_id = '" . $video['_id'] . "'");
+                            if ($wpdb->num_rows > 0)
+                                $wpdb->update($dsp_video_table, $data, array('video_id' => $video['_id']));
+                            else
+                                $wpdb->insert($dsp_video_table, $data);
+
+                        endforeach;
+                        update_post_meta($post_id, 'chnl_videos', implode(',', $video_id));
+                    }
+                    elseif (!empty($channel['video'])) {
+                        $video = $channel['video'];
+                        $vidoeArr = array();
+                        $video_id[] = isset($video['_id']) ? $video['_id'] : '';
+                        $vidoeArr['title'] = isset($video['title']) ? $video['title'] : '';
+                        $vidoeArr['description'] = isset($video['description']) ? $video['description'] : '';
+                        $vidoeArr['slug'] = isset($video['slug']) ? $video['slug'] : '';
+                        $vidoeArr['thumb'] = isset($video['thumb']) ? get_option('dsp_cdn_img_url_field'). $video['thumb'] : '';
+
+                        $videoData = base64_encode(maybe_serialize($vidoeArr));
+                        $data = array('video_id' => $video['_id'], 'video_detail' => $videoData);
+                        $is_video_exists = $wpdb->get_results("SELECT * FROM $dsp_video_table WHERE video_id = '" . $video['_id'] . "'");
+                        if ($wpdb->num_rows > 0)
+                            $wpdb->update($dsp_video_table, $data, array('video_id' => $video['_id']));
+                        else
+                            $wpdb->insert($dsp_video_table, $data);
+                        update_post_meta($post_id, 'chnl_videos', implode(',', $video_id));
+                    }
+
+                    update_post_meta($post_id, 'chnl_id', $channel_id);
+                    update_post_meta($post_id, 'chnl_writers', $writers);
+                    update_post_meta($post_id, 'chnl_geners', $genres);
+                    update_post_meta($post_id, 'chnl_directors', $directors);
+                    update_post_meta($post_id, 'chnl_actors', $actors);
+                    update_post_meta($post_id, 'chnl_poster', $poster);
+                    update_post_meta($post_id, 'chnl_logo', $channel_logo);
+                    update_post_meta($post_id, 'chnl_spotlight_poster', $spotlight_poster);
+                    update_post_meta($post_id, 'chnl_comp_id', $company_id);
+                    update_post_meta($post_id, 'dspro_channel_id', $dspro_channel_id);
+                    update_post_meta($post_id, 'dspro_channel_geo', $geo);
+                    update_post_meta($post_id, 'dspro_is_product', $is_product);
+                    update_post_meta($post_id, 'dspro_channel_language', $language);
+                    update_post_meta($post_id, 'dspro_channel_year', $year);
+                    update_post_meta($post_id, 'dsp_import_hash', $hash_key);
+
+                    if (!empty($categories)) {
+                        $category = array();
+                        foreach ($categories as $cat) {
+                            $category[] = $cat['slug'];
+                        }
+                        update_post_meta($post_id, 'chnl_categories', ',' . implode(',', $category) . ',');
+                    }
+                    if (!empty($childchannels)) {
+                        $childchannel = array();
+                        foreach ($childchannels as $child) {
+                            $childchannel[] = $child['slug'];
+                        }
+                        update_post_meta($post_id, 'chnl_child_channels', implode(',', $childchannel));
+                    }
+                    $weightingsArr = array();
+                    if (!empty($weightings)) {
+                        foreach ($weightings as $key => $weighting):
+                            $weightingsArr[$key] = isset($weighting) ? $weighting : '';
+                        endforeach;
+                        $weightingData = maybe_serialize($weightingsArr);
+                        update_post_meta($post_id, 'chnl_weightings', $weightingData);
+                    }
+                }
+
+                update_option('cron_dsp_plugin_date', current_time('d-m-Y'));
+                update_option('cron_dsp_plugin_limit', $limit);
+                update_option('cron_dsp_plugin_page', $page+1);
+                update_option('cron_dsp_plugin_hash_key', $hash_key);
+                update_option('cron_dsp_plugin_complete', 'false');
+
+                $send_response = array();
+                if($channels['pages']['page'] == $channels['pages']['pages']){
+                    $send_response['status'] = 'complete';
+                    $send_response['message'] = ' Channels Updated Sucesfully.';
+
+                    update_option('cron_dsp_plugin_complete', 'true');
+
+                    $hashkey_args = array(
+                        'fields' => 'ids',
+                        'post_type' => 'channel',
+                        'meta_query' => array(
+                            'relation' => 'OR',
+                            array(
+                             'key' => 'dsp_import_hash',
+                             'compare' => 'NOT EXISTS', 
+                             'value' => ''
+                            ),
+                            array(
+                                'key' => 'dsp_import_hash',
+                                'value' => $hash_key,
+                                'compare' => '!='
+                            )
+                        )
+                    );
+                    $hashkey_query = new WP_Query($hashkey_args);
+                    $hashkey_posts = $hashkey_query->posts;
+
+                    foreach ($hashkey_posts as $channel) {
+                        wp_delete_post($channel, true);
+                    }
+                }
+                else{
+                  $send_response['status'] = 'pending';
+                  $send_response['page'] = $channels['pages']['page'];
+                  $send_response['hash_key'] = $hash_key;
+                  $send_response['pages'] = $channels['pages']['pages'];  
+                }
+                wp_send_json_success($send_response, 200);
+           } else {
+               $send_response = array('message' => 'Server Error : ' . $channels->get_error_message());
+               wp_send_json_error($send_response, 403);
+            }
+
+        } 
+        else{
+            $send_response = array('message' => 'Cron is completed for this date.');
+            wp_send_json_success($send_response, 200);
+        }       
+    }
+
+    /**
      * This function is to delete all custom transient of channel
      */
     public function delete_custom_transient($post_id, $channel_id){

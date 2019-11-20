@@ -46,6 +46,35 @@ class Dotstudiopro_Api_Admin {
     }
 
     /**
+     * Get param value from $_GET if exists.
+     *
+     * @param string $param
+     * @param $default
+     *
+     * @since 1.1.7
+     * @return null|string - null for undefined param.
+     */
+    function dsp_get_param( $param, $default = null ) {
+        return isset( $_GET[ $param ] ) ? $_GET[ $param ] : $default;
+    }
+    
+
+    /**
+     * Add a default flag for the sample content when plugin is activated for first time
+     *
+     * @since 1.1.7 
+     */
+    public function import_default_content(){
+        $dotstudiopro_api_key = get_option('dotstudiopro_api_key');
+        $active = $dotstudiopro_api_key ? true : false;
+        $is_demo = get_option('import_sample_content');
+        $nonce = $active ? 'deactivate_dotstudiopro_api_key' : 'activate_dotstudiopro_api_key';
+        if(!$active && !$is_demo){
+            update_option('import_sample_content', 'true');
+        }
+    }
+
+    /**
      * Add admin notices
      *
      * @since   1.0.0
@@ -72,7 +101,7 @@ class Dotstudiopro_Api_Admin {
         $notices = get_transient('dsp_notice');
         if ($notices !== false) {
             foreach ($notices as $notice) {
-                echo '<div class="update-nag"><p>' . $notice . '</p></div>';
+                echo '<div class="updated notic"><p>' . $notice . '</p></div>';
             }
 
             delete_transient('dsp_notice');
@@ -324,6 +353,8 @@ class Dotstudiopro_Api_Admin {
             $response['message'] = 'The API key Activate successfully.';
             $this->add_admin_notice($response['message']);
             update_option('dotstudiopro_api_key', $_POST['dotstudiopro_api_key']);
+            if($_POST['btn_value'] == 'import-sample-api-data')
+                delete_option('import_sample_content');
             update_option('dotstudiopro_api_token', $response['token']);
             update_option('dotstudiopro_api_token_time', time());
             update_option('dsp_cdn_img_url_field', 'https://f9q4g5j6.ssl.hwcdn.net/');
@@ -342,6 +373,9 @@ class Dotstudiopro_Api_Admin {
      */
     public function deactivate_key() {
         $dotstudiopro_api_key = get_option('dotstudiopro_api_key');
+        if($_POST['btn_value'] == 'remove-sample-api-data')
+            $dotstudiopro_api_key = $_POST['dotstudiopro_api_key'];
+        update_option('import_sample_content', 'true');
         if (!$dotstudiopro_api_key)
             wp_send_json_error(array('message' => 'Api Key Not Found..'), 404);
 

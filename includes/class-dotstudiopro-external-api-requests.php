@@ -123,6 +123,10 @@ class Dsp_External_Api_Request {
             $this->country = $country['data']['countryCode'];
             return $this->country;
         }
+        else{
+            $this->country = 'US';
+            return $this->country;
+        }
 
         return false;
     }

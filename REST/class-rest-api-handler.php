@@ -89,6 +89,11 @@ class Dsp_REST_Api_Handler {
             'callback' => array($this->manageChannels, 'order_channel'),
             'args' => $this->dsp_get_channel_args('order')
         ]);
+        register_rest_route($this->namespace, '/all/channel/update', [
+            'methods' => WP_REST_Server::READABLE,
+            'permission_callback' => $this->dsp_check_auth(),
+            'callback' => array($this->manageChannels, 'update_all_channel'),
+        ]);
 
         // Video endpoints
 

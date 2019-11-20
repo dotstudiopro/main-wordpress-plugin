@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.7] - 2019-11-15
+
+### Added
+- Added a feature to import sample content for the channel and categories if the user have not their own API key.
+- Added new webhook to update all the channels by page count when the request is comes form an API Routes or Cron.
+
 ## [1.1.6] - 2019-11-07
 
 ### Fixed

@@ -11,6 +11,7 @@
  */
 
 $dotstudiopro_api_key = get_option('dotstudiopro_api_key');
+$is_demo = get_option('import_sample_content');
 $active = $dotstudiopro_api_key ? true : false;
 $nonce = $active ? 'deactivate_dotstudiopro_api_key' : 'activate_dotstudiopro_api_key';
 $button = $active ? __('Update Api Key', 'dotstudiopro-api') : __('Activate Api Key', 'dotstudiopro-api');
@@ -32,27 +33,50 @@ $button = $active ? __('Update Api Key', 'dotstudiopro-api') : __('Activate Api 
             <h3><?php _e('API key information', 'dotstudiopro-api'); ?></h3>
         </div>
         <div class="inner">
-            <p><?php printf(__('Please add your dotstudioPRO API key here. If you don\'t have API key <a href="%s" target="_blank">click here</a>.', 'dotstudiopro-api'), esc_url('https://www.dotstudiopro.com/user/register')); ?></p>
             <form action="#" class="dsp_api" id="dsp_api_form">
-                <div class="dsp-hidden">
-                    <input type='hidden' name='action' value='validate_dotstudiopro_api' />
-                    <input type="hidden" name="_category_nonce" value="<?php echo wp_create_nonce('import_catagory'); ?>">
-                    <input type="hidden" name="_channel_nonce" value="<?php echo wp_create_nonce('import_channel'); ?>">
-                    <?php dsp_nonce_input($nonce); ?>
-                </div>
-                <?php do_settings_sections('dsp-api-key-section'); ?>
-                <div class="buttons">
-                    <?php submit_button($button, 'primary', 'submit-api-data'); ?>
-                    <?php if ($active): ?>
-                        <?php submit_button(__('Deactivate Api Key', 'dotstudiopro-api'), 'primary', 'deactivate-api-data'); ?>
-                    <?php endif; ?>
-                </div>
+                <input type='hidden' name='action' value='validate_dotstudiopro_api' />
+                <input type='hidden' name='dpro_api_key' value='c681a9f6a3b9d51502cc3978298feaccfa9f500b' />
+                <?php
+                    if($is_demo){
+                        if(!$active){
+                            submit_button(__('Import Sample Content', 'dotstudiopro-api'), 'primary', 'import-sample-api-data');
+                            ?>
+                            <p>
+                            OR
+                            <br/>
+                        <?php } ?>
+                        <?php printf(__('Please add your dotstudioPRO API key here. If you don\'t have API key <a href="%s" target="_blank">click here</a>.', 'dotstudiopro-api'), esc_url('https://www.dotstudiopro.com/user/register')); ?></p>
+                        
+                        <div class="dsp-hidden">
+                            <?php dsp_nonce_input($nonce); ?>
+                            <input type='hidden' name='action' value='validate_dotstudiopro_api' />
+                            <input type='hidden' name='dpro_apy_key' value='c681a9f6a3b9d51502cc3978298feaccfa9f500b' />
+                            <input type="hidden" name="_category_nonce" value="<?php echo wp_create_nonce('import_catagory'); ?>">
+                            <input type="hidden" name="_channel_nonce" value="<?php echo wp_create_nonce('import_channel'); ?>">
+                        </div>
+                        <?php do_settings_sections('dsp-api-key-section'); ?>
+                        <div class="buttons">
+                            <?php submit_button($button, 'primary', 'submit-api-data'); ?>
+                            <?php if ($active): ?>
+                                <?php submit_button(__('Deactivate Api Key', 'dotstudiopro-api'), 'primary', 'deactivate-api-data'); ?>
+                            <?php endif; ?>
+                        </div>
+                    <?php 
+                    }
+                    else{
+                        $nonce = 'deactivate_dotstudiopro_api_key';
+                        dsp_nonce_input($nonce); 
+                        echo __('You have imported the sample channel and categories using our demo API key. If you have your own dotstudioPRO API key, then remove sample content and import the live content using the API key.', 'dotstudiopro-api');
+                        echo '<br/>';
+                        printf(__('If you don\'t have API key <a href="%s" target="_blank">click here</a>.', 'dotstudiopro-api'), esc_url('https://www.dotstudiopro.com/user/register'));
+                        submit_button(__('Remove Sample Content', 'dotstudiopro-api'), 'primary', 'remove-sample-api-data');
+                    }
+                ?>
             </form>
         </div>
     </div>
 
-    <?php if ($active): ?>
-
+    <?php if ($active && $is_demo):?>
         <div class="dsp-box" id="dsp-license-information">
             <div class="title">
                 <h3><?php _e('Development Mode Options', 'dotstudiopro-api'); ?></h3>
@@ -83,6 +107,5 @@ $button = $active ? __('Update Api Key', 'dotstudiopro-api') : __('Activate Api 
                 </form>
             </div>
         </div>
-
     <?php endif; ?>
 </div>
