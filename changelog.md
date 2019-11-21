@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.8] - 2019-11-15
+
+### Fixed
+- Fixed one issue for the old plugin users to make the demo content flag false if API key is exists.
+
 ## [1.1.7] - 2019-11-15
 
 ### Added
