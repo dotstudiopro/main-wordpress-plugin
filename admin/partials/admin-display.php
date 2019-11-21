@@ -13,6 +13,7 @@
 $dotstudiopro_api_key = get_option('dotstudiopro_api_key');
 $is_demo = get_option('import_sample_content');
 $active = $dotstudiopro_api_key ? true : false;
+$is_demo = $active ? true : false;
 $nonce = $active ? 'deactivate_dotstudiopro_api_key' : 'activate_dotstudiopro_api_key';
 $button = $active ? __('Update Api Key', 'dotstudiopro-api') : __('Activate Api Key', 'dotstudiopro-api');
 ?>
