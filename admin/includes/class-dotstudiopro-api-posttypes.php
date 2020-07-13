@@ -88,6 +88,7 @@ class Dsp_Custom_Posttypes {
      */
     public function create_custom_metabox() {
         add_meta_box('category_metabox', 'Category: Additional details', array($this, 'create_category_metabox_callback'), 'channel-category', 'normal', 'high');
+        add_meta_box('category_custom_metabox', 'Category: Custom fields', array($this, 'create_category_custom_metabox_callback'), 'channel-category', 'normal', 'high');
         add_meta_box('channel_metabox', 'Channel: Additional details', array($this, 'create_channel_metabox_callback'), 'channel', 'normal', 'high');
         add_meta_box('channel_metabox_additional', 'Channel: Publishing details', array($this, 'create_channel_publishing_metabox_callback'), 'channel', 'side', 'high');
         add_meta_box('channel_video_metabox', 'Channel: Video\'s details', array($this, 'create_video_metabox_callback'), 'channel', 'normal', 'high');
@@ -106,6 +107,7 @@ class Dsp_Custom_Posttypes {
 
         $values = get_post_custom($post->ID);
         $cat_poster = isset($values['cat_poster'][0]) ? $values['cat_poster'][0] : '';
+        $cat_display_name = isset($values['cat_display_name'][0]) ? $values['cat_display_name'][0] : '';
         $cat_wallpaper = isset($values['cat_wallpaper'][0]) ? esc_attr($values['cat_wallpaper'][0]) : '';
         $cat_id = isset($values['cat_id'][0]) ? esc_attr($values['cat_id'][0]) : '';
         $in_menu = isset($values['is_in_cat_menu'][0]) ? esc_attr($values['is_in_cat_menu'][0]) : '';
@@ -119,6 +121,10 @@ class Dsp_Custom_Posttypes {
                 <tr>
                     <th scope="row">Category ID</th>
                     <td><input type="text" class="dsp-field" readonly  name="cat_id" id="cat_id" value="<?php echo $cat_id; ?>" /></td>
+                </tr>
+                <tr>
+                    <th scope="row">Display name</th>
+                    <td><input type="text" class="dsp-field" readonly name="cat_display_name" id="cat_display_name" value="<?php echo $cat_display_name; ?>" /></td>
                 </tr>
                 <tr>
                     <th scope="row">Poster</th>
@@ -150,6 +156,42 @@ class Dsp_Custom_Posttypes {
         </table>
 
         <?php
+    }
+
+    /**
+     * Custom callback function to generate custom metabox fields for category post type
+     *
+     *
+     * global type $post
+     * @since 1.0.0
+     */
+
+    function create_category_custom_metabox_callback() {
+        global $post;
+
+        $values = get_post_custom($post->ID);
+        $custom_fields = unserialize($values['custom_fields'][0]);
+        if(!empty($custom_fields)) {
+            wp_nonce_field('custom_metabox_nonce', 'custom_metabox');
+
+            ?>
+            <table class="form-table">
+                <tbody>
+                    <?php foreach($custom_fields as $key => $value) { ?>
+                    <tr>
+                        <th scope="row"><?php echo ucfirst($key); ?></th>
+                        <td><input type="text" class="dsp-field" readonly  name="<?php echo $key; ?>" id="?php echo $key; ?>" value="<?php echo $value; ?>" /></td>
+                    </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+            <?php
+        }
+        else {
+            ?>
+            <p>No custom fields available for this category</p>
+            <?php
+        }
     }
 
     /**
@@ -327,12 +369,22 @@ class Dsp_Custom_Posttypes {
                             $update_count++;
                         }
                         update_post_meta($post_id, 'cat_id', isset($category['_id']) ? $category['_id'] : '');
+                        update_post_meta($post_id, 'cat_display_name', isset($category['display_name']) ? $category['display_name'] : '');
                         update_post_meta($post_id, 'cat_wallpaper', isset($category['wallpaper']) ? $category['wallpaper'] : '');
                         update_post_meta($post_id, 'cat_poster', isset($category['poster']) ? $category['poster'] : '');
                         update_post_meta($post_id, 'is_in_cat_menu', isset($category['menu']) ? $category['menu'] : '');
                         update_post_meta($post_id, 'is_on_cat_homepage', isset($category['homepage']) ? $category['homepage'] : '');
                         update_post_meta($post_id, 'weight', isset($category['weight']) ? $category['weight'] : '');
                         update_post_meta($post_id, 'dsp_import_hash', $hash_key);
+
+                        $custom_field_array = array();
+                        if(isset($category['custom_fields']) && !empty($category['custom_fields'])) {
+                            foreach ($category['custom_fields'] as $custom_field) {
+                                $custom_field_array[$custom_field['field_title']] = $custom_field['field_value'];
+                            }    
+                        }
+                        update_post_meta($post_id, 'custom_fields', $custom_field_array);
+                            
                     }
                     else {
                         $args = array(

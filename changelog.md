@@ -1,7 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-# [1.1.9] - 2019-12-17
+## [1.1.10] - 2020-07-13
+
+### Added
+- Added a new field called custom fields and display title for category section when we import the content or update the content using REST API.
+
+## [1.1.9] - 2019-12-17
 
 ### Fixed
 - Fixed one issue for manage the database flag variables for import status.

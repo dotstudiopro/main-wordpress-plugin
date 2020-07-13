@@ -103,11 +103,20 @@ class Dsp_Manage_categories {
             }
 
             update_post_meta($post_id, 'cat_id', $dsp_category->_id);
+            update_post_meta($post_id, 'cat_display_name', isset($dsp_category->display_name) ? $dsp_category->display_name : '');
             update_post_meta($post_id, 'cat_wallpaper', $dsp_category->wallpaper);
             update_post_meta($post_id, 'cat_poster', $dsp_category->poster);
             update_post_meta($post_id, 'is_in_cat_menu', $dsp_category->menu);
             update_post_meta($post_id, 'is_on_cat_homepage', $dsp_category->homepage);
             update_post_meta($post_id, 'weight', isset($dsp_category->weight) ? $dsp_category->weight : '');
+
+            $custom_field_array = array();
+            if(isset($dsp_category->custom_fields) && !empty($dsp_category->custom_fields)) {
+                foreach ($dsp_category->custom_fields as $custom_field) {
+                    $custom_field_array[$custom_field->field_title] = $custom_field->field_value;
+                }    
+            }
+            update_post_meta($post_id, 'custom_fields', $custom_field_array);
 
             wp_reset_postdata();
 
