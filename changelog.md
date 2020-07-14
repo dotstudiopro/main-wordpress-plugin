@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.10] - 2020-07-14
+
+### Added
+- Added Youbora analytics functionality as well as a call to get company analytics info from the Spotlight API
+
 ## [1.1.10] - 2020-07-13
 
 ### Added
