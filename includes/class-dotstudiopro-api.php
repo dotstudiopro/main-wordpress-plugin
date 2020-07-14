@@ -165,6 +165,7 @@ class Dotstudiopro_Api {
         $plugin_admin = new Dotstudiopro_Api_Admin($this->get_Dotstudiopro_Api(), $this->get_version());
         $rest_api = new Dsp_REST_Api_Handler($this->get_Dotstudiopro_Api(), $this->get_version());
         $posttype = new Dsp_Custom_Posttypes();
+        $external_api = new Dsp_External_Api_Request();
 
         $this->loader->add_action('admin_menu', $plugin_admin, 'add_admin_menu');
         $this->loader->add_action('admin_notices', $plugin_admin, 'show_admin_notice');
@@ -185,6 +186,15 @@ class Dotstudiopro_Api {
         $this->loader->add_action('admin_menu', $posttype, 'remove_submenus');
         $this->loader->add_filter('manage_channel_posts_columns', $posttype, 'dsp_channel_table_head');
         $this->loader->add_action('manage_channel_posts_custom_column', $posttype, 'dsp_channel_table_content', 10, 2);
+        // Import configs for company analytics on the player and pages if we don't already have it
+        $this->loader->add_action('init', function() {
+            $analytics_options = get_option('dsp_analytics_parameters');
+            if ($analytics_options) return;
+            $configs = $external_api->get_analytics_config();
+            if ($configs) {
+                update_option('dsp_analytics_parameters', $configs);
+            }
+        });
         $this->loader->add_action('rest_api_init', $rest_api, 'dsp_webhook_routes');
         // Add settings link in Plugins page
         $this->loader->add_filter('plugin_action_links', $plugin_admin, 'add_settings_link', 10, 2);

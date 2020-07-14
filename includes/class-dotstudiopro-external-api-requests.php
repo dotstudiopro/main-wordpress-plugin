@@ -88,6 +88,32 @@ class Dsp_External_Api_Request {
         return $token;
     }
 
+
+
+    /**
+     * Get the company analytics config for use on player/page analytics
+     *
+     * @return Object|Boolean Returns company analytics config object, or false if there was an issue
+     */
+    private function get_analytics_config() {
+        $token = $this->api_token_check();
+
+        // If we don't have a token, we can't get a country
+        if (empty($token))
+            return false;
+
+        $headers = array(
+            'x-access-token' => $token
+        );
+
+        $config = $this->api_request_post('companies/analytics/config', null, $headers, null);
+        if (!is_wp_error($config)) {
+            return $config;
+        }
+
+        return false;
+    }
+
     /**
      * Get the country code of the user
      *
