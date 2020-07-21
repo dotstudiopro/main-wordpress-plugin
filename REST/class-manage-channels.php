@@ -92,7 +92,6 @@ class Dsp_Manage_channels {
                 'post_title' => $dsp_channel->title,
                 'post_content' => ($dsp_channel->description) ? $dsp_channel->description : '',
                 'post_status' => 'publish',
-                'post_date' => date('Y-m-d H:i:s'),
                 'post_author' => $user_ID,
                 'post_type' => 'channel',
                 'post_name' => $dsp_channel->slug,

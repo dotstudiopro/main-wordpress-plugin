@@ -84,7 +84,6 @@ class Dsp_Manage_categories {
                 'post_title' => $dsp_category->name,
                 'post_content' => ($dsp_category->description) ? $dsp_category->description : '',
                 'post_status' => 'publish',
-                'post_date' => date('Y-m-d H:i:s'),
                 'post_author' => $user_ID,
                 'post_type' => 'channel-category',
                 'post_name' => $dsp_category->slug,

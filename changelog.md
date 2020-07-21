@@ -1,7 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.1.10] - 2020-07-14
+## [1.1.12] - 2020-07-21
+
+### Fixed
+- Fixed issue related to the wordpress timezone while creating the channel or categories
+
+## [1.1.11] - 2020-07-14
 
 ### Added
 - Added Youbora analytics functionality as well as a call to get company analytics info from the Spotlight API
