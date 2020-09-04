@@ -23,7 +23,7 @@ class Dsp_REST_Api_Handler {
     public function __construct($name, $version) {
         $this->plugin_name = $name;
         $this->version = $version;
-        $this->namespace = $this->plugin_name . '/v1/';
+        $this->namespace = $this->plugin_name . '/v1';
         $this->manageCategories = new Dsp_Manage_categories();
         $this->manageChannels = new Dsp_Manage_channels();
         $this->manageVideos = new Dsp_Manage_videos();
@@ -40,25 +40,25 @@ class Dsp_REST_Api_Handler {
 
         register_rest_route($this->namespace, '/category/delete', [
             'methods' => WP_REST_Server::DELETABLE,
-            'permission_callback' => $this->dsp_check_auth(),
+            'permission_callback' => array($this, 'dsp_check_auth'),
             'callback' => array($this->manageCategories, 'delete_category'),
             'args' => $this->dsp_get_category_args('delete')
         ]);
         register_rest_route($this->namespace, '/category/update', [
             'methods' => WP_REST_Server::EDITABLE,
-            'permission_callback' => $this->dsp_check_auth(),
+            'permission_callback' => array($this, 'dsp_check_auth'),
             'callback' => array($this->manageCategories, 'manage_category'),
             'args' => $this->dsp_get_category_args('update')
         ]);
         register_rest_route($this->namespace, '/category/add', [
             'methods' => WP_REST_Server::CREATABLE,
-            'permission_callback' => $this->dsp_check_auth(),
+            'permission_callback' => array($this, 'dsp_check_auth'),
             'callback' => array($this->manageCategories, 'manage_category'),
             'args' => $this->dsp_get_category_args('add')
         ]);
         register_rest_route($this->namespace, '/category/order/update', [
             'methods' => WP_REST_Server::CREATABLE,
-            'permission_callback' => $this->dsp_check_auth(),
+            'permission_callback' => array($this, 'dsp_check_auth'),
             'callback' => array($this->manageCategories, 'order_category'),
             'args' => $this->dsp_get_category_args('order')
         ]);
@@ -67,31 +67,31 @@ class Dsp_REST_Api_Handler {
 
         register_rest_route($this->namespace, '/channel/delete', [
             'methods' => WP_REST_Server::DELETABLE,
-            'permission_callback' => $this->dsp_check_auth(),
+            'permission_callback' => array($this, 'dsp_check_auth'),
             'callback' => array($this->manageChannels, 'delete_channel'),
             'args' => $this->dsp_get_channel_args('delete')
         ]);
         register_rest_route($this->namespace, '/channel/update', [
             'methods' => WP_REST_Server::EDITABLE,
-            'permission_callback' => $this->dsp_check_auth(),
+            'permission_callback' => array($this, 'dsp_check_auth'),
             'callback' => array($this->manageChannels, 'manage_channel'),
             'args' => $this->dsp_get_channel_args('update')
         ]);
         register_rest_route($this->namespace, '/channel/add', [
             'methods' => WP_REST_Server::CREATABLE,
-            'permission_callback' => $this->dsp_check_auth(),
+            'permission_callback' => array($this, 'dsp_check_auth'),
             'callback' => array($this->manageChannels, 'manage_channel'),
             'args' => $this->dsp_get_channel_args('add')
         ]);
         register_rest_route($this->namespace, '/channel/order/update', [
             'methods' => WP_REST_Server::CREATABLE,
-            'permission_callback' => $this->dsp_check_auth(),
+            'permission_callback' => array($this, 'dsp_check_auth'),
             'callback' => array($this->manageChannels, 'order_channel'),
             'args' => $this->dsp_get_channel_args('order')
         ]);
         register_rest_route($this->namespace, '/all/channel/update', [
             'methods' => WP_REST_Server::READABLE,
-            'permission_callback' => $this->dsp_check_auth(),
+            'permission_callback' => array($this, 'dsp_check_auth'),
             'callback' => array($this->manageChannels, 'update_all_channel'),
         ]);
 
@@ -99,14 +99,14 @@ class Dsp_REST_Api_Handler {
 
         register_rest_route($this->namespace, '/video/update', [
             'methods' => WP_REST_Server::EDITABLE,
-            'permission_callback' => $this->dsp_check_auth(),
+            'permission_callback' => array($this, 'dsp_check_auth'),
             'callback' => array($this->manageVideos, 'manage_videos'),
             'args' => $this->dsp_get_video_args('update')
         ]);
 
         register_rest_route($this->namespace, '/video/add', [
             'methods' => WP_REST_Server::CREATABLE,
-            'permission_callback' => $this->dsp_check_auth(),
+            'permission_callback' => array($this, 'dsp_check_auth'),
             'callback' => array($this->manageVideos, 'manage_videos'),
             'args' => $this->dsp_get_channel_args('add')
         ]);
@@ -118,15 +118,15 @@ class Dsp_REST_Api_Handler {
      *
      * @since 1.0.0
      */
-    private function dsp_check_auth() {
+    public function dsp_check_auth(WP_REST_Request $request) {
+        $public_key = "-----BEGIN PUBLIC KEY-----\nMIICIDANBgkqhkiG9w0BAQEFAAOCAg0AMIICCAKCAgEAzEBUD7nRTsD/Hx34GkXt\niIOhTsOLhct+iSWrVY21HZF+uwN+WNNwTP5Y0wgxiJciovOSgykqah1E5/1qQYrk\nwFRcy89IiXQ3nF/1c5dI4hBVFH628l0yZG6sqmwLK+jv7mIBorSAQh9J0I4uj9oe\nswr22AEbOJCJpbs4Evx902R60n3kIKAgf/24UnV0o9lwDRCApS1DpC4Q02fx2ZFr\nQMjBsX2/WQ0ECkk8x9K17GKRGtZGWZ5Zr0uZ/j4vS+zr09DlABL4fjCW7UIEaTn6\nj/Tn+k4aurxm5YTzoy6sZzoep/b3Goqpmtau7wNks7P7r0xX2uZkFN/ZSNLaj/l+\noy5Aw+kZGcTpHGHEL3x8nxz05bscoD6+diV+T9/K4KkMhaEZxWr7cRPMoL4NCu9n\nY0ijhg8l58lOE3CgfSFYXiEpGr2PUnW2UANhsAscauGn4oyq85/hjD1AUgdKbKTO\nLzVR6ERI2GmjV6RL+WS1sLtOqWCVuyFLVp3FwtaF4y8ywxc7IiDhmYADB5WwDaDC\nGdecPcOKMHBvKFeyaazOnmtyn8K11AQlWS5OZGhNgIh72R40XNKdyUpr3eixlYjO\nmEdmXKe6xQ/See8uJpFqI8L/Gi6aULWBJkvgg6Ud9qiNkxeOhXRbJl4IVA+spc8G\nVK7TNfoGhOrz/7TWtE993hECAQM=\n-----END PUBLIC KEY-----";
 
-        return;
+        $signature = base64_decode($_SERVER['HTTP_X_AUTH_CHECK']);
 
-        /* $token = 'asdfghjkl';
-          if($_SERVER['PHP_AUTH_USER'] != $token){
-          $send_response = array('message' => 'unauthorized!!');
-          wp_send_json_error($send_response, 401);
-          } */
+        $data =  $request->get_body();
+
+        $ok = openssl_verify($data, $signature, $public_key, OPENSSL_ALGO_SHA256);
+        return $ok == 1;
     }
 
     /**
