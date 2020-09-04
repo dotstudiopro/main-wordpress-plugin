@@ -539,6 +539,51 @@ class Dsp_External_Api_Request {
     }
 
     /**
+     * Get Default Subscription Behavior
+     *
+     * @return Array Returns an array of with the Subscription Behavior
+     */
+    function get_default_subscription_behavior() {
+
+        $token = $this->api_token_check();
+
+        // If we have no token, or we have no country, the API call will fail, so we return an empty array
+        if (!$token)
+            return array();
+
+        $path = 'subscriptions/default';
+
+        $headers = array(
+            'x-access-token' => $token
+        );
+
+        return $this->api_request_get($path, null, $headers);
+    }
+
+    /**
+     * Get user's subscriptions.
+     * @since 1.0.0
+     * @param type $client_token
+     * @return type
+     */
+    function get_user_subscription($client_token) {
+
+        $token = $this->api_token_check();
+
+        if (!$token && !$client_token)
+            return array();
+
+        $path = 'subscriptions/users/active_subscriptions';
+
+        $headers = array(
+            'x-access-token' => $token,
+            'x-client-token' => $client_token
+        );
+
+        return $this->api_request_get($path, null, $headers);
+    }
+
+    /**
      * This is common function to use POST request of External DSP API.
      *
      * @param type $path
