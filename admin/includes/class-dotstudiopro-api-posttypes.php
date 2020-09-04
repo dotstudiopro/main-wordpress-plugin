@@ -496,6 +496,7 @@ class Dsp_Custom_Posttypes {
                     $actors = isset($channel['actors']) ? implode(',', $channel['actors']) : '';
                     $poster = isset($channel['poster']) ? $channel['poster'] : '';
                     $spotlight_poster = isset($channel['spotlight_poster']) ? $channel['spotlight_poster'] : '';
+                    $wallpaper = isset($channel['wallpaper']) ? $channel['wallpaper'] : '';
                     $channel_logo = isset($channel['channel_logo']) ? $channel['channel_logo'] : '';
                     $childchannels = isset($channel['childchannels']) ? $channel['childchannels'] : '';
                     $categories = isset($channel['categories']) ? $channel['categories'] : '';
@@ -555,6 +556,7 @@ class Dsp_Custom_Posttypes {
                     update_post_meta($post_id, 'chnl_poster', $poster);
                     update_post_meta($post_id, 'chnl_logo', $channel_logo);
                     update_post_meta($post_id, 'chnl_spotlight_poster', $spotlight_poster);
+                    update_post_meta($post_id, 'chnl_wallpaper', $wallpaper);
                     update_post_meta($post_id, 'chnl_comp_id', $company_id);
                     update_post_meta($post_id, 'dspro_channel_id', $dspro_channel_id);
                     update_post_meta($post_id, 'dspro_channel_geo', $geo);
@@ -650,6 +652,7 @@ class Dsp_Custom_Posttypes {
         $chnl_comp_id = isset($values['chnl_comp_id'][0]) ? esc_attr($values['chnl_comp_id'][0]) : '';
         $chnl_poster = isset($values['chnl_poster'][0]) ? $values['chnl_poster'][0] : '';
         $chnl_spotlight_poster = isset($values['chnl_spotlight_poster'][0]) ? $values['chnl_spotlight_poster'][0] : '';
+        $chnl_wallpaper = isset($values['chnl_wallpaper'][0]) ? $values['chnl_wallpaper'][0] : '';
         $chnl_writers = isset($values['chnl_writers'][0]) ? $values['chnl_writers'][0] : '';
         $chnl_geners = isset($values['chnl_geners'][0]) ? $values['chnl_geners'][0] : '';
         $chnl_directors = isset($values['chnl_directors'][0]) ? $values['chnl_directors'][0] : '';
@@ -708,6 +711,10 @@ class Dsp_Custom_Posttypes {
                 <tr>
                     <th scope="row">Spotlight Poster</th>
                     <td><input type="text" name="chnl_spotlight_poster" class="dsp-field" id="chnl_spotlight_poster" value="<?php echo $chnl_spotlight_poster; ?>" readonly/></td>
+                </tr>
+                <tr>
+                    <th scope="row">Wallpaper</th>
+                    <td><input type="text" name="chnl_wallpaper" class="dsp-field" id="chnl_wallpaper" value="<?php echo $chnl_wallpaper; ?>" readonly/></td>
                 </tr>
                 <tr>
                     <th scope="row">Child Channels</th>

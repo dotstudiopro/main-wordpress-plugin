@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.13] - 2020-09-03
+
+### Added
+- Added a new channel wallpaper 
+
 ## [1.1.12] - 2020-07-21
 
 ### Fixed

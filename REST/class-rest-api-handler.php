@@ -260,6 +260,11 @@ class Dsp_REST_Api_Handler {
                     'description' => esc_html__('New channel Spotlight poster.', 'dotstudiopro-api'),
                     'type' => 'string',
                 ];
+                $args['channel']['wallpaper'] = [
+                    'required' => false,
+                    'description' => esc_html__('New channel wallpaper.', 'dotstudiopro-api'),
+                    'type' => 'string',
+                ];
                 $args['channel']['writers'] = [
                     'required' => false,
                     'description' => esc_html__('New channel writers.', 'dotstudiopro-api'),
