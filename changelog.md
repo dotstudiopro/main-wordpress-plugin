@@ -1,15 +1,20 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2020-09-08
+
+### Added
+- Added request signature verificatons to webhook receiver class
+
 ## [1.1.14] - 2020-09-03
 
 ### Added
-- Added new function on request 
+- Added new function on request
 
 ## [1.1.13] - 2020-09-03
 
 ### Added
-- Added a new channel wallpaper 
+- Added a new channel wallpaper
 
 ## [1.1.12] - 2020-07-21
 
