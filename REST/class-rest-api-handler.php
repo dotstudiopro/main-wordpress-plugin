@@ -119,6 +119,9 @@ class Dsp_REST_Api_Handler {
      * @since 1.0.0
      */
     public function dsp_check_auth(WP_REST_Request $request) {
+
+        if (empty($_SERVER['HTTP_X_AUTH_CHECK'])) return false; // Nothing to check, request is bad
+
         $public_key = "-----BEGIN PUBLIC KEY-----\nMIICIDANBgkqhkiG9w0BAQEFAAOCAg0AMIICCAKCAgEAzEBUD7nRTsD/Hx34GkXt\niIOhTsOLhct+iSWrVY21HZF+uwN+WNNwTP5Y0wgxiJciovOSgykqah1E5/1qQYrk\nwFRcy89IiXQ3nF/1c5dI4hBVFH628l0yZG6sqmwLK+jv7mIBorSAQh9J0I4uj9oe\nswr22AEbOJCJpbs4Evx902R60n3kIKAgf/24UnV0o9lwDRCApS1DpC4Q02fx2ZFr\nQMjBsX2/WQ0ECkk8x9K17GKRGtZGWZ5Zr0uZ/j4vS+zr09DlABL4fjCW7UIEaTn6\nj/Tn+k4aurxm5YTzoy6sZzoep/b3Goqpmtau7wNks7P7r0xX2uZkFN/ZSNLaj/l+\noy5Aw+kZGcTpHGHEL3x8nxz05bscoD6+diV+T9/K4KkMhaEZxWr7cRPMoL4NCu9n\nY0ijhg8l58lOE3CgfSFYXiEpGr2PUnW2UANhsAscauGn4oyq85/hjD1AUgdKbKTO\nLzVR6ERI2GmjV6RL+WS1sLtOqWCVuyFLVp3FwtaF4y8ywxc7IiDhmYADB5WwDaDC\nGdecPcOKMHBvKFeyaazOnmtyn8K11AQlWS5OZGhNgIh72R40XNKdyUpr3eixlYjO\nmEdmXKe6xQ/See8uJpFqI8L/Gi6aULWBJkvgg6Ud9qiNkxeOhXRbJl4IVA+spc8G\nVK7TNfoGhOrz/7TWtE993hECAQM=\n-----END PUBLIC KEY-----";
 
         $signature = base64_decode($_SERVER['HTTP_X_AUTH_CHECK']);
