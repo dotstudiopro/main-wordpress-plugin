@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.1] - 2020-09-15
+
+### Added
+- Added bypass_channel_lock flag for the video when we import the content or update the content using REST API.
+
 ## [1.2.0] - 2020-09-08
 
 ### Added

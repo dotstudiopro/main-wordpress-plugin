@@ -143,6 +143,7 @@ class Dsp_Manage_channels {
                     $vidoeArr['title'] = isset($video->title) ? $video->title : '';
                     $vidoeArr['description'] = isset($video->description) ? $video->description : '';
                     $vidoeArr['slug'] = isset($video->slug) ? $video->slug : '';
+                    $vidoeArr['bypass_channel_lock'] = isset($video->bypass_channel_lock) ? $video->bypass_channel_lock : '';
                     $vidoeArr['thumb'] = isset($video->thumb) ? get_option('dsp_cdn_img_url_field'). $video->thumb : '';
                     $videoData = base64_encode(maybe_serialize($vidoeArr));
                     $data = array('video_id' => $video->_id, 'video_detail' => $videoData);
@@ -162,6 +163,7 @@ class Dsp_Manage_channels {
                 $vidoeArr['title'] = isset($video->title) ? $video->title : '';
                 $vidoeArr['description'] = isset($video->description) ? $video->description : '';
                 $vidoeArr['slug'] = isset($video->slug) ? $video->slug : '';
+                $vidoeArr['bypass_channel_lock'] = isset($video->bypass_channel_lock) ? $video->bypass_channel_lock : '';
                 $vidoeArr['thumb'] = isset($video->thumb) ? get_option('dsp_cdn_img_url_field'). $video->thumb : '';
 
                 $videoData = base64_encode(maybe_serialize($vidoeArr));
@@ -351,6 +353,7 @@ class Dsp_Manage_channels {
                             $vidoeArr['title'] = isset($video['title']) ? $video['title'] : '';
                             $vidoeArr['description'] = isset($video['description']) ? $video['description'] : '';
                             $vidoeArr['slug'] = isset($video['slug']) ? $video['slug'] : '';
+                            $vidoeArr['bypass_channel_lock'] = isset($video['bypass_channel_lock']) ? $video['bypass_channel_lock'] : '';
                             $vidoeArr['thumb'] = isset($video['thumb']) ? get_option('dsp_cdn_img_url_field'). $video['thumb'] : '';
                             $videoData = base64_encode(maybe_serialize($vidoeArr));
                             $data = array('video_id' => $video['_id'], 'video_detail' => $videoData);
@@ -370,6 +373,7 @@ class Dsp_Manage_channels {
                         $vidoeArr['title'] = isset($video['title']) ? $video['title'] : '';
                         $vidoeArr['description'] = isset($video['description']) ? $video['description'] : '';
                         $vidoeArr['slug'] = isset($video['slug']) ? $video['slug'] : '';
+                        $vidoeArr['bypass_channel_lock'] = isset($video['bypass_channel_lock']) ? $video['bypass_channel_lock'] : '';
                         $vidoeArr['thumb'] = isset($video['thumb']) ? get_option('dsp_cdn_img_url_field'). $video['thumb'] : '';
 
                         $videoData = base64_encode(maybe_serialize($vidoeArr));

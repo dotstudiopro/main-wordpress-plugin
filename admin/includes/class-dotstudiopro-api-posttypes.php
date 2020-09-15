@@ -518,6 +518,7 @@ class Dsp_Custom_Posttypes {
                             $vidoeArr['description'] = isset($video['description']) ? $video['description'] : '';
                             $vidoeArr['slug'] = isset($video['slug']) ? $video['slug'] : '';
                             $vidoeArr['thumb'] = isset($video['thumb']) ? get_option('dsp_cdn_img_url_field'). $video['thumb'] : '';
+                            $vidoeArr['bypass_channel_lock'] = isset($video['bypass_channel_lock']) ? $video['bypass_channel_lock'] : '';
                             $videoData = base64_encode(maybe_serialize($vidoeArr));
                             $data = array('video_id' => $video['_id'], 'video_detail' => $videoData);
                             $is_video_exists = $wpdb->get_results("SELECT * FROM $dsp_video_table WHERE video_id = '" . $video['_id'] . "'");
@@ -537,7 +538,7 @@ class Dsp_Custom_Posttypes {
                         $vidoeArr['description'] = isset($video['description']) ? $video['description'] : '';
                         $vidoeArr['slug'] = isset($video['slug']) ? $video['slug'] : '';
                         $vidoeArr['thumb'] = isset($video['thumb']) ? get_option('dsp_cdn_img_url_field'). $video['thumb'] : '';
-
+                        $vidoeArr['bypass_channel_lock'] = isset($video['bypass_channel_lock']) ? $video['bypass_channel_lock'] : '';
                         $videoData = base64_encode(maybe_serialize($vidoeArr));
                         $data = array('video_id' => $video['_id'], 'video_detail' => $videoData);
                         $is_video_exists = $wpdb->get_results("SELECT * FROM $dsp_video_table WHERE video_id = '" . $video['_id'] . "'");
@@ -661,7 +662,8 @@ class Dsp_Custom_Posttypes {
         $chnl_child_channels = isset($values['chnl_child_channels'][0]) ? $values['chnl_child_channels'][0] : '';
         $dspro_channel_id = isset($values['dspro_channel_id'][0]) ? $values['dspro_channel_id'][0] : '';
         $dspro_channel_geo = isset($values['dspro_channel_geo'][0]) ? unserialize($values['dspro_channel_geo'][0]) : array();
-        $dspro_is_product = isset($values['dspro_is_product'][0]) ? 'YES' : 'NO';
+        //$dspro_is_product = isset($values['dspro_is_product'][0]) ? 'YES' : 'NO';
+        $dspro_is_product = isset($values['dspro_is_product'][0]) && ($values['dspro_is_product'][0] == true || $values['dspro_is_product'][0] == 'true')  ? 'YES' : 'NO';
 
         wp_nonce_field('category_metabox_nonce', 'category_metabox');
         ?>

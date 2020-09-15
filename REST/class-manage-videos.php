@@ -30,6 +30,7 @@ class Dsp_Manage_videos {
             $vidoeArr['title'] = isset($request['title']) ? $request['title'] : '';
             $vidoeArr['description'] = isset($request['description']) ? $request['description'] : '';
             $vidoeArr['slug'] = isset($request['slug']) ? $request['slug'] : '';
+            $vidoeArr['bypass_channel_lock'] = isset($video['bypass_channel_lock']) ? $video['bypass_channel_lock'] : '';
             $vidoeArr['thumb'] = isset($request['thumb']) ? $request['thumb'] : '';
             $videoData = base64_encode(maybe_serialize($vidoeArr));
             $data = array('video_id' => $request['_id'], 'video_detail' => $videoData);
