@@ -392,6 +392,36 @@ class Dsp_External_Api_Request {
     }
 
     /**
+     * function to get Home page Data
+     * @since 1.2.2
+     * @param type $client_token
+     * @param type $channel_id
+     * @return type
+     */
+    public function homepage($client_token = null) {
+
+        $token = $this->api_token_check();
+
+        $this->get_country($token);
+
+        if (!$token || !$this->country) {
+            return array();
+        }
+
+        $path = '/homepage/'.$this->country.'/website';
+
+        $headers = array(
+            'x-access-token' => $token,
+        );
+
+        if (!empty($client_token)) {
+            $headers['x-client-token'] = $client_token;
+        }
+
+        return $this->api_request_get($path, null, $headers, null);
+    }
+
+    /**
      * function to get user's watchlist
      * @since 1.0.0
      * @param type $client_token
