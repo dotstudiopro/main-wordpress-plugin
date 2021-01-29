@@ -41,7 +41,7 @@ class Dotstudiopro_Api_Admin {
         $this->name = $name;
         $this->version = $version;
         $this->dspExternalApiClass = new Dsp_External_Api_Request();
-        $dsp_import_limit_field = get_option('dsp_import_limit_field'); 
+        $dsp_import_limit_field = get_option('dsp_import_limit_field');
         $this->limit = empty($dsp_import_limit_field) ? 100 : $dsp_import_limit_field;
     }
 
@@ -57,12 +57,12 @@ class Dotstudiopro_Api_Admin {
     function dsp_get_param( $param, $default = null ) {
         return isset( $_GET[ $param ] ) ? $_GET[ $param ] : $default;
     }
-    
+
 
     /**
      * Add a default flag for the sample content when plugin is activated for first time
      *
-     * @since 1.1.7 
+     * @since 1.1.7
      */
     public function import_default_content(){
         $dotstudiopro_api_key = get_option('dotstudiopro_api_key');
@@ -164,6 +164,15 @@ class Dotstudiopro_Api_Admin {
         );
         register_setting('dsp-dev-mode-section', 'dsp_country_code_field');
 
+        // if (!empty($_GET['change_api_url'])) {
+
+            add_settings_field(
+                    'dsp_api_url_field', __('API URL', 'dotstudiopro-api'), array($this, 'dsp_api_url_field_callback_function'), 'dsp-dev-mode-section', 'dotstudiopro_api_dev_mode_section'
+            );
+            register_setting('dsp-dev-mode-section', 'dsp_api_url_field');
+
+        // }
+
         add_settings_field(
                 'dsp_reset_token_field', __('Reset Token', 'dotstudiopro-api'), array($this, 'dsp_reset_token_field_callback_function'), 'dsp-dev-mode-section', 'dotstudiopro_api_dev_mode_section'
         );
@@ -228,6 +237,10 @@ class Dotstudiopro_Api_Admin {
         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/development/dsp_country_code_field.php';
     }
 
+    function dsp_api_url_field_callback_function() {
+        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/development/dsp_api_url_field.php';
+    }
+
     function dsp_reset_token_field_callback_function() {
         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/development/dsp_reset_token_field.php';
     }
@@ -252,7 +265,7 @@ class Dotstudiopro_Api_Admin {
     function dsp_import_limit_field_callback_function() {
         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/settings/dsp_import_limit_field.php';
     }
-    
+
     function dsp_sync_data_field_callback_function() {
         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/settings/dsp_sync_data_field.php';
     }
