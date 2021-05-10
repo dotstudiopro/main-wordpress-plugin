@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.3] - 2021-05-10
+
+### Updated
+- Update video play route and also added live_stream information on channels
+
 ## [1.2.2] - 2020-09-21
 
 ### Added

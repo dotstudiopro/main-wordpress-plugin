@@ -131,6 +131,7 @@ class Dsp_Manage_channels {
             $is_product = isset($dsp_channel->is_product) ? $dsp_channel->is_product : '';
             $year = isset($dsp_channel->year) ? $dsp_channel->year : '';
             $language = isset($dsp_channel->language) ? $dsp_channel->language : '';
+            $live_stream_start_time = isset($dsp_channel->live_stream_start_time) ? $dsp_channel->live_stream_start_time : '';
 
             $this->delete_custom_transient($post_id, $channel_id);
 
@@ -194,6 +195,7 @@ class Dsp_Manage_channels {
             update_post_meta($post_id, 'dspro_is_product', $is_product);
             update_post_meta($post_id, 'dspro_channel_year', $year);
             update_post_meta($post_id, 'dspro_channel_language', $language);
+            update_post_meta($post_id, 'chnl_live_stream_start_time', $live_stream_start_time);
 
             if (!empty($categories)) {
                 $category = array();

@@ -506,6 +506,7 @@ class Dsp_Custom_Posttypes {
                     $is_product = isset($channel['is_product']) ? $channel['is_product'] : '';
                     $language = isset($channel['language']) ? $channel['language'] : '';
                     $year = isset($channel['year']) ? $channel['year'] : '';
+                    $live_stream_start_time = isset($channel['live_stream_start_time']) ? $channel['live_stream_start_time'] : '';
 
 
                     $video_id = array();
@@ -565,6 +566,7 @@ class Dsp_Custom_Posttypes {
                     update_post_meta($post_id, 'dspro_channel_language', $language);
                     update_post_meta($post_id, 'dspro_channel_year', $year);
                     update_post_meta($post_id, 'dsp_import_hash', $hash_key);
+                    update_post_meta($post_id, 'chnl_live_stream_start_time', $live_stream_start_time);
 
                     if (!empty($categories)) {
                         $category = array();

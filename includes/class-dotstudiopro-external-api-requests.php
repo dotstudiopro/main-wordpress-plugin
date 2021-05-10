@@ -20,6 +20,7 @@ class Dsp_External_Api_Request {
 
         $this->api_key = get_option('dotstudiopro_api_key');
         $this->common_url = get_option('dsp_api_url_field') ?: "https://api.myspotlight.tv/";
+
     }
 
     /**
@@ -145,6 +146,11 @@ class Dsp_External_Api_Request {
             'x-access-token' => $token
         );
 
+        if(isset($_SESSION['dsp_theme_country']) && !is_array($_SESSION['dsp_theme_country'])) {
+            $this->country = $_SESSION['dsp_theme_country'];
+            return $this->country;
+        }
+
         $country = $this->api_request_post('country', null, $headers, $body);
         if (!is_wp_error($country)) {
             $this->country = $country['data']['countryCode'];
@@ -259,7 +265,7 @@ class Dsp_External_Api_Request {
         if (!$token)
             return array();
 
-        $path = 'video/play2/' . $id;
+        $path = 'video/play/' . $id .'/1920/1080';
 
         $headers = array(
             'x-access-token' => $token
@@ -408,7 +414,7 @@ class Dsp_External_Api_Request {
             return array();
         }
 
-        $path = '/homepage/'.$this->country.'/website';
+        $path = 'homepage/'.$this->country.'/website';
 
         $headers = array(
             'x-access-token' => $token,
