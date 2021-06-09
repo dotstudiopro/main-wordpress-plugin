@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.4] - 2021-06-09
+
+### Added
+- Added missing metadata to channels posts
+
 ## [1.2.3] - 2021-05-10
 
 ### Updated

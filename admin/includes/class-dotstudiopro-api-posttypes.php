@@ -507,7 +507,19 @@ class Dsp_Custom_Posttypes {
                     $language = isset($channel['language']) ? $channel['language'] : '';
                     $year = isset($channel['year']) ? $channel['year'] : '';
                     $live_stream_start_time = isset($channel['live_stream_start_time']) ? $channel['live_stream_start_time'] : '';
+                    $rating = isset($channel['rating']) ? $channel['rating'] : '';
+                    $country = isset($channel['country']) ? $channel['country'] : '';
+                    $season = isset($channel['season']) ? $channel['season'] : '';
+                    $or_release_date = isset($channel['or_release_date']) ? $channel['or_release_date'] : '';
 
+                    $final_rating_reason = array();
+                    if(isset($channel['rating_reason'])){
+                        foreach ($channel['rating_reason'] as $rating_reason_val) {
+                            $final_rating_reason[] = $rating_reason_val['reason'];
+                        }
+                    }
+
+                    $rating_reason = implode(',', $final_rating_reason);
 
                     $video_id = array();
 
@@ -567,6 +579,11 @@ class Dsp_Custom_Posttypes {
                     update_post_meta($post_id, 'dspro_channel_year', $year);
                     update_post_meta($post_id, 'dsp_import_hash', $hash_key);
                     update_post_meta($post_id, 'chnl_live_stream_start_time', $live_stream_start_time);
+                    update_post_meta($post_id, 'chnl_rating', $rating);
+                    update_post_meta($post_id, 'chnl_country', $country);
+                    update_post_meta($post_id, 'chnl_season', $season);
+                    update_post_meta($post_id, 'chnl_or_release_date', $or_release_date);
+                    update_post_meta($post_id, 'chnl_rating_reason', $rating_reason);
 
                     if (!empty($categories)) {
                         $category = array();
@@ -664,6 +681,8 @@ class Dsp_Custom_Posttypes {
         $chnl_child_channels = isset($values['chnl_child_channels'][0]) ? $values['chnl_child_channels'][0] : '';
         $dspro_channel_id = isset($values['dspro_channel_id'][0]) ? $values['dspro_channel_id'][0] : '';
         $dspro_channel_geo = isset($values['dspro_channel_geo'][0]) ? unserialize($values['dspro_channel_geo'][0]) : array();
+        $chnl_rating = isset($values['chnl_rating'][0]) ? $values['chnl_rating'][0] : array();
+        $chnl_rating_reason = isset($values['chnl_rating_reason'][0]) ? $values['chnl_rating_reason'][0] : array();
         //$dspro_is_product = isset($values['dspro_is_product'][0]) ? 'YES' : 'NO';
         $dspro_is_product = isset($values['dspro_is_product'][0]) && ($values['dspro_is_product'][0] == true || $values['dspro_is_product'][0] == 'true')  ? 'YES' : 'NO';
 
@@ -729,6 +748,14 @@ class Dsp_Custom_Posttypes {
                     <td><input type="text" name="dspro_channel_geo" class="dsp-field" id="dspro_channel_geo" value="<?php echo implode(",", $dspro_channel_geo); ?>" readonly data-role="tagsinput"/></td>
                 </tr>
                 <tr>
+                    <th scope="row">Rating</th>
+                    <td><input type="text" name="chnl_rating" class="dsp-field" id="chnl_rating" value="<?php echo $chnl_rating; ?>" readonly/></td>
+                </tr>
+                <tr>
+                    <th scope="row">Rating Reasons</th>
+                    <td><input type="text" name="chnl_rating_reason" class="dsp-field" id="chnl_rating_reason" value="<?php echo $chnl_rating_reason; ?>" readonly data-role="tagsinput"/></td>
+                </tr>
+                <tr>
                     <th scope="row">Is in subscription?</th>
                     <td><input type="text" name="dspro_is_product" class="dsp-field" id="dspro_is_product" value="<?php echo $dspro_is_product; ?>" readonly/></td>
                 </tr>
@@ -790,14 +817,23 @@ class Dsp_Custom_Posttypes {
         $values = get_post_custom($post->ID);
         $chnl_lang = isset($values['dspro_channel_language'][0]) ? esc_attr($values['dspro_channel_language'][0]) : '';
         $chnl_year = isset($values['dspro_channel_year'][0]) ? esc_attr($values['dspro_channel_year'][0]) : '';
+        $chnl_country = isset($values['chnl_country'][0]) ? esc_attr($values['chnl_country'][0]) : '';
+        $chnl_season = isset($values['chnl_season'][0]) ? esc_attr($values['chnl_season'][0]) : '';
+        $chnl_or_release_date = isset($values['chnl_or_release_date'][0]) ? esc_attr($values['chnl_or_release_date'][0]) : '';
 
         wp_nonce_field('category_metabox_nonce', 'category_metabox');
         ?>
         <div class="inside">
             <p class="post-attributes-label-wrapper"><label class="post-attributes-label" for="chnl_lang">Language</label></p>
             <input type="text" class="dsp-field"  name="chnl_lang" id="chnl_lang" value="<?php echo $chnl_lang; ?>" readonly/>
+            <p class="post-attributes-label-wrapper"><label class="post-attributes-label" for="chnl_country">Country</label></p>
+            <input type="text" class="dsp-field"  name="chnl_country" id="chnl_country" value="<?php echo $chnl_country; ?>" readonly/>
             <p class="post-attributes-label-wrapper"><label class="post-attributes-label" for="chnl_year">Year</label></p>
             <input type="text" class="dsp-field"  name="chnl_year" id="chnl_year" value="<?php echo $chnl_year; ?>" readonly/>
+            <p class="post-attributes-label-wrapper"><label class="post-attributes-label" for="chnl_season">Season</label></p>
+            <input type="text" class="dsp-field"  name="chnl_season" id="chnl_season" value="<?php echo $chnl_season; ?>" readonly/>
+            <p class="post-attributes-label-wrapper"><label class="post-attributes-label" for="chnl_or_release_date">Release Date</label></p>
+            <input type="text" class="dsp-field"  name="chnl_or_release_date" id="chnl_or_release_date" value="<?php echo $chnl_or_release_date; ?>" readonly/>
         </div>
 
         <?php

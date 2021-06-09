@@ -68,7 +68,7 @@ class Dotstudiopro_Api {
     public function __construct() {
 
         $this->Dotstudiopro_Api = 'dotstudiopro-api';
-        $this->version = '1.2.3';
+        $this->version = '1.2.4';
 
         $this->load_dependencies();
         $this->set_locale();
