@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.5] - 2021-06-09
+
+### Updated
+- Updated Rating and Rating Reason Value on display in post
+
 ## [1.2.4] - 2021-06-09
 
 ### Added

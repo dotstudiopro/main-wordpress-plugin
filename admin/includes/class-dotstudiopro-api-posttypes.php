@@ -681,8 +681,8 @@ class Dsp_Custom_Posttypes {
         $chnl_child_channels = isset($values['chnl_child_channels'][0]) ? $values['chnl_child_channels'][0] : '';
         $dspro_channel_id = isset($values['dspro_channel_id'][0]) ? $values['dspro_channel_id'][0] : '';
         $dspro_channel_geo = isset($values['dspro_channel_geo'][0]) ? unserialize($values['dspro_channel_geo'][0]) : array();
-        $chnl_rating = isset($values['chnl_rating'][0]) ? $values['chnl_rating'][0] : array();
-        $chnl_rating_reason = isset($values['chnl_rating_reason'][0]) ? $values['chnl_rating_reason'][0] : array();
+        $chnl_rating = isset($values['chnl_rating'][0]) ? $values['chnl_rating'][0] : '';
+        $chnl_rating_reason = isset($values['chnl_rating_reason'][0]) ? $values['chnl_rating_reason'][0] : '';
         //$dspro_is_product = isset($values['dspro_is_product'][0]) ? 'YES' : 'NO';
         $dspro_is_product = isset($values['dspro_is_product'][0]) && ($values['dspro_is_product'][0] == true || $values['dspro_is_product'][0] == 'true')  ? 'YES' : 'NO';
 
