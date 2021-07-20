@@ -620,6 +620,52 @@ class Dsp_External_Api_Request {
     }
 
     /**
+     * function to destroy a user's login session
+     * @since 1.0.0
+     * @return type
+     */
+    function destroy_user_login_session($client_token) {
+        $token = $this->api_token_check();
+
+        if (!$client_token && !$token) {
+            return array();
+        }
+
+        $path = 'drm/sessions/logout';
+
+        $headers = array(
+            'x-client-token' => $client_token,
+            'x-access-token' => $token
+        );
+
+        return $this->api_request_delete($path, null, $headers);
+    }
+
+    /**
+     * function to destroy every login session for a user
+     * @since 1.0.0
+     * @return type
+     */
+    function destroy_every_user_login_session($client_token) {
+        $token = $this->api_token_check();
+
+        if (!$client_token && !$token) {
+            return array();
+        }
+
+        $path = 'drm/sessions/clear';
+
+        $headers = array(
+            'x-client-token' => $client_token,
+            'x-access-token' => $token
+        );
+
+        $query = array('new_token' => "true");
+
+        return $this->api_request_delete($path, $query, $headers);
+    }
+
+    /**
      * This is common function to use POST request of External DSP API.
      *
      * @param type $path
@@ -648,6 +694,7 @@ class Dsp_External_Api_Request {
         }
         // http error
         elseif (wp_remote_retrieve_response_code($raw_response) != 200) {
+            $this->checkSessionStatus($raw_response);
             $this->write_log('URL', $url);
             $this->write_log('Header Parameters', $headers);
             $this->write_log('Body Parameters', $body);
@@ -697,6 +744,7 @@ class Dsp_External_Api_Request {
         }
         // http error
         elseif (wp_remote_retrieve_response_code($raw_response) != 200) {
+            $this->checkSessionStatus($raw_response);
             $this->write_log('URL', $url);
             $this->write_log('Header Parameters', $headers);
             $this->write_log('Body Parameters', $body);
@@ -743,6 +791,7 @@ class Dsp_External_Api_Request {
         }
         // http error
         elseif (wp_remote_retrieve_response_code($raw_response) != 200) {
+            $this->checkSessionStatus($raw_response);
             $this->write_log('URL', $url);
             $this->write_log('Header Parameters', $headers);
             $this->write_log('API Responce', wp_remote_retrieve_body($raw_response));
@@ -791,6 +840,7 @@ class Dsp_External_Api_Request {
         }
         // http error
         elseif (wp_remote_retrieve_response_code($raw_response) != 200) {
+            $this->checkSessionStatus($raw_response);
             $this->write_log('URL', $url);
             $this->write_log('Header Parameters', $headers);
             $this->write_log('Body Parameters', $body);
@@ -849,6 +899,33 @@ class Dsp_External_Api_Request {
         } else {
             return 'Internal Server error.';
         }
+    }
+
+    /**
+     * Function to check session status in header and set cookie
+     *
+     * @param type $raw_response
+     */
+    function checkSessionStatus($raw_response) {
+      $header_array_data = $this->accessProtected($raw_response['headers'], 'data');
+      if(isset($header_array_data['x-must-reauthenticate'])) {
+         if(!isset($_COOKIE['dsp_session_expired'])) {
+           setcookie('dsp_session_expired', true);
+         }
+      }
+    }
+
+    /**
+     * Function to access protected.
+     *
+     * @param type $obj
+     * @param type $prop
+     */
+    function accessProtected($obj, $prop) {
+      $reflection = new ReflectionClass($obj);
+      $property = $reflection->getProperty($prop);
+      $property->setAccessible(true);
+      return $property->getValue($obj);
     }
 
 }
