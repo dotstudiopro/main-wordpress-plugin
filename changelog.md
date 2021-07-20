@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.6] - 2021-07-20
+
+### Added
+- Added DRM Session Changes
+
 ## [1.2.5] - 2021-06-09
 
 ### Updated
