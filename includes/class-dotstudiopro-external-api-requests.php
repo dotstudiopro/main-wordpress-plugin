@@ -292,7 +292,7 @@ class Dsp_External_Api_Request {
             return array();
 
         if ($type == 'channel')
-            $path = 'search';
+            $path = 'find/channels/website';
         else
             $path = 'search/videos';
 
