@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.7] - 2022-04-11
+
+### Updated
+- Update Channel Search API
+
 ## [1.2.6] - 2021-07-20
 
 ### Added
