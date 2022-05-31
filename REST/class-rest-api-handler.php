@@ -108,7 +108,7 @@ class Dsp_REST_Api_Handler {
             'methods' => WP_REST_Server::CREATABLE,
             'permission_callback' => array($this, 'dsp_check_auth'),
             'callback' => array($this->manageVideos, 'manage_videos'),
-            'args' => $this->dsp_get_channel_args('add')
+            'args' => $this->dsp_get_video_args('add')
         ]);
     }
 
@@ -369,14 +369,14 @@ class Dsp_REST_Api_Handler {
 
         switch ($event):
             case 'add':
-                $args['_id'] = [
+                $args['vid']['_id'] = [
                     'required' => true,
                     'description' => esc_html__('Video ID to update.', 'dotstudiopro-api'),
                     'type' => 'string',
                 ];
                 break;
             case 'update':
-                $args['_id'] = [
+                $args['vid']['_id'] = [
                     'required' => true,
                     'description' => esc_html__('Video ID to update.', 'dotstudiopro-api'),
                     'type' => 'string',
