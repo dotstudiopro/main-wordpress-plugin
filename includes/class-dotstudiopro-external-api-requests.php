@@ -398,6 +398,53 @@ class Dsp_External_Api_Request {
     }
 
     /**
+     * function to remove a user from the system
+     * @since 1.2.7
+     * @param type $client_token
+     * @param type $channel_id
+     * @return type
+     */
+    public function remove_user_from_system($client_token) {
+
+        $token = $this->api_token_check();
+
+        if (!$token && !$client_token)
+            return array();
+
+        $path = 'users/account/purge';
+
+        $headers = array(
+            'x-access-token' => $token,
+            'x-client-token' => $client_token
+        );
+
+        return $this->api_request_delete($path, null, $headers);
+    }
+
+    /**
+     * function to get the account deletion date for a user
+     * @since 1.2.7
+     * @param type $client_token
+     * @param type $channel_id
+     * @return type
+     */
+    public function get_user_account_deletion_date($client_token) {
+
+        $token = $this->api_token_check();
+
+        if (!$token && !$client_token)
+            return array();
+
+        $path = 'users/account/purge';
+
+        $headers = array(
+            'x-access-token' => $token,
+            'x-client-token' => $client_token
+        );
+        return $this->api_request_get($path, null, $headers);
+    }
+
+    /**
      * function to get Home page Data
      * @since 1.2.2
      * @param type $client_token
@@ -819,7 +866,6 @@ class Dsp_External_Api_Request {
      * @return \WP_Error or Json Responce
      */
     public function api_request_delete($path = null, $query = null, $headers = null, $body = null) {
-
         // vars
         $url = $this->common_url . $path;
 
