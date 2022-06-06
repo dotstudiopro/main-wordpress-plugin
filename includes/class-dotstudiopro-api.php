@@ -132,6 +132,8 @@ class Dotstudiopro_Api {
         require_once plugin_dir_path(dirname(__FILE__)) . 'REST/class-manage-categories.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'REST/class-manage-channels.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'REST/class-manage-videos.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'REST/class-manage-users.php';
+        include_once './wp-admin/includes/user.php';
 
         $this->loader = new Dotstudiopro_Api_Loader();
     }
