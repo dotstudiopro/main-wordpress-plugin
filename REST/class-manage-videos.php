@@ -22,8 +22,8 @@ class Dsp_Manage_videos {
      * @return json
      */
     public function manage_videos($request) {
-        if (isset($request['vid']) && !empty($request['vid'])) {
-            $dsp_video = json_decode(json_encode($request['vid']));
+        if (isset($request['video']) && !empty($request['video'])) {
+            $dsp_video = json_decode(json_encode($request['video']));
             global $wpdb;
             $vidoeArr = array();
             $dsp_video_table = $wpdb->prefix . 'videos';

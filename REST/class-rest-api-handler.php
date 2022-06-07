@@ -369,14 +369,14 @@ class Dsp_REST_Api_Handler {
 
         switch ($event):
             case 'add':
-                $args['vid']['_id'] = [
+                $args['video']['_id'] = [
                     'required' => true,
                     'description' => esc_html__('Video ID to update.', 'dotstudiopro-api'),
                     'type' => 'string',
                 ];
                 break;
             case 'update':
-                $args['vid']['_id'] = [
+                $args['video']['_id'] = [
                     'required' => true,
                     'description' => esc_html__('Video ID to update.', 'dotstudiopro-api'),
                     'type' => 'string',
