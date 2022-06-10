@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.8] - 2022-06-10
+
+### Updated
+- Update Rest API Code for video
+
 ## [1.2.7] - 2022-04-11
 
 ### Updated
