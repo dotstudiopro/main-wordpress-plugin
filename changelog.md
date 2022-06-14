@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - 2022-06-14
+
+### Added
+- Added functionality for user deletion webhook
+- Added functionality to communicate with the Spotlight API for user deletion checks
+
 ## [1.2.8] - 2022-06-10
 
 ### Updated

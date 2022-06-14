@@ -27,6 +27,7 @@ class Dsp_REST_Api_Handler {
         $this->manageCategories = new Dsp_Manage_categories();
         $this->manageChannels = new Dsp_Manage_channels();
         $this->manageVideos = new Dsp_Manage_videos();
+        $this->manageUsers = new Dsp_Manage_users();
     }
 
     /**
@@ -110,6 +111,16 @@ class Dsp_REST_Api_Handler {
             'callback' => array($this->manageVideos, 'manage_videos'),
             'args' => $this->dsp_get_video_args('add')
         ]);
+
+        // User endpoints
+
+        register_rest_route($this->namespace, '/user/delete', [
+            'methods' => WP_REST_Server::DELETABLE,
+            'permission_callback' => array($this, 'dsp_check_auth'),
+            'callback' => array($this->manageUsers, 'delete_user'),
+            'args' => $this->dsp_get_user_args('delete')
+        ]);
+
     }
 
     /**
@@ -379,6 +390,29 @@ class Dsp_REST_Api_Handler {
                 $args['video']['_id'] = [
                     'required' => true,
                     'description' => esc_html__('Video ID to update.', 'dotstudiopro-api'),
+                    'type' => 'string',
+                ];
+                break;
+        endswitch;
+        return $args;
+    }
+
+    /**
+     * This function is used to check the channel api's arguments
+     *
+     * @since 1.6.0
+     * @param type $event
+     * @return string
+     */
+    private function dsp_get_user_args($event = null) {
+
+        $args = [];
+
+        switch ($event):
+            case 'delete':
+                $args['email'] = [
+                    'required' => true,
+                    'description' => esc_html__('Pass the email ID which you would like to delete.', 'dotstudiopro-api'),
                     'type' => 'string',
                 ];
                 break;
