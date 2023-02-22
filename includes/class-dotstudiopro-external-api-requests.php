@@ -294,7 +294,7 @@ class Dsp_External_Api_Request {
         if ($type == 'channel')
             $path = 'find/channels/website';
         else
-            $path = 'search/videos';
+            $path = 'find/videos';
 
         $headers = array(
             'x-access-token' => $token
