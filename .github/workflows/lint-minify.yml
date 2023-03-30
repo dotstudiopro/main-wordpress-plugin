@@ -1,0 +1,76 @@
+name: Run gulp tasks
+
+# Controls when the action will run.
+on:
+  pull_request:
+    # On which branch
+    branches: ['staging', 'master']
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  phplint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: stoicbuddha/PHP-Lint@master
+  # Job name
+  version_check:
+    needs: phplint
+    # Runner name
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+      - name: Get plugin/theme version script
+        id: getversion
+        shell: bash
+        run: echo "WP_VERSION=$(curl https://media-aws-dotstudiopro-com.s3.us-west-1.amazonaws.com/wordpress-assets/wp_version.sh | bash)" >> $GITHUB_OUTPUT
+    outputs:
+      wp_version: ${{ steps.getversion.outputs.WP_VERSION }}
+      wp_assets: ${{ format('{0}/{1}', 'wordpress-assets/main-plugin', steps.getversion.outputs.WP_VERSION) }}
+  # Job name
+  build-sync:
+    needs: version_check
+    # Runner name
+    runs-on: ubuntu-latest
+    env:
+      LOCAL_ASSETS: 'assets'
+    steps:
+      - name: Install zip
+        uses: montudor/action-zip@v1
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Check out repo
+        uses: actions/checkout@v3
+      # Sets up Python (for node-sass)
+      - name: Install Python
+        uses: actions/setup-python@v2
+      # Sets up node
+      - name: Install Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: npm ci
+      # Tag creator
+      - uses: rickstaa/action-create-tag@v1
+        with:
+          tag: ${{ needs.version_check.outputs.wp_version }}
+          message: ${{ needs.version_check.outputs.wp_version }}
+        if: github.base_ref == 'master'
+      - name: Move files to theme folder for zipping
+        run: cp -r ./ ../dspdev-main-plugin
+      - name: Zip output
+        run: cd ../ && zip -r ${{ format('{0}.{1}', needs.version_check.outputs.wp_version, 'zip') }} ./dspdev-main-plugin -x *.git* -x *DEPLOY_README.md*
+      - name: Copy zipped output to assets folder for upload
+        run: cp ../${{ format('{0}.{1}', needs.version_check.outputs.wp_version, 'zip') }} ${{env.LOCAL_ASSETS}}
+      - uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --cache-control max-age=604800 --exclude '.git/*' --exclude '.github/*' --exclude '*css-dev/*' --exclude '*sass/*' --exclude '*.php' --exclude '*ugly-js*' --exclude '*unminified/*' --exclude '*node_modules/*'
+        env:
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          SOURCE_DIR: ${{ env.LOCAL_ASSETS }}
+          DEST_DIR: ${{ needs.version_check.outputs.wp_assets }}
+        if: github.base_ref == 'master'
