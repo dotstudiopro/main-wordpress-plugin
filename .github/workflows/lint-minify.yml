@@ -38,8 +38,6 @@ jobs:
     env:
       LOCAL_ASSETS: 'assets'
     steps:
-      - name: Create asset folder
-        run: mkdir -p $LOCAL_ASSETS && ls -l
       - name: Install zip
         uses: montudor/action-zip@v1
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -48,6 +46,8 @@ jobs:
       # Sets up Python (for node-sass)
       - name: Install Python
         uses: actions/setup-python@v2
+      - name: Create asset folder
+        run: mkdir -p $LOCAL_ASSETS && ls -l && echo ${pwd}
       - name: Move files to theme folder for zipping
         run: cp -r ./ ../dspdev-main-plugin
       - name: Zip output
