@@ -38,6 +38,8 @@ jobs:
     env:
       LOCAL_ASSETS: 'assets'
     steps:
+      - name: Create asset folder
+        run: mkdir -p ../assets
       - name: Install zip
         uses: montudor/action-zip@v1
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
