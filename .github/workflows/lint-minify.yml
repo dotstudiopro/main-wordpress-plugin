@@ -49,9 +49,9 @@ jobs:
       - name: Move files to theme folder for zipping
         run: cp -r ./ ../dspdev-main-plugin
       - name: Zip output
-        run: cd ../ && zip -r ${{ format('{0}.{1}', needs.version_check.outputs.wp_version, 'zip') }} ./dspdev-main-plugin -x *.git* -x *DEPLOY_README.md*
+        run: ND=$(pwd) && cd ../ && zip -r ${{ format('{0}.{1}', needs.version_check.outputs.wp_version, 'zip') }} ./dspdev-main-plugin -x *.git* -x *DEPLOY_README.md* && cd $ND
       - name: Copy zipped output to assets folder for upload
-        run: cp ${{ format('{0}.{1}', needs.version_check.outputs.wp_version, 'zip') }} ${{env.LOCAL_ASSETS}}
+        run: cp ../${{ format('{0}.{1}', needs.version_check.outputs.wp_version, 'zip') }} ${{env.LOCAL_ASSETS}}
       - uses: jakejarvis/s3-sync-action@master
         with:
           args: --acl public-read --cache-control max-age=604800 --exclude '.git/*' --exclude '.github/*' --exclude '*css-dev/*' --exclude '*sass/*' --exclude '*.php' --exclude '*ugly-js*' --exclude '*unminified/*' --exclude '*node_modules/*'
