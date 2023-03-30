@@ -66,6 +66,6 @@ jobs:
       - name: Create tag
         uses: rickstaa/action-create-tag@v1
         with:
-        tag: ${{ needs.version_check.outputs.wp_version }}
-        message: ${{ needs.version_check.outputs.wp_version }}
+          tag: ${{ needs.version_check.outputs.wp_version }}
+          message: ${{ needs.version_check.outputs.wp_version }}
         if: github.base_ref == 'master'
