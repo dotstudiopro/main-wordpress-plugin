@@ -291,16 +291,18 @@ class Dsp_External_Api_Request {
         if (!$token)
             return array();
 
-        if ($type == 'channel')
+        if ($type == 'channel'){
             $path = 'find/channels/website';
-        else
-            $path = 'search/videos';
+            $query = array('size' => $size, 'from' => $from, 'q' => $q);
+        }
+        else{
+            $path = 'find/videos';
+            $query = array('size' => $size, 'page' => $from, 'q' => $q);
+        }
 
         $headers = array(
             'x-access-token' => $token
         );
-
-        $query = array('size' => $size, 'from' => $from, 'q' => $q);
 
         return $this->api_request_get($path, $query, $headers);
     }
@@ -419,6 +421,34 @@ class Dsp_External_Api_Request {
         );
 
         return $this->api_request_delete($path, null, $headers);
+    }
+
+    /**
+     * function to to submit device login codes
+     * @since 1.3.0
+     * @param type $client_token
+     * @param type $channel_id
+     * @return type
+     */
+    public function submit_device_code($code, $customer_id) {
+
+        $token = $this->api_token_check();
+
+        if (!$token)
+            return array();
+
+        $path = 'device/codes/customer';
+
+        $headers = array(
+            'x-access-token' => $token
+        );
+
+        $body = array(
+            'customer_id' => $customer_id,
+            'code' => $code
+        );
+
+        return $this->api_request_post($path, null, $headers, $body);
     }
 
     /**
