@@ -291,16 +291,18 @@ class Dsp_External_Api_Request {
         if (!$token)
             return array();
 
-        if ($type == 'channel')
+        if ($type == 'channel'){
             $path = 'find/channels/website';
-        else
-            $path = 'search/videos';
+            $query = array('size' => $size, 'from' => $from, 'q' => $q);
+        }
+        else{
+            $path = 'find/videos';
+            $query = array('size' => $size, 'page' => $from, 'q' => $q);
+        }
 
         $headers = array(
             'x-access-token' => $token
         );
-
-        $query = array('size' => $size, 'from' => $from, 'q' => $q);
 
         return $this->api_request_get($path, $query, $headers);
     }
