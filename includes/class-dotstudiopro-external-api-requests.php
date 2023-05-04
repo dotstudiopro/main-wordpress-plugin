@@ -759,6 +759,9 @@ class Dsp_External_Api_Request {
             $url = add_query_arg($query, $url);
         }
 
+        $get_ip = $this->get_ip();
+        $headers['x-forwarded-for'] =  $this->get_ip();
+
         $raw_response = wp_remote_post($url, array(
             'body' => $body,
             'headers' => $headers,
@@ -807,6 +810,9 @@ class Dsp_External_Api_Request {
         if ($query) {
             $url = add_query_arg($query, $url);
         }
+
+        $get_ip = $this->get_ip();
+        $headers['x-forwarded-for'] =  $this->get_ip();
 
         $raw_response = wp_remote_request($url, array(
             'method' => 'PUT',
@@ -857,6 +863,9 @@ class Dsp_External_Api_Request {
             $url = add_query_arg($query, $url);
         }
 
+        $get_ip = $this->get_ip();
+        $headers['x-forwarded-for'] =  $this->get_ip();
+
         $raw_response = wp_remote_get($url, array(
             'headers' => $headers,
             'timeout' => 50,
@@ -902,6 +911,9 @@ class Dsp_External_Api_Request {
         if ($query) {
             $url = add_query_arg($query, $url);
         }
+
+        $get_ip = $this->get_ip();
+        $headers['x-forwarded-for'] =  $this->get_ip();
 
         $raw_response = wp_remote_request($url, array(
             'method' => 'DELETE',
