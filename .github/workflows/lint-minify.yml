@@ -46,10 +46,12 @@ jobs:
       # Sets up Python (for node-sass)
       - name: Install Python
         uses: actions/setup-python@v2
+      - name: Create asset folder
+        run: mkdir -p $LOCAL_ASSETS && ls -l && echo ${pwd}
       - name: Move files to theme folder for zipping
         run: cp -r ./ ../dspdev-main-plugin
       - name: Zip output
-        run: cd ../ && zip -r ${{ format('{0}.{1}', needs.version_check.outputs.wp_version, 'zip') }} ./dspdev-main-plugin -x *.git* -x *DEPLOY_README.md*
+        run: ND=$(pwd) && cd ../ && zip -r ${{ format('{0}.{1}', needs.version_check.outputs.wp_version, 'zip') }} ./dspdev-main-plugin -x *.git* -x *DEPLOY_README.md* && cd $ND
       - name: Copy zipped output to assets folder for upload
         run: cp ../${{ format('{0}.{1}', needs.version_check.outputs.wp_version, 'zip') }} ${{env.LOCAL_ASSETS}}
       - uses: jakejarvis/s3-sync-action@master
