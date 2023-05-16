@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.3.1] - 2023-04-12
+## [1.4.0] - 2023-04-12
 
 ### Updated
 - Updated video search to use new endpoint
