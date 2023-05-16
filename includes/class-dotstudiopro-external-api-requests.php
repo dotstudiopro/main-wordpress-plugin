@@ -238,15 +238,13 @@ class Dsp_External_Api_Request {
             return array();
 
         if ($type == 'channel')
-            $path = 'search/recommendation/channel';
+            $path = '/find/recommendations/'.$id.'/website';
         else
-            $path = 'search/recommendation';
+            $path = '/find/recommendations/video/'.$id;
 
         $headers = array(
             'x-access-token' => $token
         );
-
-        $query = array('q' => $id);
 
         return $this->api_request_get($path, $query, $headers);
     }

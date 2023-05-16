@@ -16,7 +16,7 @@
  * Plugin Name:       dotstudioPRO API
  * Plugin URI:        https://www.dotstudiopro.com
  * Description:       This plugin provides a connector class to the dotstudioPRO API for use in plugin/theme development.
- * Version:           1.3.1
+ * Version:           1.4.0
  * Author:            dotstudioPRO
  * Author URI:        http://www.dotstudiopro.com
  * License:           GPLv3
