@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.3.2] - 2023-05-16
+
+### Updated
+- Updated recommendations to use new endpoint
+
 ## [1.3.1] - 2023-04-12
 
 ### Updated
