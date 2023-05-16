@@ -424,6 +424,34 @@ class Dsp_External_Api_Request {
     }
 
     /**
+     * function to to submit device login codes
+     * @since 1.3.0
+     * @param type $client_token
+     * @param type $channel_id
+     * @return type
+     */
+    public function submit_device_code($code, $customer_id) {
+
+        $token = $this->api_token_check();
+
+        if (!$token)
+            return array();
+
+        $path = 'device/codes/customer';
+
+        $headers = array(
+            'x-access-token' => $token
+        );
+
+        $body = array(
+            'customer_id' => $customer_id,
+            'code' => $code
+        );
+
+        return $this->api_request_post($path, null, $headers, $body);
+    }
+
+    /**
      * function to get the account deletion date for a user
      * @since 1.2.7
      * @param type $client_token
