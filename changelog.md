@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.4.1] - 2023-05-17
+
+### Added
+- Added functionality to send the client IP in requests to the server
 
 ## [1.4.0] - 2023-05-16
 
