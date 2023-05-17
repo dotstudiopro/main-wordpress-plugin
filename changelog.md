@@ -1,15 +1,20 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.4.1] - 2023-04-12
+## [1.4.1] - 2023-05-17
 
-### Updated
-- Updated video search to use new endpoint
+### Added
+- Added functionality to send the client IP in requests to the server
 
 ## [1.4.0] - 2023-05-16
 
 ### Updated
 - Updated recommendations to use new endpoint
+
+## [1.3.1] - 2023-04-12
+
+### Updated
+- Updated video search to use new endpoint
 
 ## [1.3.0] - 2022-06-14
 
