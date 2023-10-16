@@ -370,7 +370,7 @@ class Dotstudiopro_Api_Admin {
                 delete_option('import_sample_content');
             update_option('dotstudiopro_api_token', $response['token']);
             update_option('dotstudiopro_api_token_time', time());
-            update_option('dsp_cdn_img_url_field', 'https://f9q4g5j6.ssl.hwcdn.net/');
+            update_option('dsp_cdn_img_url_field', 'https://images.dotstudiopro.com/');
             $send_response = array('message' => 'Api Key Activated Sucessfully.');
             wp_send_json_success($send_response, 200);
         } else {
