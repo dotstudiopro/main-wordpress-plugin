@@ -30,7 +30,9 @@ class Dsp_External_Api_Request {
      * @since 1.0.0
      */
     function check_api_key($body = null) {
-        return $this->api_request_post('token', null, null, $body);
+        $query = array('api_key' => $body['key']);
+        return $this->api_request_get('init/config', $query);
+        //return $this->api_request_post('token', null, null, $body);
     }
 
     /**
@@ -45,7 +47,8 @@ class Dsp_External_Api_Request {
         $body = array(
             'key' => $this->api_key
         );
-        return $this->api_request_post('token', null, null, $body);
+        $query = array('api_key' => $this->api_key);
+        return $this->api_request_get('init/config', $query);
     }
 
     /**
@@ -67,9 +70,11 @@ class Dsp_External_Api_Request {
     function api_new_token() {
         // Acquire an API token and save it for later use.
         $token = $this->get_token();
-        update_option('dotstudiopro_api_token', $token['token']);
+        update_option('dotstudiopro_api_token', $token['tokens']['access']);
+        update_option('dsp_api_url_field', $token['api_url']);
+        update_option('dsp_cdn_img_url_field', $token['image_cdn_url']);
         update_option('dotstudiopro_api_token_time', time());
-        return $token['token'];
+        return $token['tokens']['access'];
     }
 
     /**
