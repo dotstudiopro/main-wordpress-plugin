@@ -164,15 +164,6 @@ class Dotstudiopro_Api_Admin {
         );
         register_setting('dsp-dev-mode-section', 'dsp_country_code_field');
 
-        // if (!empty($_GET['change_api_url'])) {
-
-            add_settings_field(
-                    'dsp_api_url_field', __('API URL', 'dotstudiopro-api'), array($this, 'dsp_api_url_field_callback_function'), 'dsp-dev-mode-section', 'dotstudiopro_api_dev_mode_section'
-            );
-            register_setting('dsp-dev-mode-section', 'dsp_api_url_field');
-
-        // }
-
         add_settings_field(
                 'dsp_reset_token_field', __('Reset Token', 'dotstudiopro-api'), array($this, 'dsp_reset_token_field_callback_function'), 'dsp-dev-mode-section', 'dotstudiopro_api_dev_mode_section'
         );
@@ -186,6 +177,15 @@ class Dotstudiopro_Api_Admin {
         add_settings_section(
                 'dotstudiopro_api_settings_section', '', null, 'dsp-setting-section'
         );
+
+         // if (!empty($_GET['change_api_url'])) {
+
+            add_settings_field(
+                    'dsp_api_url_field', __('API URL', 'dotstudiopro-api'), array($this, 'dsp_api_url_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
+            );
+            register_setting('dsp-setting-section', 'dsp_api_url_field');
+
+        // }
 
         add_settings_field(
                 'dsp_cdn_img_url_field', __('dotstudioPro Image CDN URL', 'dotstudiopro-api'), array($this, 'dsp_cdn_img_url_field_callback_function'), 'dsp-setting-section', 'dotstudiopro_api_settings_section'
@@ -238,7 +238,7 @@ class Dotstudiopro_Api_Admin {
     }
 
     function dsp_api_url_field_callback_function() {
-        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/development/dsp_api_url_field.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/settings/dsp_api_url_field.php';
     }
 
     function dsp_reset_token_field_callback_function() {
@@ -303,7 +303,7 @@ class Dotstudiopro_Api_Admin {
                 $send_response = array('message' => 'Server Error : ' . $response->get_error_message());
                 wp_send_json_error($send_response, 403);
             } elseif (isset($response['success']) && $response['success'] == 1) {
-                update_option('dotstudiopro_api_token', $response['token']);
+                update_option('dotstudiopro_api_token', $response['tokens']['access']);
                 update_option('dotstudiopro_api_token_time', time());
                 $send_response = array('message' => 'Token has been updated.');
                 wp_send_json_success($send_response, 200);
@@ -368,9 +368,10 @@ class Dotstudiopro_Api_Admin {
             update_option('dotstudiopro_api_key', $_POST['dotstudiopro_api_key']);
             if($_POST['btn_value'] == 'import-sample-api-data')
                 delete_option('import_sample_content');
-            update_option('dotstudiopro_api_token', $response['token']);
+            update_option('dotstudiopro_api_token', $response['tokens']['access']);
             update_option('dotstudiopro_api_token_time', time());
-            update_option('dsp_cdn_img_url_field', 'https://images.dotstudiopro.com/');
+            update_option('dsp_api_url_field', $response['api_url']);
+            update_option('dsp_cdn_img_url_field', $response['image_cdn_url']);
             $send_response = array('message' => 'Api Key Activated Sucessfully.');
             wp_send_json_success($send_response, 200);
         } else {

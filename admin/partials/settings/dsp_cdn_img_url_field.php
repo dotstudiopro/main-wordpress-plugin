@@ -11,4 +11,4 @@
  */
 ?>
 <?php $dsp_cdn_img_url_field = get_option('dsp_cdn_img_url_field'); ?>
-<input type="url" required class="dsp-field form-control" name="dsp_cdn_img_url_field" value="<?php echo !empty($dsp_cdn_img_url_field) ? $dsp_cdn_img_url_field : "https://images.dotstudiopro.com/"; ?>">
+<input type="url" required class="dsp-field form-control" readonly name="dsp_cdn_img_url_field" value="<?php echo !empty($dsp_cdn_img_url_field) ? $dsp_cdn_img_url_field : "https://defaultdspmedia.cachefly.net/images/"; ?>">
