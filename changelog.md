@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.0] - 2024-03-05
+
+### Added
+
+- Init route config functionality to get API and Image URLs added
+
 ## [1.4.2] - 2023-10-16
 
 ### Updated

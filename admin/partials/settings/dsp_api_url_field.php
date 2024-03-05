@@ -11,4 +11,4 @@
  */
 ?>
 <?php $dsp_api_url_field = get_option('dsp_api_url_field') ?: "https://api.myspotlight.tv/"; ?>
-<input type="text" name="dsp_api_url_field" value="<?php echo !empty($dsp_api_url_field) ? $dsp_api_url_field : ""; ?>">
+<input type="text" class="dsp-field" readonly name="dsp_api_url_field" value="<?php echo !empty($dsp_api_url_field) ? $dsp_api_url_field : ""; ?>">
