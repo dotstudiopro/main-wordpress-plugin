@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.2] - 2025-08-12
+
+### Fixed
+
+- Fixed Plugin Version Issue.
+
 ## [1.5.1] - 2025-08-12
 
 ### Updated
