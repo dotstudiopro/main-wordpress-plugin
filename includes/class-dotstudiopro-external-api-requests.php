@@ -19,7 +19,7 @@ class Dsp_External_Api_Request {
     function __construct() {
 
         $this->api_key = get_option('dotstudiopro_api_key');
-        $this->common_url = get_option('dsp_api_url_field') ?: "https://api.myspotlight.tv/"; 
+        $this->common_url = get_option('dsp_api_url_field') ?: "https://api.myspotlight.tv/";
 
     }
 
