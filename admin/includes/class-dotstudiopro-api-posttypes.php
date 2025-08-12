@@ -112,6 +112,7 @@ class Dsp_Custom_Posttypes {
         $cat_id = isset($values['cat_id'][0]) ? esc_attr($values['cat_id'][0]) : '';
         $in_menu = isset($values['is_in_cat_menu'][0]) ? esc_attr($values['is_in_cat_menu'][0]) : '';
         $on_homepage = isset($values['is_on_cat_homepage'][0]) ? esc_attr($values['is_on_cat_homepage'][0]) : '';
+        $categories_chnl = isset($values['categories_chnl'][0]) ? $values['categories_chnl'][0] : '';
 
         wp_nonce_field('custom_metabox_nonce', 'custom_metabox');
         ?>
@@ -133,6 +134,10 @@ class Dsp_Custom_Posttypes {
                 <tr>
                     <th scope="row">Wallpaper</th>
                     <td><input type="text" name="cat_wallpaper" readonly class="dsp-field" id="cat_wallpaper" value="<?php echo $cat_wallpaper; ?>" /></td>
+                </tr>
+                <tr>
+                    <th scope="row">Channels</th>
+                    <td><input type="text" name="categories_chnl" class="dsp-field" id="categories_chnl" value="<?php echo $categories_chnl; ?>" readonly data-role="tagsinput"/></td>
                 </tr>
                 <tr>
                     <th scope="row">Show on homepage</th>
@@ -367,6 +372,7 @@ class Dsp_Custom_Posttypes {
                             $post_id = wp_update_post($new_post);
                             $update_count++;
                         }
+                        $channels = isset($category['content']) ? $category['content'] : '';
                         update_post_meta($post_id, 'cat_id', isset($category['_id']) ? $category['_id'] : '');
                         update_post_meta($post_id, 'cat_display_name', isset($category['display_name']) ? $category['display_name'] : '');
                         update_post_meta($post_id, 'cat_wallpaper', isset($category['wallpaper']) ? $category['wallpaper'] : '');
@@ -375,6 +381,14 @@ class Dsp_Custom_Posttypes {
                         update_post_meta($post_id, 'is_on_cat_homepage', isset($category['homepage']) ? $category['homepage'] : '');
                         update_post_meta($post_id, 'weight', isset($category['weight']) ? $category['weight'] : '');
                         update_post_meta($post_id, 'dsp_import_hash', $hash_key);
+
+                        if (!empty($channels)) {
+                            $channel = array();
+                            foreach ($channels as $cat) {
+                                $channel[] = $cat['_id'];
+                            }
+                            update_post_meta($post_id, 'categories_chnl', ',' . implode(',', $channel) . ',');
+                        }
 
                         $custom_field_array = array();
                         if(isset($category['custom_fields']) && !empty($category['custom_fields'])) {
@@ -676,7 +690,7 @@ class Dsp_Custom_Posttypes {
         $chnl_writers = isset($values['chnl_writers'][0]) ? $values['chnl_writers'][0] : '';
         $chnl_geners = isset($values['chnl_geners'][0]) ? $values['chnl_geners'][0] : '';
         $chnl_directors = isset($values['chnl_directors'][0]) ? $values['chnl_directors'][0] : '';
-        $chnl_categories = isset($values['chnl_categories'][0]) ? $values['chnl_categories'][0] : '';
+        //$chnl_categories = isset($values['chnl_categories'][0]) ? $values['chnl_categories'][0] : '';
         $chnl_actors = isset($values['chnl_actors'][0]) ? $values['chnl_actors'][0] : '';
         $chnl_child_channels = isset($values['chnl_child_channels'][0]) ? $values['chnl_child_channels'][0] : '';
         $dspro_channel_id = isset($values['dspro_channel_id'][0]) ? $values['dspro_channel_id'][0] : '';
@@ -719,10 +733,10 @@ class Dsp_Custom_Posttypes {
                     <th scope="row">Directors</th>
                     <td><input type="text" name="chnl_directors" class="dsp-field" id="chnl_directors" value="<?php echo $chnl_directors; ?>" readonly data-role="tagsinput"/></td>
                 </tr>
-                <tr>
+                <!-- <tr>
                     <th scope="row">Categories</th>
                     <td><input type="text" name="chnl_categories" class="dsp-field" id="chnl_categories" value="<?php echo $chnl_categories; ?>" readonly data-role="tagsinput"/></td>
-                </tr>
+                </tr> -->
                 <tr>
                     <th scope="row">Actors</th>
                     <td><input type="text" name="chnl_actors" class="dsp-field" id="chnl_actors" value="<?php echo $chnl_actors; ?>" readonly data-role="tagsinput"/></td>

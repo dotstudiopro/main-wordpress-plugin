@@ -108,6 +108,10 @@ class Dsp_Manage_categories {
             update_post_meta($post_id, 'is_in_cat_menu', $dsp_category->menu);
             update_post_meta($post_id, 'is_on_cat_homepage', $dsp_category->homepage);
             update_post_meta($post_id, 'weight', isset($dsp_category->weight) ? $dsp_category->weight : '');
+            update_post_meta($post_id, 'categories_chnl', ',' . implode(',', $dsp_category->channels) . ',');
+
+            $this->delete_custom_transient($post_id, $dsp_category->display_name);
+            $this->delete_custom_transient($post_id, $dsp_category->_id);
 
             $custom_field_array = array();
             if(isset($dsp_category->custom_fields) && !empty($dsp_category->custom_fields)) {
@@ -163,4 +167,19 @@ class Dsp_Manage_categories {
         $send_response = array('code' => 'rest_success', 'message' => 'Category order updated succesfully. ', 'data' => array('status' => 200));
         wp_send_json($send_response, 200);
     }
+
+    /**
+     * This function is to delete all custom transient of channel
+     */
+    public function delete_custom_transient($post_id, $channel_id){
+        global $wpdb;
+        $sql = "SELECT * FROM $wpdb->options WHERE option_name LIKE '%\_transient\_%' AND ( option_value LIKE '%$post_id%' OR option_value LIKE '%$channel_id%' )";
+        $transients = $wpdb->get_results($sql);
+        if($transients){
+            foreach($transients as $t){
+                $wpdb->query("DELETE FROM $wpdb->options WHERE option_name = '" . $t->option_name . "'");
+            }
+        }
+    }
+
 }
